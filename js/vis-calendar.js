@@ -1,6 +1,6 @@
 var dataset = [
-  new Date(2012, 11, 3),
-  new Date(2013, 5, 7)
+  { date: new Date(2012, 11, 3), distance: 10.2 },
+  { date: new Date(2013, 5, 7),  distance:  5.4 }
 ];
 
 // constants
@@ -14,12 +14,19 @@ var height = cellSize * 8;
 var getWeekday = d3.time.format("%w");
 var getWeek = d3.time.format("%U");
 
+// data
+var data = d3.nest()
+  .key(function(d) { return d.date.getFullYear(); })
+  .sortKeys(d3.ascending)
+  .entries(dataset);
+
 // container
 var year = d3.select('#vis-calendar')
   .selectAll('svg')
-    .data(d3.range(2010, 2014))
+  .data(data)
   .enter()
     .append('svg')
+    .attr('class', 'year')
     .attr('width', width)
     .attr('height', height);
 
@@ -27,7 +34,7 @@ var year = d3.select('#vis-calendar')
 year.append('text')
   .attr('transform', 'translate(10,' + cellSize * 3.5 + ') rotate(-90)')
   .style('text-anchor', 'middle')
-  .text(function(d) { return d; });
+  .text(function(d) { return d.key; });
 
 var yearContainer = year.append('g')
   .attr('transform', 'translate(' + leftMargin + ',' + 0.5 * cellSize + ')');
@@ -35,7 +42,11 @@ var yearContainer = year.append('g')
 // Day cells
 var day = yearContainer
     .selectAll('.day')
-    .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+    .data(function(d) {
+      return d3.time.days(
+	  new Date(+d.key, 0, 1),
+	  new Date(+d.key + 1, 0, 1));
+    })
   .enter().append('rect')
     .attr('class', 'day')
     .attr('width', cellSize)
@@ -45,7 +56,11 @@ var day = yearContainer
 
 // Month boxes
 yearContainer.selectAll(".month")
-    .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+    .data(function(d) {
+      return d3.time.months(
+	  new Date(+d.key, 0, 1),
+	  new Date(+d.key + 1, 0, 1));
+    })
   .enter().append("path")
     .attr("class", "month")
     .attr("d", monthPath);
