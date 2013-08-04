@@ -54,6 +54,17 @@ var day = yearContainer
     .attr('x', function(d) { return cellSize * getWeek(d); })
     .attr('y', function(d) { return cellSize * getWeekday(d); });
 
+// Workout boxes
+yearContainer.selectAll('.workout')
+  .data(function(d) { return d.values; })
+  .enter()
+  .append('rect')
+    .attr('class', 'workout')
+    .attr('width', cellSize-1)
+    .attr('height', cellSize-1)
+    .attr('x', function(d) { return 1 + cellSize * getWeek(d.date); })
+    .attr('y', function(d) { return 1 + cellSize * getWeekday(d.date); })
+
 // Month boxes
 yearContainer.selectAll(".month")
     .data(function(d) {
