@@ -39,6 +39,45 @@
     body {
       font-family: 'Open Sans', Helvetica, Arial, sans-serif;
     }
+    .carousel .container {
+      position: relative;
+      height: 680px;
+    }
+    .carousel h4 {
+      font-size: 170%;
+      margin-bottom: 30px;
+    }
+    .carousel img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+    }
+    .carousel .btn {
+      margin-top: 20px;
+    }
+    .carousel p {
+      margin-bottom: 10px;
+    }
+    .carousel-caption {
+      background-color: transparent;
+      position: static;
+      padding: 0 10%;
+    }
+    .slide1 .carousel-caption {
+      max-width: 40%;
+      margin-top: 15%;
+    }
+    .slide2 .carousel-caption {
+      margin-top: 5%;
+      margin-left: 50%;
+      width: 30%;
+    }
+    .slide3 .carousel-caption {
+      margin-top: 5%;
+      margin-left: 50%;
+      width: 30%;
+    }
     li {
       line-height: 40px;
     }
@@ -153,6 +192,58 @@
 	<p class="lead"><em>Serious</em> workout analysis for <em>curious</em> athletes.</p>
       </div>
     </div>
+
+    <div id="carousel" class="carousel slide">
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner">
+	<div class="item active slide1">
+	  <img src="/img/slide1.jpg" alt="Train hard">
+	  <div class="container">
+	    <div class="carousel-caption">
+	      <h4>Train hard</h4>
+	      <p>Whatever your sport, the best way to ensure progress is to train <em>hard</em> and train <em>consistently</em>.</p>
+	      <a class="btn btn-large btn-primary" onclick="$('.carousel').carousel(1)">Easy, then what?</a>
+              <blockquote><em>“If you do not train hard you will never fulfill your potential.”</em> — Maurice Greene</blockquote>
+	    </div>
+	  </div>
+	</div>
+	<div class="item slide2">
+	  <img src="/img/slide2.jpg" alt="Train smart">
+	  <div class="container">
+	    <div class="carousel-caption">
+              <h4 class="text-right">Train smart</h4>
+              <p class="text-right">You need to train smart too. Only properly chosen training impluses will get you the results you are after.</p>
+              <p class="text-right">There is a reason why professional athletes have coaches.</p>
+	      <p class="text-right"><a class="btn btn-large btn-primary" onclick="$('.carousel').carousel(2)">Ok, got it</a></p>
+              <blockquote class="text-right"><em>“Train, don't strain.”</em> — Arthur Lydiard</blockquote>
+	    </div>
+	  </div>
+	</div>
+	<div class="item slide3">
+	  <img src="/img/slide3.jpg" alt="Know and understand your data">
+	  <div class="container">
+	    <div class="carousel-caption right">
+              <h4 class="text-right">Understand your data</h4>
+              <p class="text-right">Do you train enough?<br/>Do you train <em>hard</em> enough?<br/>Perhaps <em>too</em> hard?</p>
+	      <p class="text-right">To be able to answer those questions you need to be able to <em>collect</em> and <em>analyze</em> your workout data.</p>
+              <p class="text-right"><u>Fitspector can help you with that.</u></p>
+	      <p class="text-right"><a class="btn btn-large btn-primary" onclick="$('.carousel').carousel(2)">Tell me how!</a></p>
+              <blockquote class="text-right"><em>“Knowledge is power.”</em> — Francis Bacon</blockquote>
+	    </div>
+	  </div>
+	</div>
+      </div>
+      <a class="left carousel-control" href="#carousel" data-slide="prev">‹</a>
+      <a class="right carousel-control" href="#carousel" data-slide="next">›</a>
+    </div>
+    <script type="text/javascript">
+      $('.carousel').carousel('pause');
+    </script>
+
     <div class="row-fluid pitch">
       <div class="span5 offset1 video">
 	<img class="img-polaroid" src="/img/logo-big.png" />
@@ -205,42 +296,6 @@
           <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
           <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-4e0d9be478d8a027"></script>
         </div>
-      </div>
-    </div>
-    <div class="row-fluid section1">
-      <div class="span5 offset1 asset">
-	<img class="img-polaroid" width="460" src="http://i.istockimg.com/file_thumbview_approve/17868234/2/stock-photo-17868234-man-running.jpg">
-        <!--http://i.istockimg.com/file_thumbview_approve/10303619/2/stock-photo-10303619-running.jpg" />-->
-      </div>
-      <div class="span6 copy">
-        <h2>Train hard</h2>
-	<p>Whatever your sport, the best way to ensure progress is to train <em>hard</em> and train <em>consistently</em>.</p>
-        <blockquote><em>“If you do not train hard you will never fulfill your potential.”</em> — Maurice Greene</blockquote>
-      </div>
-    </div>
-    <div class="row-fluid section1">
-      <div class="span5 offset1 copy">
-        <h2 class="text-right">Train smart</h2>
-	<p class="text-right">But that is just part of the story.</p>
-        <p class="text-right">You need to train smart too. Only properly chosen training impluses will get you the results you are after.</p>
-        <p class="text-right">There is a reason why professional athletes have coaches.</p>
-        <blockquote class="text-right"><em>“Train, don't strain.”</em> — Arthur Lydiard</blockquote>
-      </div>
-      <div class="span5 asset">
-	<img class="img-polaroid" width="460" src="http://i.istockimg.com/file_thumbview_approve/19148433/2/stock-photo-19148433-trainer-giving-advice-to-his-young-female-athlete.jpg" />
-      </div>
-    </div>
-    <div class="row-fluid section1">
-      <div class="span5 offset1 asset">
-	<img class="img-polaroid" width="460" src="http://i.istockimg.com/file_thumbview_approve/19115618/2/stock-photo-19115618-stop-watch-in-hand.jpg" />
-      </div>
-      <div class="span6 copy">
-        <h2>Know and understand your data</h2>
-        <p>Do you train enough? Too much? Do you train <em>hard</em> enough? Perhaps <em>too</em> hard?</p>
-	<p>To be able to answer those questions you need to be able to <em>collect</em> and <em>analyze</em> your workout data.</p>
-        <p>Existing tools do a great job at collecting your data.</p>
-        <p><u>Fitspector aims at providing you with the missing piece: advanced workout analysis.</u></p>
-        <blockquote><em>“Knowledge is power.”</em> — Francis Bacon</blockquote>
       </div>
     </div>
 
