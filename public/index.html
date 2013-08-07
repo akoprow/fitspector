@@ -39,6 +39,9 @@
     body {
       font-family: 'Open Sans', Helvetica, Arial, sans-serif;
     }
+    h3 {
+      font-variant: small-caps;
+    }
     .carousel .container {
       position: relative;
       height: 680px;
@@ -62,20 +65,35 @@
     .carousel-caption {
       background-color: transparent;
       position: static;
-      padding: 0 10%;
+      border: 1px solid #ddd;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      border-radius: 6px;
+      padding: 20px;
+    }
+    .carousel-caption blockquote {
+      margin: 2em 0 0;
+      font-size: 120%;
+      color: #BBB;
+    }
+    .carousel-caption blockquote.text-right {
+      border-left: none;
+      border-right: 5px solid #eeeeee;
+      padding-right: 20px;
     }
     .slide1 .carousel-caption {
-      max-width: 40%;
       margin-top: 15%;
+      margin-left: 8%;
+      width: 40%;
     }
     .slide2 .carousel-caption {
-      margin-top: 5%;
-      margin-left: 50%;
+      margin-top: 1%;
+      margin-left: 60%;
       width: 30%;
     }
     .slide3 .carousel-caption {
       margin-top: 5%;
-      margin-left: 50%;
+      margin-left: 60%;
       width: 30%;
     }
     li {
@@ -87,6 +105,8 @@
     .heading {
       font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
       text-align: center;
+      margin-top: 2em;
+      margin-bottom: 1em;
     }
     p.lead {
       padding-top: 1.5%;
@@ -141,15 +161,6 @@
       width: 250px;
       margin: 0 auto;
     }
-    blockquote {
-      margin-top: 2em;
-      font-size: 120%;
-      color: #BBB;
-    }
-    blockquote.text-right {
-      display: inline-right;
-      float: right;
-    }
   </style>
   <script type="text/javascript">
     var _gaq = _gaq || [];
@@ -176,7 +187,8 @@
 	<a class="brand" href="#"><img src="/img/logo.png" /></a>
 	<div class="nav-collapse collapse">
 	  <ui class="nav">
-	    <li class="active"><a href="#">Home</a></li>
+	    <li class="active"><a href="#">Intro</a></li>
+	    <li><a href="#preorder">Preorder</a></li>
 	    <li><a href="#faq">FAQ</a></li>
 	  </ui>
 	</div>
@@ -244,7 +256,11 @@
       $('.carousel').carousel('pause');
     </script>
 
+    <a name="preorder"></a>
     <div class="row-fluid pitch">
+      <div class="span10 offset1">
+	<h3>Preorder</h3>
+      </div>
       <div class="span5 offset1 video">
 	<img class="img-polaroid" src="/img/logo-big.png" />
       </div>
@@ -299,7 +315,7 @@
       </div>
     </div>
 
-    <a name="faq"/>
+    <a name="faq"></a>
     <div class="row-fluid faq">
       <div class="span10 offset1">
 	<h3>FAQ</h3>
