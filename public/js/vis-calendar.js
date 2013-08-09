@@ -21,29 +21,17 @@ var computeData = function() {
 
 var workoutsData = computeData();
 
-var getExerciseColor = function(e) {
-  switch (e) {
-    case 'Run': return '#F00';
-    case 'WT': return '#F00';
-    case 'Yoga': return '#F00';
-    case 'Hik': return '#F00';
-    case 'VolB': return '#F00';
-    case 'Sq': return '#F00';
-    case 'XCS': return '#F00';
-    default: throw Error('Unknown exercise: ' + e);
-  }
-};
-
 var prepareData = function(year) {
-  return workoutsData
-    .filter(function(d) { return d.date.getFullYear() === year; })
-    .map(function(d) {
-      return {
-	date: d.date,
-	value: d.totalTime,
-	color: getExerciseColor(d.exerciseType)
-      };
-    });
+  var exerciseTypeColor = d3.scale.category10();
+
+  var data = workoutsData.filter(function(d) { return d.date.getFullYear() === year; });
+  return data.map(function(d) {
+    return {
+      date: new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate()),
+      value: d.totalTime,
+      color: exerciseTypeColor(d.exerciseType)
+    };
+  });
 };
 
 var drawContainer = function(topMargin, cellSize, year) {
@@ -135,7 +123,7 @@ var drawWorkouts = function(container, cellSize, data) {
       .attr('height', function(d) { return sizeScale(d.value); })
       .attr('x', function(d) { return xScale(+getWeek(d.date) + 0.5) - sizeScale(d.value)/2; })
       .attr('y', function(d) { return yScale(+getWeekday(d.date) + 0.5) - sizeScale(d.value)/2; })
-      .attr('color', function(d) { return d.color; });
+      .style('fill', function(d) { return d.color; });
 };
 
 var redraw = function(leftMargin, cellSize, year) {
