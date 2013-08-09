@@ -23,15 +23,20 @@ var workoutsData = computeData();
 
 var prepareData = function(year) {
   var exerciseTypeColor = d3.scale.category10();
+  var totals = {};
 
   var data = workoutsData.filter(function(d) { return d.date.getFullYear() === year; });
-  return data.map(function(d) {
+  data = data.map(function(d) {
+    var day = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate());
+    var prev = totals[day] || 0;
+    totals[day] = prev + d.totalTime;
     return {
-      date: new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate()),
-      value: d.totalTime,
+      date: day,
+      value: prev + d.totalTime,
       color: exerciseTypeColor(d.exerciseType)
     };
   });
+  return data.reverse();
 };
 
 var drawContainer = function(topMargin, cellSize, year) {
@@ -106,10 +111,10 @@ var drawMonthBorders = function(container, cellSize) {
 var drawWorkouts = function(container, cellSize, data) {
   var xScale = d3.scale.linear()
       .domain([0, 52])
-      .rangeRound([1, 1 + cellSize*52]);
+      .rangeRound([0, cellSize*52]);
   var yScale = d3.scale.linear()
       .domain([0, 6])
-      .rangeRound([1, 1 + cellSize*6]);
+      .rangeRound([0, cellSize*6]);
   var sizeScale = d3.scale.sqrt()
       .domain([0, d3.max(data, function(d) { return d.value; })])
       .rangeRound([0, cellSize - 1]);
@@ -136,5 +141,5 @@ var redraw = function(leftMargin, cellSize, year) {
 
 // constants
 var topMargin = 20;
-var cellSize = 20;
+var cellSize = 45;
 redraw(topMargin, cellSize, 2013);
