@@ -1,16 +1,33 @@
 // date manipulations
-var getWeekday = d3.time.format("%w");
-var getWeek = d3.time.format("%U");
+var getWeekday = d3.time.format('%w');
+var getWeek = d3.time.format('%U');
 
-var drawContainer = function(topMargin, cellSize, years) {
+var computeData = function() {
+  var sum = function(d) {
+    return _.reduce(d, function(x, y) { return x + y }, 0);
+  };
+  var makeWorkout = function(d) {
+    return {
+      exerciseType: d.exerciseType,
+      date: new Date(d.startedAt),
+      time: d.time,
+      pace: d.pace,
+      totalTime: sum(d.time),
+      totalDistance: sum(d.pace)
+    }
+  };
+  return _.map(workouts, makeWorkout);
+};
+
+var workoutsData = computeData();
+
+var drawContainer = function(topMargin, cellSize, year) {
   var width = 2 + cellSize*53;
   var height = topMargin + cellSize * 8;
 
   // Main container
   var container = d3.select('#vis-calendar')
-    .selectAll('svg')
-    .data(years)
-    .enter()
+    .data([year])
       .append('svg')
       .attr('class', 'year')
       .attr('width', width)
@@ -54,52 +71,46 @@ var monthPath = function(t0) {
   var w0 = +getWeek(t0);
   var d1 = +getWeekday(t1);
   var w1 = +getWeek(t1);
-  return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
-      + "H" + w0 * cellSize + "V" + 7 * cellSize
-      + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
-      + "H" + (w1 + 1) * cellSize + "V" + 0
-      + "H" + (w0 + 1) * cellSize + "Z";
+  return 'M' + (w0 + 1) * cellSize + ',' + d0 * cellSize
+      + 'H' + w0 * cellSize + 'V' + 7 * cellSize
+      + 'H' + w1 * cellSize + 'V' + (d1 + 1) * cellSize
+      + 'H' + (w1 + 1) * cellSize + 'V' + 0
+      + 'H' + (w0 + 1) * cellSize + 'Z';
 }
 
 var drawMonthBorders = function(container, cellSize) {
-  container.selectAll(".month")
+  container.selectAll('.month')
     .data(function(d) {
       return d3.time.months(
 	  new Date(d, 0, 1),
 	  new Date(d + 1, 0, 1));
     })
-  .enter().append("path")
-    .attr("class", "month")
-    .attr("d", monthPath);
+  .enter().append('path')
+    .attr('class', 'month')
+    .attr('d', monthPath);
 };
 
-var draw = function(leftMargin, cellSize, years) {
-  var container = drawContainer(leftMargin, cellSize, years);
+var drawWorkouts = function(container, cellSize, year) {
+  container.selectAll('workout')
+    .data(workoutsData)
+//    .filter(function(d) { return d.date.getFullYear() == year })
+    .enter()
+    .append('rect')
+      .attr('class', 'workout')
+      .attr('width', cellSize-1)
+      .attr('height', cellSize-1)
+      .attr('x', function(d) { return 1 + cellSize*getWeek(d.date); })
+      .attr('y', function(d) { return 1 + cellSize*getWeekday(d.date); });
+};
+
+var redraw = function(leftMargin, cellSize, year) {
+  var container = drawContainer(leftMargin, cellSize, year);
   drawDayCells(container, cellSize);
+  drawWorkouts(container, cellSize, year);
   drawMonthBorders(container, cellSize);
 };
 
 // constants
 var topMargin = 20;
 var cellSize = 20;
-var years = [2012, 2013];
-draw(topMargin, cellSize, years);
-
-/*
-// data
-var data = d3.nest()
-  .key(function(d) { return d.date.getFullYear(); })
-  .sortKeys(d3.ascending)
-  .entries(workouts);
-
-// Workout boxes
-yearContainer.selectAll('.workout')
-  .data(function(d) { return d.values; })
-  .enter()
-  .append('rect')
-    .attr('class', 'workout')
-    .attr('width', cellSize-1)
-    .attr('height', cellSize-1)
-    .attr('x', function(d) { return 1 + cellSize * getWeek(d.date); })
-    .attr('y', function(d) { return 1 + cellSize * getWeekday(d.date); })
-*/
+redraw(topMargin, cellSize, 2013);
