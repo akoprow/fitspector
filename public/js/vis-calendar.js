@@ -21,12 +21,19 @@ var computeData = function() {
 
 var workoutsData = computeData();
 
+// sport = 'all' or sport id
 // unit = 'time' or 'distance'
-var prepareData = function(year, unit) {
+// group = 'exercises' or 'zones'
+var prepareData = function(year, sport, unit, group) {
   var exerciseTypeColor = d3.scale.category10();
   var totals = {};
 
-  var data = workoutsData.filter(function(d) { return d.date.getFullYear() === year; });
+  var data = workoutsData.filter(
+      function(d) {
+	return d.date.getFullYear() === year &&
+	    (sport === 'all' || d.exerciseType === sport)
+      });
+
   data = data.map(function(d) {
     var day = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate());
     var prev = totals[day] || 0;
@@ -136,7 +143,7 @@ var drawWorkouts = function(container, cellSize, data) {
 var redraw = function(leftMargin, cellSize, year) {
   var container = drawContainer(leftMargin, cellSize, year);
   drawDayCells(container, cellSize);
-  var data = prepareData(year, 'distance');
+  var data = prepareData(year, 'Run', 'time', 'exercises');
   drawWorkouts(container, cellSize, data);
   drawMonthBorders(container, cellSize);
 };
