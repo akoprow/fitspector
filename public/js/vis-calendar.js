@@ -21,6 +21,31 @@ var computeData = function() {
 
 var workoutsData = computeData();
 
+var getExerciseColor = function(e) {
+  switch (e) {
+    case 'Run': return '#F00';
+    case 'WT': return '#F00';
+    case 'Yoga': return '#F00';
+    case 'Hik': return '#F00';
+    case 'VolB': return '#F00';
+    case 'Sq': return '#F00';
+    case 'XCS': return '#F00';
+    default: throw Error('Unknown exercise: ' + e);
+  }
+};
+
+var prepareData = function(year) {
+  return workoutsData
+    .filter(function(d) { return d.date.getFullYear() === year; })
+    .map(function(d) {
+      return {
+	date: d.date,
+	value: d.totalTime,
+	color: getExerciseColor(d.exerciseType)
+      };
+    });
+};
+
 var drawContainer = function(topMargin, cellSize, year) {
   var width = 2 + cellSize*53;
   var height = topMargin + cellSize * 8;
@@ -90,23 +115,34 @@ var drawMonthBorders = function(container, cellSize) {
     .attr('d', monthPath);
 };
 
-var drawWorkouts = function(container, cellSize, year) {
+var drawWorkouts = function(container, cellSize, data) {
+  var xScale = d3.scale.linear()
+      .domain([0, 52])
+      .rangeRound([1, 1 + cellSize*52]);
+  var yScale = d3.scale.linear()
+      .domain([0, 6])
+      .rangeRound([1, 1 + cellSize*6]);
+  var sizeScale = d3.scale.sqrt()
+      .domain([0, d3.max(data, function(d) { return d.value; })])
+      .rangeRound([0, cellSize - 1]);
+
   container.selectAll('workout')
-    .data(workoutsData)
-//    .filter(function(d) { return d.date.getFullYear() == year })
+    .data(data)
     .enter()
     .append('rect')
       .attr('class', 'workout')
-      .attr('width', cellSize-1)
-      .attr('height', cellSize-1)
-      .attr('x', function(d) { return 1 + cellSize*getWeek(d.date); })
-      .attr('y', function(d) { return 1 + cellSize*getWeekday(d.date); });
+      .attr('width', function(d) { return sizeScale(d.value); })
+      .attr('height', function(d) { return sizeScale(d.value); })
+      .attr('x', function(d) { return xScale(+getWeek(d.date) + 0.5) - sizeScale(d.value)/2; })
+      .attr('y', function(d) { return yScale(+getWeekday(d.date) + 0.5) - sizeScale(d.value)/2; })
+      .attr('color', function(d) { return d.color; });
 };
 
 var redraw = function(leftMargin, cellSize, year) {
   var container = drawContainer(leftMargin, cellSize, year);
   drawDayCells(container, cellSize);
-  drawWorkouts(container, cellSize, year);
+  var data = prepareData(year);
+  drawWorkouts(container, cellSize, data);
   drawMonthBorders(container, cellSize);
 };
 
