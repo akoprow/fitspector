@@ -7,16 +7,22 @@ var computeData = function() {
     return _.reduce(d, function(x, y) { return x + y }, 0);
   };
   var makeWorkout = function(d) {
+    var date = new Date(d.startedAt);
     return {
       exerciseType: d.exerciseType,
-      date: new Date(d.startedAt),
+      day: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+      date: date,
       time: d.time,
       pace: d.pace,
       totalTime: sum(d.time),
       totalDistance: sum(d.pace)
     }
   };
-  return _.map(workouts, makeWorkout);
+  var data = _.map(workouts, makeWorkout);
+  var data = _.groupBy(data, function(d) { return d.day });
+  var data = _.pairs(data);
+  var data = _.map(data, function(d) { return { day: d[1][0].day, exercises: d[1] }; });
+  return data;
 };
 
 var workoutsData = computeData();
@@ -26,25 +32,38 @@ var workoutsData = computeData();
 // group = 'exercises' or 'zones'
 var prepareData = function(year, sport, unit, group) {
   var exerciseTypeColor = d3.scale.category10();
-  var totals = {};
 
-  var data = workoutsData.filter(
-      function(d) {
-	return d.date.getFullYear() === year &&
-	    (sport === 'all' || d.exerciseType === sport)
-      });
+  // Filter by year.
+  var data = _.filter(workoutsData, function(d) {
+    return d.day.getFullYear() === year;
+  });
 
-  data = data.map(function(d) {
-    var day = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate());
-    var prev = totals[day] || 0;
-    var value = prev + (unit == 'time' ? d.totalTime : d.totalDistance);
-    totals[day] = value;
+  // Filter by sport.
+  data = _.map(data, function(d) {
     return {
-      date: day,
-      value: value,
-      color: exerciseTypeColor(d.exerciseType)
+      day: d.day,
+      exercises: _.filter(d.exercises, function(e) {
+	return sport === 'all' || e.exerciseType === sport;
+      })
     };
   });
+
+  // Compute visual representation.
+  data = _.map(data, function(d) {
+    var total = 0;
+    return _.map(d.exercises, function(e) {
+      total += (unit == 'time' ? e.totalTime : e.totalDistance);
+      return {
+	day: d.day,
+	value: total,
+	color: exerciseTypeColor(e.exerciseType)
+      };
+    });
+  });
+
+  // Join all data into a single array and reverse it.
+  var res = [];
+  data = res.concat.apply(res, data);
   return data.reverse();
 };
 
@@ -135,15 +154,15 @@ var drawWorkouts = function(container, cellSize, data) {
       .attr('class', 'workout')
       .attr('width', function(d) { return sizeScale(d.value); })
       .attr('height', function(d) { return sizeScale(d.value); })
-      .attr('x', function(d) { return xScale(+getWeek(d.date) + 0.5) - sizeScale(d.value)/2; })
-      .attr('y', function(d) { return yScale(+getWeekday(d.date) + 0.5) - sizeScale(d.value)/2; })
+      .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5) - sizeScale(d.value)/2; })
+      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5) - sizeScale(d.value)/2; })
       .style('fill', function(d) { return d.color; });
 };
 
 var redraw = function(leftMargin, cellSize, year) {
   var container = drawContainer(leftMargin, cellSize, year);
   drawDayCells(container, cellSize);
-  var data = prepareData(year, 'Run', 'time', 'exercises');
+  var data = prepareData(year, 'all', 'time', 'exercises');
   drawWorkouts(container, cellSize, data);
   drawMonthBorders(container, cellSize);
 };
