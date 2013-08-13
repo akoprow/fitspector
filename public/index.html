@@ -5,7 +5,7 @@
   <title>Fitspector: Serious workout analysis for curious athletes.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" >
   <link rel="stylesheet" type="text/css"
-        href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css">
+        href="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fbootstrap-combined.no-icons.min.css">
   <link rel="stylesheet" type="text/css"
         href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css">
   <link rel="stylesheet" type="text/css"
@@ -168,6 +168,12 @@
       width: 250px;
       margin: 0 auto;
     }
+    .howitworks .step .badge {
+      margin-right: 5px;
+    }
+    .howitworks .step {
+      margin-bottom: 10px;
+    }
   </style>
   <script type="text/javascript">
     var _gaq = _gaq || [];
@@ -324,9 +330,37 @@
     </div>
 
     <a id="howitworks" name="howitworks"></a>
-    <div class="row-fluid pitch">
+    <div class="row-fluid howitworks">
       <div class="span10 offset1">
 	<h3>How does it work?</h3>
+      </div>
+      <div class="span5 offset1">
+        <div class="step">
+          <span class="badge badge-success">1</span>
+          <span class="text">Go for your training, while wearing your device of choice to collect workout data (see the following point).</span>
+        </div>
+        <div class="step">
+          <span class="badge badge-success">2</span>
+          <span class="text">Upload your workout data to Fitspector. It will accept
+            <a href="http://en.wikipedia.org/wiki/Training_Center_XML_(TCX)">TCX</a> and
+            <a href="http://en.wikipedia.org/wiki/GPS_eXchange_Format">GPX</a>
+            industry standard file formats.  That means you can use most
+            <a href="https://buy.garmin.com/en-US/US/into-sports/cIntoSports-p1.html">Garmin</a> and
+            <a href="http://www.polar.com/en/products">Polar</a> watches, as well as GPS-enabled smartphones
+            (both <a href="http://www.google.com/mobile/mytracks/">Android</a> and
+            <a href="http://www.abvio.com/cyclemeter/">iPhone</a>).
+          </span>
+        </div>
+        <div class="step">
+          <span class="badge badge-success">3</span>
+          <span class="text">Upload your workout data to Fitspector and enjoy beautiful visualizations that will help you reveal trends and
+            better understand your workouts. After launch and for the first year Fitspector will provide one new visualization every month,
+            so there will always be something new to try and look forward to.
+          </span>
+        </div>
+      </div>
+      <div class="span5">
+        <img class="img-polaroid text-right" style="float: right" src="/img/devices.jpg" />
       </div>
     </div>
 
