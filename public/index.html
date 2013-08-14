@@ -216,6 +216,39 @@
       left: auto;
       margin: 0;
     }
+    .pledge {
+      position: relative;
+    }
+    .pledge:after {
+      position: absolute;
+      display: inline-block;
+      top: -1px;
+      right: -1px;
+      padding: 3px 7px;
+      font-size: 12px;
+      font-weight: bold;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      color: #9da0a4;
+      -webkit-border-radius: 4px 0 4px 0;
+      -moz-border-radius: 4px 0 4px 0;
+      border-radius: 4px 0 4px 0;
+    }
+    .pledge.level1:after {
+      content: 'Fan club'
+    }
+    .pledge.level2:after {
+      content: 'Early bird'
+    }
+    .pledge.level3:after {
+      content: 'Early adopter'
+    }
+    .pledge.level4:after {
+      content: 'Team player'
+    }
+    .pledge.level5:after {
+      content: 'Spread the love'
+    }
   </style>
   <script type="text/javascript">
     var _gaq = _gaq || [];
@@ -395,7 +428,7 @@ $( document ).ready( function()
     </div>
     <div class="row-fluid">
       <div class="span4">
-        <div class="alert alert-warning">
+        <div class="alert alert-warning pledge level1">
           <u>Pledge <strong>10$</strong> or more for:</u>
           <ul>
             <li>a big thank you and appreciation from the Fitspector team!
@@ -403,7 +436,7 @@ $( document ).ready( function()
         </div>
       </div>
       <div class="span4">
-        <div class="alert alert-warning">
+        <div class="alert alert-warning pledge level2">
           <u>Pledge <strong>25$</strong> or more for:</u>
           <ul>
             <li>
@@ -413,11 +446,12 @@ $( document ).ready( function()
         </div>
       </div>
       <div class="span4">
-        <div class="alert alert-warning">
+        <div class="alert alert-warning pledge level3">
           <u>Pledge <strong>50$</strong> or more for:</u>
           <ul>
             <li>
-              <abbr title="At least 1 month before the official launch" rel="tooltip">early access</abbr> to a
+              <abbr title="At least 1 month before the official launch" rel="tooltip">early access</abbr>
+              and a 1 year subscription to a
               <abbr title="No restrictions, full data power to you!" rel="tooltip">premium</abbr> Fitspector account.
           </ul>
         </div>
@@ -425,20 +459,21 @@ $( document ).ready( function()
     </div>
     <div class="row-fluid">
       <div class="span6">
-        <div class="alert alert-warning">
+        <div class="alert alert-warning pledge level4">
           <u>Pledge <strong>200$</strong> or more for:</u>
           <ul>
             <li>all 50$+ rewards,
             <li>thank-you note on Fitspector'a blog and
             <li>
-              <abbr title="At least 1 month before the official launch" rel="tooltip">early access</abbr> to a
+              <abbr title="At least 1 month before the official launch" rel="tooltip">early access</abbr>
+              and a 1 year subscription to a
               <abbr title="No restrictions, full data power to you!" rel="tooltip">premium</abbr> Fitspector account
               for up to 5 of your friends.
           </ul>
         </div>
       </div>
       <div class="span6">
-        <div class="alert alert-warning">
+        <div class="alert alert-warning pledge level5">
           <u>Pledge <strong>1000$</strong> or more for:</u>
           <ul>
             <li>all 200$+ rewards,
@@ -462,7 +497,7 @@ $( document ).ready( function()
 	    </div>
 	    <div class="span4">
 	      <div class="linediv-c">
-		<h3>$0</h3> <p>of $5,000</p>
+		<h3>$0</h3> <p>of $15,000</p>
 	      </div>
 	    </div>
 	    <div class="span4">
