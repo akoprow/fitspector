@@ -109,7 +109,7 @@
       margin-left: 60%;
       width: 30%;
     }
-    li {
+    .navbar li {
       line-height: 40px;
     }
     .navbar-inverse .brand {
@@ -180,6 +180,42 @@
     .howitworks .step {
       margin-bottom: 10px;
     }
+
+    #tooltip {
+      text-align: center;
+      color: #fff;
+      background: #111;
+      position: absolute;
+      z-index: 100;
+      padding: 15px;
+    }
+    #tooltip:after { /* triangle decoration */
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #111;
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -10px;
+      margin-left: -10px;
+    }
+    #tooltip.top:after {
+      border-top-color: transparent;
+      border-bottom: 10px solid #111;
+      top: -20px;
+      bottom: auto;
+    }
+    #tooltip.left:after {
+      left: 10px;
+      margin: 0;
+    }
+    #tooltip.right:after {
+      right: 10px;
+      left: auto;
+      margin: 0;
+    }
   </style>
   <script type="text/javascript">
     var _gaq = _gaq || [];
@@ -191,6 +227,84 @@
       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
+  </script>
+  <script type="text/javascript">
+$( document ).ready( function()
+{
+    var targets = $( '[rel~=tooltip]' ),
+        target  = false,
+        tooltip = false,
+        title   = false;
+
+    targets.bind( 'mouseenter', function()
+    {
+        target  = $( this );
+        tip     = target.attr( 'title' );
+        tooltip = $( '<div id="tooltip"></div>' );
+
+        if( !tip || tip == '' )
+            return false;
+
+        target.removeAttr( 'title' );
+        tooltip.css( 'opacity', 0 )
+               .html( tip )
+               .appendTo( 'body' );
+
+        var init_tooltip = function()
+        {
+            if( $( window ).width() < tooltip.outerWidth() * 1.5 )
+                tooltip.css( 'max-width', $( window ).width() / 2 );
+            else
+                tooltip.css( 'max-width', 340 );
+
+            var pos_left = target.offset().left + ( target.outerWidth() / 2 ) - ( tooltip.outerWidth() / 2 ),
+                pos_top  = target.offset().top - tooltip.outerHeight() - 20;
+
+            if( pos_left < 0 )
+            {
+                pos_left = target.offset().left + target.outerWidth() / 2 - 20;
+                tooltip.addClass( 'left' );
+            }
+            else
+                tooltip.removeClass( 'left' );
+
+            if( pos_left + tooltip.outerWidth() > $( window ).width() )
+            {
+                pos_left = target.offset().left - tooltip.outerWidth() + target.outerWidth() / 2 + 20;
+                tooltip.addClass( 'right' );
+            }
+            else
+                tooltip.removeClass( 'right' );
+
+            if( pos_top < 0 )
+            {
+                var pos_top  = target.offset().top + target.outerHeight();
+                tooltip.addClass( 'top' );
+            }
+            else
+                tooltip.removeClass( 'top' );
+
+            tooltip.css( { left: pos_left, top: pos_top } )
+                   .animate( { top: '+=10', opacity: 1 }, 50 );
+        };
+
+        init_tooltip();
+        $( window ).resize( init_tooltip );
+
+        var remove_tooltip = function()
+        {
+            tooltip.animate( { top: '-=10', opacity: 0 }, 50, function()
+            {
+                $( this ).remove();
+            });
+
+            target.attr( 'title', tip );
+        };
+
+        target.bind( 'mouseleave', remove_tooltip );
+        tooltip.bind( 'click', remove_tooltip );
+    });
+});
   </script>
 </head>
 <body data-spy="scroll" data-target=".navbar">
@@ -280,24 +394,47 @@
       </div>
     </div>
     <div class="row-fluid">
-      <div class="span3">
+      <div class="span4">
         <div class="alert alert-warning">
-          Pledge <strong>10$</strong> or more.
+          <u>Pledge <strong>10$</strong> or more for:</u>
+          <ul>
+            <li>A big thank you and appreciation from the Fitspector team!
+          </ul>
         </div>
       </div>
-      <div class="span3">
+      <div class="span4">
         <div class="alert alert-warning">
-          Pledge <strong>25$</strong> or more.
+          <u>Pledge <strong>25$</strong> or more for:</u>
+          <ul>
+            <li>
+              <abbr title="At least 1 month before the official launch" rel="tooltip">Early access</abbr> to a
+              <abbr title="Non-premium account's analysis will be limited to the workouts from the last 3 months and may exclude more complex analysis." rel="tooltip">non-premium</abbr> Fitspector account.
+          </ul>
         </div>
       </div>
-      <div class="span3">
+      <div class="span4">
         <div class="alert alert-warning">
-          Pledge <strong>50$</strong> or more.
+          <u>Pledge <strong>50$</strong> or more for:</u>
+          <ul>
+            <li>
+              <abbr title="At least 1 month before the official launch" rel="tooltip">Early access</abbr> to a
+              <abbr title="No restrictions, full data power to you!" rel="tooltip">premium</abbr> Fitspector account.
+          </ul>
         </div>
       </div>
-      <div class="span3">
+    </div>
+    <div class="row-fluid">
+      <div class="span6">
         <div class="alert alert-warning">
-          Pledge <strong>150$</strong> or more.
+          <u>Pledge <strong>200$</strong> or more for:</u>
+          <ul>
+            <li>Early access (<small>at least 1 month before the official launch</small>) to a <em>premium</em> Fitspector account.
+          </ul>
+        </div>
+      </div>
+      <div class="span6">
+        <div class="alert alert-warning">
+          <u>Pledge <strong>1000$</strong> or more for:</u>
         </div>
       </div>
     </div>
