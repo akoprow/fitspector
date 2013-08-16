@@ -607,26 +607,41 @@ $( document ).ready( function()
 	  <div class="accordion-group">
 	    <div class="accordion-heading">
 	      <a class="accordion-toggle" data-toggle="collapse"
-		 data-parent="#faq-accordion" href="#collapse1">
-                When will Fitspector be ready to use?
+		 data-parent="#faq-accordion" href="#collapse-when-finished">
+                What happens when the funding period is over?
 	      </a>
 	    </div>
-	    <div id="collapse1" class="accordion-body collapse">
+	    <div id="collapse-when-finished" class="accordion-body collapse">
 	      <div class="accordion-inner">
-		The precise launch date is yet to be determined but it should be
-		some time in the 3 months window between Nov 2013 and Feb 2014.
-                See also the following question.
+                Two options.  If Fitspector reaches it's funding target of
+                $15,000, giving us means to bring it to life then you can sit
+                down, relax and wait for it to come life! (also see
+                <a href="#" onclick="$('#collapse-when-ready').collapse('show'); $('#collapse-when-finished').collapse('hide'); return false">the following</a> question).
 	      </div>
 	    </div>
 	  </div>
 	  <div class="accordion-group">
 	    <div class="accordion-heading">
 	      <a class="accordion-toggle" data-toggle="collapse"
-		 data-parent="#faq-accordion" href="#collapse2">
+		 data-parent="#faq-accordion" href="#collapse-when-ready">
+                When will Fitspector be ready to use?
+	      </a>
+	    </div>
+	    <div id="collapse-when-ready" class="accordion-body collapse">
+	      <div class="accordion-inner">
+		The precise launch date is yet to be determined but we seriously hope
+                to deliver you a nice Christmas present this year!
+	      </div>
+	    </div>
+	  </div>
+	  <div class="accordion-group">
+	    <div class="accordion-heading">
+	      <a class="accordion-toggle" data-toggle="collapse"
+		 data-parent="#faq-accordion" href="#collapse-how-follow">
                 How will I be able to follow progress of Fitspector?
 	      </a>
 	    </div>
-	    <div id="collapse2" class="accordion-body collapse">
+	    <div id="collapse-how-follow" class="accordion-body collapse">
 	      <div class="accordion-inner">
                 Just follow
                 the <a href="http://fitspector.blogspot.com/">Fitspector's
@@ -661,11 +676,11 @@ $( document ).ready( function()
 	  <div class="accordion-group">
 	    <div class="accordion-heading">
 	      <a class="accordion-toggle" data-toggle="collapse"
-		 data-parent="#faq-accordion" href="#collapse4">
+		 data-parent="#faq-accordion" href="#collapse-for-whom">
                 Who can benefit from Fitspector?
 	      </a>
 	    </div>
-	    <div id="collapse4" class="accordion-body collapse">
+	    <div id="collapse-for-whom" class="accordion-body collapse">
 	      <div class="accordion-inner">
                 In principle anyone doing fitness who is interested in gaining
                 insights into one's training.  However, most charts will work
@@ -676,40 +691,48 @@ $( document ).ready( function()
 	  <div class="accordion-group">
 	    <div class="accordion-heading">
 	      <a class="accordion-toggle" data-toggle="collapse"
-		 data-parent="#faq-accordion" href="#collapse5">
+		 data-parent="#faq-accordion" href="#collapse-uploads">
                 What will I need to use Fitspector?
 	      </a>
 	    </div>
-	    <div id="collapse5" class="accordion-body collapse">
+	    <div id="collapse-uploads" class="accordion-body collapse">
 	      <div class="accordion-inner">
                 Please note that Fitspector is <em>not</em> a data collection
-                service. It will work by connecting with your
-                <a href="runkeeper.com">RunKeeper</a> account and getting data
-                from there, so you will need
-                a <a href="https://runkeeper.com/login">RunKeeper account</a> to
-                use Fitspector. Creating one is easy and absolutely
-                free.<br/><br/>  Why RunKeeper? Not only is it a great service
-                but it also provides
-                an <a href="http://http://developer.runkeeper.com">open API</a>
-                allowing external services, such as Fitspector, to leverage its
-                data and provide useful services.<br/><br/> I'd love to also
-                support <a href="http://strava.com">Strava</a> users -- another
-                great service -- but unfortunately Strava decided
-                to <a href="http://engineering.strava.com/update-on-the-api-v3-release-and-v1-v2-retirement/">limit
-                access</a> to their API. I'll try my best to obtain early access
-                and make Fitspector work with Strava. If that fails it will only
-                happen after their APIs are open to the public again.
+                service. It will allow easy upload of workout data in
+                <a href="http://en.wikipedia.org/wiki/Training_Center_XML_(TCX)">TCX</a> and
+                <a href="http://en.wikipedia.org/wiki/GPS_eXchange_Format">GPX</a>
+                file formats, so for starters you'll need a compatible device.<br/>
+                Depending on demand we will also try to provide easier ways of synchronizing
+                your workout data such as:
+                <ul>
+                  <li><a href="https://www.dropbox.com/">Dropbox</a> or
+                    <a href="https://drive.google.com">Google Drive</a>
+                    synchronization, that will allow you just to place your
+                    workouts files in appropriate folders and have them
+                    processed automatically by Fitspector.
+                  <li>Automatic synchronization with
+                  the <a href="http://runkeeper.com/">RunKeeper</a>
+                  account. RunKeeper seems to be the only workout tracking site
+                  that
+                  provides <a href="http://developer.runkeeper.com/healthgraph">API
+                  access</a> to user's data.
+                </ul>
+                Keep an eye on
+                <a href="#"
+                onclick="$('#collapse-how-to-follow').collapse('show');
+                $('#collapse-uploads').collapse('hide'); return false">the
+                blog</a> for more details.
 	      </div>
 	    </div>
 	  </div>
 	  <div class="accordion-group">
 	    <div class="accordion-heading">
 	      <a class="accordion-toggle" data-toggle="collapse"
-		 data-parent="#faq-accordion" href="#collapse6">
+		 data-parent="#faq-accordion" href="#collapse-why-me">
                 Who are you and why do you think you can do it?
 	      </a>
 	    </div>
-	    <div id="collapse6" class="accordion-body collapse">
+	    <div id="collapse-why-me" class="accordion-body collapse">
 	      <div class="accordion-inner">
                 Glad you asked. There are few reasons why I think may be able to pull that off.
                 <ul>
