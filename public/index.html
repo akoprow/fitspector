@@ -258,12 +258,16 @@
     .pledge .coinbase-button {
       margin: auto;
     }
+    .centered,
     .preorder {
       display: block;
       margin-left: auto;
       margin-right: auto;
       margin-top: -10px;
       margin-bottom: 10px;
+    }
+    #noBitcoinsLink {
+      margin-left: -25px;
     }
   </style>
   <script type="text/javascript">
@@ -530,9 +534,22 @@ $( document ).ready( function()
 	  </div>
 	</div>
 	<div class="span6 offset3 order">
-          <button class="btn btn-large btn-primary preorder" type="button">
-            <i class="icon icon-shopping-cart"></i> Preorder
-          </button>
+          <a class="coinbase-button centered" data-code="a518ba3224c0baf21800938b6b3ce0ae" data-button-style="custom_large" href="https://coinbase.com/checkouts/a518ba3224c0baf21800938b6b3ce0ae">Pay with Bitcoin</a><script src="https://coinbase.com/assets/button.js" type="text/javascript"></script>
+          <a href="#noBitcoins" id="noBitcoinsLink" role="link" data-toggle="modal">I don't have any BitCoins</a>
+          <div id="noBitcoins" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+              <h3 id="myModalLabel">Payment methods</h3>
+            </div>
+            <div class="modal-body">
+              <p>We apologize but currently Fitspector is only able to accept BitCoin payments (with PayPal support in the works).</p>
+              <p>Bitcoin is the <a href="http://bitcoin.org" target="_blank">currency of the future</a>.</p>
+              <p>Please consult <a href="http://howtobuybitcoins.info/" target="_blank">this page</a> to learn how to buy BitCoins in your country.</p>
+            </div>
+            <div class="modal-footer">
+              <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+          </div>
 	</div>
 	<div class="span12 social">
           <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
