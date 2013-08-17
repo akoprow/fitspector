@@ -223,6 +223,7 @@
       color: #468847;
       background-color: #dff0d8;
       border-color: #d6e9c6;
+      cursor: pointer;
     }
     .pledge:after {
       position: absolute;
@@ -254,9 +255,6 @@
     .pledge.level5:after {
       content: 'Spread the love'
     }
-    .pledge .coinbase-button {
-      margin: auto;
-    }
     .centered,
     .preorder {
       display: block;
@@ -265,8 +263,8 @@
       margin-top: -10px;
       margin-bottom: 10px;
     }
-    #noBitcoinsLink {
-      margin-left: -25px;
+    #payment input[name=submit] {
+      margin-top: -30px;
     }
   </style>
   <script type="text/javascript">
@@ -440,6 +438,39 @@ $( document ).ready( function()
     </script>
 
     <!-- ------------------------------------------------ Preorder  ------------------------------------------------ -->
+    <div id="payment" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Fitspector pledge</h3>
+      </div>
+      <div class="modal-body">
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+          <input class="centered" type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="on0" value="Subscription types">
+          <div class="control-group">
+            <label class="control-label" for="subscription_type">Subscription type:</label>
+            <div class="controls">
+              <select name="os0">
+	        <option value="Fan club">Fan club $10,00 USD</option>
+	        <option value="Early bird">Early bird $25,00 USD</option>
+	        <option value="Early adopter">Early adopter $50,00 USD</option>
+	        <option value="Team player">Team player $200,00 USD</option>
+	        <option value="Spread the love">Spread the love $1.000,00 USD</option>
+              </select>
+            </div>
+          </div>
+          <input type="hidden" name="currency_code" value="USD">
+          <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----MIIIaQYJKoZIhvcNAQcEoIIIWjCCCFYCAQExggEwMIIBLAIBADCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwDQYJKoZIhvcNAQEBBQAEgYCT5f+KElZ5MeVxvm+64vJgZsAwvEOtVuaCsDmL6tEyrVenO54TXkl3u+T00+U1OQkV5iL42DAkc3DnvD8opR7IjJ9ju+TeXIBqSQYtSB9j6+FX9QGLqxesGwvl8B7nZxqK72r3txDSxgpsyye/MdBdzPqi8lMHUJ+PSMfKnnrsnDELMAkGBSsOAwIaBQAwggHlBgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECPtdCqsnEVgmgIIBwIM4vGgXsFJbMGIKetcMdWfT0xZSc4mi53pDcox8ikNjPXQhEV0bJYBs0J+Rs+muO3DB6vYOnlvfMBYn6FPOXmeBx9W++8FMDZ/1UQjbSL3eVwsSgYDBD2QXwzji/7tBN96Pl7HxX1lJw4KtI6iiqdF6CW/+VBEuMHb9gfXHP+y+y6jonAnsLEvhaEsvisvjGW0D3cETAnW7/AxBnRIk51kdqwUPUVLggxRe3LL/qpXNuw9zWeXHxYTtFyjb0mlYvp1PxUzfRReA3NE8T6DveFvQO1qTINAwTN5Zx5PIxw6SLIXKeB2/QtjWn0WvFcpSvMUvuecjhJUaGDIX5J4Rbbf6fSiPLEJ5LGRuEwGqgWbso1683hMqC/dqU2xj6SjQQ9/js/tfsyiA6tuxqvP9SW5CZbUVpKbvuFkSSwLoRTzppS3LMfoI+rKQXCFM0yTqmqdHZkkFHvgQJ/jYygN6BpFQIKiwu6K2MUVr+KS3nwJsTQUiqvKmSPB1BvBtsEU22Tg6JpvUW3mA0+rxCuMQ4JYIv+fvmu/BUPEfV6gXDn7d3qVG0B/OLQTOhBGa8XL2JKUK+tsrCrzHVjU8CvIYMEugggOHMIIDgzCCAuygAwIBAgIBADANBgkqhkiG9w0BAQUFADCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20wHhcNMDQwMjEzMTAxMzE1WhcNMzUwMjEzMTAxMzE1WjCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMFHTt38RMxLXJyO2SmS+Ndl72T7oKJ4u4uw+6awntALWh03PewmIJuzbALScsTS4sZoS1fKciBGoh11gIfHzylvkdNe/hJl66/RGqrj5rFb08sAABNTzDTiqqNpJeBsYs/c2aiGozptX2RlnBktH+SUNpAajW724Nv2Wvhif6sFAgMBAAGjge4wgeswHQYDVR0OBBYEFJaffLvGbxe9WT9S1wob7BDWZJRrMIG7BgNVHSMEgbMwgbCAFJaffLvGbxe9WT9S1wob7BDWZJRroYGUpIGRMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbYIBADAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4GBAIFfOlaagFrl71+jq6OKidbWFSE+Q4FqROvdgIONth+8kSK//Y/4ihuE4Ymvzn5ceE3S/iBSQQMjyvb+s2TWbQYDwcp129OPIbD9epdr4tJOUNiSojw7BHwYRiPh58S1xGlFgHFXwrEBb3dgNbMUa+u4qectsMAXpVHnD9wIyfmHMYIBmjCCAZYCAQEwgZQwgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tAgEAMAkGBSsOAwIaBQCgXTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xMzA4MTYyMTIyMzFaMCMGCSqGSIb3DQEJBDEWBBTv+DlgjUmkubnk7x4MYaKVroVw5TANBgkqhkiG9w0BAQEFAASBgKvtoudStUyxhDZst6hy9oWlaHdtAt+Vcf/mh0BnlzIKPC4Uolrs42M+KJmzVMfSG+S+wsJTtnaV8dDNDrQVW8OqfdGN0FtgiBoq6zHoZlHPL0Wll1Sf692EarOWWXDPDO08mcd/mT6t+L1ODzA8epIT8IIEZaBp8N/CD6lXc6KS-----END PKCS7-----
+">
+          <input type="image" src="https://www.paypalobjects.com/en_US/NL/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+
+          <a class="coinbase-button" data-code="2c903ed5dd0bc12f27eeee6bec864ff2" data-button-style="buy_now_small" href="https://coinbase.com/checkouts/2c903ed5dd0bc12f27eeee6bec864ff2">Pay With Bitcoin</a>
+          <script src="https://coinbase.com/assets/button.js" type="text/javascript"></script>
+        </form>
+      </div>
+    </div>
+
     <div id="preorder" class="row-fluid">
       <h3>Preorder</h3>
     </div>
@@ -450,7 +481,7 @@ $( document ).ready( function()
     </div>
     <div class="row-fluid">
       <div class="span4">
-        <div class="alert alert-warning pledge level1">
+        <div class="alert alert-warning pledge level1" onclick="$('#payment').modal('show')">
           <u>Pledge <strong>10$</strong> or more for:</u>
           <ul>
             <li>a big thank you and appreciation from the Fitspector team!
@@ -535,29 +566,6 @@ $( document ).ready( function()
 	    <div class="bar bar-warning" style="width: 40%;"></div>
 	  </div>
 	</div>
-        <!-- ------------------------------------------------ Payment  ------------------------------------------------ -->
-	<div class="span10 offset1 order">
-          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-            <input class="centered" type="hidden" name="cmd" value="_s-xclick">
-            <table>
-              <tr><td><input type="hidden" name="on0" value="Subscription types">Subscription types</td></tr><tr><td><select name="os0">
-	            <option value="Fan club">Fan club $10,00 USD</option>
-	            <option value="Early bird">Early bird $25,00 USD</option>
-	            <option value="Early adopter">Early adopter $50,00 USD</option>
-	            <option value="Team player">Team player $200,00 USD</option>
-	            <option value="Spread the love">Spread the love $1.000,00 USD</option>
-              </select> </td></tr>
-            </table>
-            <input type="hidden" name="currency_code" value="USD">
-            <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
-">
-            <input type="image" src="https://www.paypalobjects.com/en_US/NL/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-
-            <a class="coinbase-button" data-code="2c903ed5dd0bc12f27eeee6bec864ff2" data-button-style="buy_now_small" href="https://coinbase.com/checkouts/2c903ed5dd0bc12f27eeee6bec864ff2">Pay With Bitcoin</a>
-            <script src="https://coinbase.com/assets/button.js" type="text/javascript"></script>
-          </form>
-        </div>
       </div>
     </div>
 
