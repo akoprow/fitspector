@@ -226,6 +226,12 @@
       background-color: #dff0d8;
       border-color: #d6e9c6;
     }
+    .pledge > input[type="radio"] ~ .payment-buttons {
+      display: none;
+    }
+    .pledge > input[type="radio"]:checked ~ .payment-buttons {
+      display: block;
+    }
     .pledge:after {
       position: absolute;
       display: inline-block;
@@ -531,7 +537,7 @@ $( document ).ready( function()
           <ul>
             <li>early access to a regular Fitspector account.
           </ul>
-          <div class="row-fluid">
+          <div class="row-fluid payment-buttons">
             <div class="span7">
               <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                 <input type="hidden" name="cmd" value="_s-xclick">
@@ -554,7 +560,7 @@ $( document ).ready( function()
             <li>early access with a <u>3 month</u> subscription to a Fitspector
             Pro account.
           </ul>
-          <div class="row-fluid">
+          <div class="row-fluid payment-buttons">
             <div class="span7">
               <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                 <input type="hidden" name="cmd" value="_s-xclick">
@@ -577,7 +583,7 @@ $( document ).ready( function()
             <li>early access with a <u>1 year</u> subscription to a Fitspector
             Pro account.
           </ul>
-          <div class="row-fluid">
+          <div class="row-fluid payment-buttons">
             <div class="span7">
               <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                 <input type="hidden" name="cmd" value="_s-xclick">
@@ -604,7 +610,7 @@ $( document ).ready( function()
             <li>early access with a <u>lifetime</u> subscription to a Fitspector
             Pro account.
           </ul>
-          <div class="row-fluid">
+          <div class="row-fluid payment-buttons">
             <div class="span7">
               <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                 <input type="hidden" name="cmd" value="_s-xclick">
@@ -631,7 +637,7 @@ $( document ).ready( function()
             <li>a personally tailored data visualization!
               (<a href="mailto:info@fitspector.com">contact us</a> for more details).
           </ul>
-          <div class="row-fluid">
+          <div class="row-fluid payment-buttons">
             <div class="span7">
               <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                 <input type="hidden" name="cmd" value="_s-xclick">
