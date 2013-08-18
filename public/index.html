@@ -241,19 +241,19 @@
       border-radius: 4px 0 4px 0;
     }
     .pledge.level1:after {
-      content: 'Fan club'
+      content: 'Thank you!'
     }
     .pledge.level2:after {
-      content: 'Early bird'
+      content: 'Way to go!'
     }
     .pledge.level3:after {
-      content: 'Early adopter'
+      content: 'You are awesome!'
     }
     .pledge.level4:after {
-      content: 'Team player'
+      content: 'We love you!'
     }
     .pledge.level5:after {
-      content: 'Spread the love'
+      content: 'Mom, is that you?'
     }
     .centered,
     .preorder {
@@ -406,9 +406,9 @@ $( document ).ready( function()
 	  <div class="container">
 	    <div class="carousel-caption">
               <h4 class="text-right">Train smart</h4>
-              <p class="text-right">You need to train smart too. Only properly chosen training impluses will get you the results you are after.</p>
+              <p class="text-right">You need to train smart too. Only properly chosen training impulses will get you the results you are after.</p>
               <p class="text-right">There is a reason why professional athletes have coaches.</p>
-	      <p class="text-right"><a class="btn btn-large btn-primary" onclick="$('.carousel').carousel('next')">Ok, got it</a></p>
+	      <p class="text-right"><a class="btn btn-large btn-primary" onclick="$('.carousel').carousel('next')">OK, got it</a></p>
               <blockquote class="text-right"><em>“Train, don't strain.”</em> — Arthur Lydiard</blockquote>
 	    </div>
 	  </div>
@@ -440,15 +440,29 @@ $( document ).ready( function()
     </div>
     <div class="row-fluid">
       <div class="alert alert-info">
-        Help Fitspector reach its funding target: <strong>preorder</strong> and become its early adopter and/or <strong>spread the word</strong> about the service!
+        Help Fitspector reach its funding target: <strong>preorder</strong> and
+        try the Beta version of the service before it is open to the public!
+        <br/> Also do not be shy about <strong>spreading the word</strong> about
+        the service.
       </div>
+    </div>
+    <div class="row-fluid">
+      Few words of explanation:
+      <ul>
+        <li>Early access means access to a limited access beta version of the
+          service. It will be at least 1 month before the service will be open to
+          the general public.
+        <li>Regular Fitspector account's analysis will be limited to the
+          workouts from the last 3 months and may exclude more complex analysis,
+          whereas Fitspector Pro accounts will be free of such restrictions.
+      </ul>
     </div>
     <div class="row-fluid">
       <div class="span4">
         <div class="alert alert-warning pledge level1" onclick="$('#payment').modal('show')">
           <u>Pledge <strong>10$</strong> or more for:</u>
           <ul>
-            <li>a big thank you and appreciation from the Fitspector team!
+            <li>early access to a regular Fitspector account.
           </ul>
         </div>
       </div>
@@ -456,9 +470,8 @@ $( document ).ready( function()
         <div class="alert alert-warning pledge level2">
           <u>Pledge <strong>25$</strong> or more for:</u>
           <ul>
-            <li>
-              <abbr title="At least 1 month before the official launch" rel="tooltip">early access</abbr> to a
-              <abbr title="Regular account's analysis will be limited to the workouts from the last 3 months and may exclude more complex analysis." rel="tooltip">regular</abbr> Fitspector account.
+            <li>early access with a <u>3 month</u> subscription to a Fitspector
+            Pro account.
           </ul>
         </div>
       </div>
@@ -466,11 +479,8 @@ $( document ).ready( function()
         <div class="alert alert-warning pledge level3">
           <u>Pledge <strong>50$</strong> or more for:</u>
           <ul>
-            <li>
-              <abbr title="At least 1 month before the official launch" rel="tooltip">early access</abbr>
-              and a 1 year subscription to a
-              <abbr title="No restrictions, full data power to you!" rel="tooltip">Fitspector Pro</abbr> account.
-          </ul>
+            <li>early access with a <u>1 year</u> subscription to a Fitspector
+            Pro account.
         </div>
       </div>
     </div>
@@ -479,13 +489,10 @@ $( document ).ready( function()
         <div class="alert alert-warning pledge level4">
           <u>Pledge <strong>200$</strong> or more for:</u>
           <ul>
-            <li>all 50$+ rewards,
-            <li>thank-you note on Fitspector'a blog and
-            <li>
-              <abbr title="At least 1 month before the official launch" rel="tooltip">early access</abbr>
-              and a 1 year subscription to a
-              <abbr title="No restrictions, full data power to you!" rel="tooltip">Fitspector Pro</abbr> account
-              for up to 5 of your friends.
+            <li>thank-you note on Fitspector's blog,
+            <li>a limited edition Fitspector T-shirt and
+            <li>early access with a <u>lifetime</u> subscription to a Fitspector
+            Pro account.
           </ul>
         </div>
       </div>
@@ -493,9 +500,12 @@ $( document ).ready( function()
         <div class="alert alert-warning pledge level5">
           <u>Pledge <strong>1000$</strong> or more for:</u>
           <ul>
-            <li>all 200$+ rewards,
+            <li>a personal thank-you note on Fitspector's blog,
             <li>a limited edition Fitspector T-shirt,
-            <li>and a personally tailored data visualization!
+            <li>early access with a <u>lifetime</u> subscription to a Fitspector
+              Pro account for you and up to 5 of your friends and
+            <li>a personally tailored data visualization!
+              (<a href="info@fitspector.com">contact us</a> for more details).
           </ul>
         </div>
       </div>
@@ -505,7 +515,7 @@ $( document ).ready( function()
 	<img class="img-polaroid" src="/img/logo-big.png" width="370" height="240" />
       </div>
       <div class="span4 actions">
-	<div class="span8 offset2">
+	<div class="span10 offset1">
 	  <div class="statistics">
 	    <div class="span4">
 	      <div class="linediv-l">
@@ -545,7 +555,7 @@ $( document ).ready( function()
       </div>
       <div class="span4">
         <div class="alert alert-success">
-          <h4 class="alert-heading">Support Fitspector, preoder now</h4>
+          <h4 class="alert-heading">Support Fitspector, preorder now</h4>
           <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
             <input class="centered" type="hidden" name="cmd" value="_s-xclick">
             <input type="hidden" name="on0" value="Subscription types">
@@ -582,25 +592,33 @@ $( document ).ready( function()
       <div class="span6">
         <div class="step">
           <span class="badge badge-success">1</span>
-          <span class="text">Go for your training, while wearing your device of choice to collect workout data (see the following point).</span>
+          <span class="text">Go for your training, while wearing your device of
+          choice to collect workout data (see the following point).</span>
         </div>
         <div class="step">
           <span class="badge badge-success">2</span>
-          <span class="text">Upload your workout data to Fitspector. It will accept
-            <a href="http://en.wikipedia.org/wiki/Training_Center_XML_(TCX)">TCX</a> and
+          <span class="text">Upload your workout data to Fitspector. It will
+          accept
+            <a href="http://en.wikipedia.org/wiki/Training_Center_XML_(TCX)">TCX</a>
+            and
             <a href="http://en.wikipedia.org/wiki/GPS_eXchange_Format">GPX</a>
             industry standard file formats.  That means you can use most
-            <a href="https://buy.garmin.com/en-US/US/into-sports/cIntoSports-p1.html">Garmin</a> and
-            <a href="http://www.polar.com/en/products">Polar</a> watches, as well as GPS-enabled smartphones
-            (both <a href="http://www.google.com/mobile/mytracks/">Android</a> and
+            <a href="https://buy.garmin.com/en-US/US/into-sports/cIntoSports-p1.html">Garmin</a>
+            and
+            <a href="http://www.polar.com/en/products">Polar</a> watches, as
+            well as GPS-enabled smartphones
+            (both <a href="http://www.google.com/mobile/mytracks/">Android</a>
+            and
             <a href="http://www.abvio.com/cyclemeter/">iPhone</a>).
           </span>
         </div>
         <div class="step">
           <span class="badge badge-success">3</span>
-          <span class="text">Upload your workout data to Fitspector and enjoy beautiful visualizations that will help you reveal trends and
-            better understand your workouts. After launch and for the first year Fitspector will provide one new visualization every month,
-            so there will always be something new to try and look forward to.
+          <span class="text">Upload your workout data to Fitspector and enjoy
+            beautiful visualizations that will help you reveal trends and better
+            understand your workouts. After launch and for the first year
+            Fitspector will provide one new visualization every month, so there
+            will always be something new to try and look forward to.
           </span>
           <div class="alert alert-success">
             <strong>Heads up:</strong> a demo of a sample visualization coming up soon; stay tuned!
@@ -629,7 +647,9 @@ $( document ).ready( function()
                 Two options.  If Fitspector reaches it's funding target of
                 $15,000, giving us means to bring it to life then you can sit
                 down, relax and wait for it to come life! (also see
-                <a href="#" onclick="$('#collapse-when-ready').collapse('show'); $('#collapse-when-finished').collapse('hide'); return false">the following</a> question).
+                <a href="#" onclick="$('#collapse-when-ready').collapse('show');
+                $('#collapse-when-finished').collapse('hide'); return false">the
+                following</a> question).
 	      </div>
 	    </div>
 	  </div>
@@ -664,28 +684,6 @@ $( document ).ready( function()
 	      </div>
 	    </div>
 	  </div>
-<!--
-	  <div class="accordion-group">
-	    <div class="accordion-heading">
-	      <a class="accordion-toggle" data-toggle="collapse"
-		 data-parent="#faq-accordion" href="#collapse3">
-                How will the pledge money be used?
-	      </a>
-	    </div>
-	    <div id="collapse3" class="accordion-body collapse">
-	      <div class="accordion-inner">
-                The money will be used to pay for:
-                <ul>
-                  <li>hosting,
-                  <li>designer fees (logo, web design, ...),
-                  <li>marketing costs.
-                </ul>
-                It will <em>not</em> be used as my salary, as I pledge to do
-                this project pro bono.
-	      </div>
-	    </div>
-	  </div>
--->
 	  <div class="accordion-group">
 	    <div class="accordion-heading">
 	      <a class="accordion-toggle" data-toggle="collapse"
@@ -735,41 +733,6 @@ $( document ).ready( function()
                 onclick="$('#collapse-how-to-follow').collapse('show');
                 $('#collapse-uploads').collapse('hide'); return false">the
                 blog</a> for more details.
-	      </div>
-	    </div>
-	  </div>
-	  <div class="accordion-group">
-	    <div class="accordion-heading">
-	      <a class="accordion-toggle" data-toggle="collapse"
-		 data-parent="#faq-accordion" href="#collapse-why-me">
-                Who are you and why do you think you can do it?
-	      </a>
-	    </div>
-	    <div id="collapse-why-me" class="accordion-body collapse">
-	      <div class="accordion-inner">
-                Glad you asked. There are few reasons why I think may be able to pull that off.
-                <ul>
-                  <li>I'm an <em>athlete</em>. No, not a pro, but a fairly
-                    serious amateur. I
-                    mostly <a href="http://run-koper-run.blogspot.com">run</a>.
-                    I do
-                    above <a href="http://run-koper-run.blogspot.com/2013/01/goodbye-2012.html">3,000km
-                    (1,800 miles) per year</a>. I ran 13 marathons, 6 50K races,
-                    one 50 miler and I'm now preparing for
-                    a <a href="http://www.oldgoatrunners.com/old_goat_50_home_page_014.htm">100-mile
-                    ultramarahton</a>.
-                  <li>I'm a <em>geek</em>. I love data. I love numbers. I love
-                    charts. Slicing and dicing data is what makes me tick.
-                  <li>I'm a <em>web developer</em>. I was one of the core
-                    developers of the web programming
-                    language <a href="http://opalang.org">Opa</a> and I went on
-                    to co-author
-                    a <a href="http://shop.oreilly.com/product/0636920025436.do">book</a>
-                    about it. Currently I'm a software engineer at Google.
-                </ul>
-                I know what it takes to live and breathe sports. I know what
-                data is important for athletes and why. And finally I know how
-                to forge those requirements into a product.
 	      </div>
 	    </div>
 	  </div>
