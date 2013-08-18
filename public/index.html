@@ -137,10 +137,6 @@
       background-color: #343434;
       padding: 3% 0;
     }
-    .thermometer {
-      margin-top: 7%;
-      margin-bottom: 9%;
-    }
     .thermometer,
     .order,
     .social,
@@ -455,23 +451,74 @@ $( document ).ready( function()
       <h3>Preorder</h3>
     </div>
     <div class="row-fluid">
-      <div class="alert alert-info">
-        Help Fitspector reach its funding target: <strong>preorder</strong> and
-        try the Beta version of the service before it is open to the public!
-        <br/> Also do not be shy about <strong>spreading the word</strong> about
-        the service.
+      <div class="span8">
+        <div class="alert alert-info">
+          Help Fitspector reach its funding target: <strong>preorder</strong>
+          (below) and try the Beta version of the service before it is open to
+          the public!
+        </div>
+        <div class="alert alert-info">
+          Also do not be shy about <strong>spreading the word</strong> about the
+          service; just use the social button on the right.
+        </div>
+        For preorders select your package below and then click one of the buy
+        buttons (for <a href="http://en.wikipedia.org/wiki/Paypal">PayPal</a>
+        or <a href="http://en.wikipedia.org/wiki/Bitcoins">BitCoin</a>
+        payments). Few words of explanation:
+        <ul>
+          <li><b>Early access</b> means access to a limited beta version of the
+            service. It will be at least 1 month (and likely longer) before the
+            service will be open to the general public.
+          <li><b>Regular Fitspector</b> account's analysis will be limited to
+            the workouts from the last 3 months and may exclude more complex
+            analysis, whereas <b>Fitspector Pro</b> accounts will be free of
+            such restrictions.
+          <li>If possible <b>please prefer Bitcoin payments</b>. Bitcoin is the
+            <a href="http://bitcoin.org" target="_blank">currency of the
+            future</a> and you can
+            consult <a href="http://howtobuybitcoins.info/" target="_blank">this
+            page</a> to learn how to buy BitCoins in your country.
+        </ul>
       </div>
-    </div>
-    <div class="row-fluid">
-      Select your package below. Few words of explanation:
-      <ul>
-        <li>Early access means access to a limited access beta version of the
-          service. It will be at least 1 month before the service will be open to
-          the general public.
-        <li>Regular Fitspector account's analysis will be limited to the
-          workouts from the last 3 months and may exclude more complex analysis,
-          whereas Fitspector Pro accounts will be free of such restrictions.
-      </ul>
+      <div class="span4 actions">
+	<div class="span10 offset1">
+	  <div class="statistics">
+	    <div class="span4">
+	      <div class="linediv-l">
+		<h3>0</h3> <p>backers</p>
+	      </div>
+	    </div>
+	    <div class="span4">
+	      <div class="linediv-c">
+		<h3>$0</h3> <p>of $15,000</p>
+	      </div>
+	    </div>
+	    <div class="span4">
+	      <div class="linediv-r">
+		<h3>30</h3> <p>days left</p>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<div class="span10 offset1">
+	  <div class="thermometer progress active">
+	    <div class="bar bar-success" style="width: 60%;"></div>
+	    <div class="bar bar-warning" style="width: 40%;"></div>
+	  </div>
+	</div>
+        <div class="span12 social">
+          <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+            <a class="addthis_button_preferred_1"></a>
+            <a class="addthis_button_preferred_2"></a>
+            <a class="addthis_button_preferred_3"></a>
+            <a class="addthis_button_preferred_4"></a>
+            <a class="addthis_button_compact"></a>
+            <a class="addthis_counter addthis_bubble_style"></a>
+          </div>
+          <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
+          <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-4e0d9be478d8a027"></script>
+        </div>
+      </div>
     </div>
     <div class="row-fluid">
       <div class="span4">
@@ -526,7 +573,7 @@ $( document ).ready( function()
             <li>early access with a <u>lifetime</u> subscription to a Fitspector
               Pro account for you and up to 5 of your friends and
             <li>a personally tailored data visualization!
-              (<a href="info@fitspector.com">contact us</a> for more details).
+              (<a href="mailto:info@fitspector.com">contact us</a> for more details).
           </ul>
         </div>
       </div>
@@ -550,50 +597,6 @@ $( document ).ready( function()
         <a class="coinbase-button" data-code="2c903ed5dd0bc12f27eeee6bec864ff2" data-button-style="buy_now_small" href="https://coinbase.com/checkouts/2c903ed5dd0bc12f27eeee6bec864ff2">Pay With Bitcoin</a>
         <script src="https://coinbase.com/assets/button.js" type="text/javascript"></script>
       </form>
-    </div>
-    <div class="row-fluid pitch">
-      <div class="span3 offset2">
-	<img class="img-polaroid" src="/img/logo-big.png" width="260" height="260" />
-      </div>
-      <div class="span4 actions">
-	<div class="span10 offset1">
-	  <div class="statistics">
-	    <div class="span4">
-	      <div class="linediv-l">
-		<h3>0</h3> <p>backers</p>
-	      </div>
-	    </div>
-	    <div class="span4">
-	      <div class="linediv-c">
-		<h3>$0</h3> <p>of $15,000</p>
-	      </div>
-	    </div>
-	    <div class="span4">
-	      <div class="linediv-r">
-		<h3>30</h3> <p>days left</p>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-	<div class="span10 offset1">
-	  <div class="thermometer progress active">
-	    <div class="bar bar-success" style="width: 60%;"></div>
-	    <div class="bar bar-warning" style="width: 40%;"></div>
-	  </div>
-	</div>
-        <div class="span12 social">
-          <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
-            <a class="addthis_button_preferred_1"></a>
-            <a class="addthis_button_preferred_2"></a>
-            <a class="addthis_button_preferred_3"></a>
-            <a class="addthis_button_preferred_4"></a>
-            <a class="addthis_button_compact"></a>
-            <a class="addthis_counter addthis_bubble_style"></a>
-          </div>
-          <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
-          <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-4e0d9be478d8a027"></script>
-        </div>
-      </div>
     </div>
 
     <!-- ------------------------------------------------ How does it work  ------------------------------------------------ -->
