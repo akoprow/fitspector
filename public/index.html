@@ -290,6 +290,13 @@
       $('.pledge.level' + num).addClass('alert-success');
     };
 
+    $(document).ready(function() {
+      var now = new Date();
+      var end = Date.parse('September 8, 2013');
+      var daysleft = Math.floor((end - now) / 1000 / 60 / 60 / 24);
+      $('#daysleft').text(daysleft);
+    });
+
 $( document ).ready( function()
 {
     var targets = $( '[rel~=tooltip]' ),
@@ -504,15 +511,15 @@ $( document ).ready( function()
 	    </div>
 	    <div class="span4">
 	      <div class="linediv-r">
-		<h3>30</h3> <p>days left</p>
+		<h3 id="daysleft"></h3> <p>days left</p>
 	      </div>
 	    </div>
 	  </div>
 	</div>
 	<div class="span10 offset1">
 	  <div class="thermometer progress active">
-	    <div class="bar bar-success" style="width: 60%;"></div>
-	    <div class="bar bar-warning" style="width: 40%;"></div>
+	    <div class="bar bar-success" style="width: 0%;"></div>
+	    <div class="bar bar-warning" style="width: 100%;"></div>
 	  </div>
 	</div>
         <div class="span12 social">
