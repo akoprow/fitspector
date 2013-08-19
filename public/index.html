@@ -17,6 +17,9 @@
           src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js">
   </script>
   <script type="text/javascript"
+          src="http://code.jquery.com/ui/1.10.3/jquery-ui.js">
+  </script>
+  <script type="text/javascript"
           src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js">
   </script>
 
@@ -303,6 +306,21 @@
       $('#daysleft').text(daysleft);
     });
 
+    $(document).ready(function() {
+      $('#goToNewsletter').on('click', function() {
+          var props = { scrollTop: $('#mce-EMAIL-alert').offset().top - ($(window).height()/2) };
+          var options = {
+            duration: 1000,
+            complete: function() {
+              $('#mce-EMAIL-alert').effect('shake');
+            }
+          };
+          $('html, body').animate(props, options);
+          return false;
+      })
+    });
+
+
 $( document ).ready( function()
 {
     var targets = $( '[rel~=tooltip]' ),
@@ -474,7 +492,7 @@ $( document ).ready( function()
     </div>
     <div class="row-fluid">
       <div class="span8 offset2">
-        <div class="alert alert-success centered">
+        <div id="mce-EMAIL-alert" class="alert alert-success centered">
           <form action="http://fitspector.us7.list-manage2.com/subscribe/post?u=680fae86b2a098eec071ae350&amp;id=42a462a6da" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
 	    Subscribe for updates:
             <div id="mce-EMAIL-box" class="input-prepend">
@@ -719,9 +737,9 @@ $( document ).ready( function()
           </span>
           <div class="alert alert-success">
             <strong>Heads up:</strong> a demo of a sample visualization coming
-            up soon; stay tuned.  Or <a href="#" onclick="$('html,
-            body').animate({ scrollTop: $('#howitworks').offset().top }, 1000);
-            return false">join our newsletter</a> to be the first to know!
+            up soon; stay tuned.  Or <a href="#" id="goToNewsletter"
+            return false"
+>join our newsletter</a> to be the first to know!
           </div>
         </div>
       </div>
