@@ -72,8 +72,9 @@ var drawContainer = function(topMargin, cellSize, year) {
   var height = topMargin + cellSize * 8;
 
   // Main container
-  var container = d3.select('#vis-calendar')
+  var container = d3.select('#vis-calendar').selectAll('svg')
     .data([year])
+    .enter()
       .append('svg')
       .attr('class', 'year')
       .attr('width', width)
@@ -159,9 +160,12 @@ var drawWorkouts = function(container, cellSize, data) {
       .style('fill', function(d) { return d.color; });
 };
 
-var redraw = function(leftMargin, cellSize, year) {
+var draw = function(leftMargin, cellSize, year) {
   var container = drawContainer(leftMargin, cellSize, year);
   drawDayCells(container, cellSize);
+  var show =
+      d3.select('#show-time').classed('active') ? 'time' :
+	  (d3.select('#show-distance').classed('active') ? 'distance' : 'elevation');
   var data = prepareData(year, 'all', 'time', 'exercises');
   drawWorkouts(container, cellSize, data);
   drawMonthBorders(container, cellSize);
@@ -170,4 +174,16 @@ var redraw = function(leftMargin, cellSize, year) {
 // constants
 var topMargin = 20;
 var cellSize = 45;
-redraw(topMargin, cellSize, 2013);
+
+var redraw = function() {
+  draw(topMargin, cellSize, 2013);
+}
+
+redraw();
+
+$('body').on('click', '#show-choice .btn', function(event) {
+  event.stopPropagation();
+  $('#show-choice .btn').removeClass('active');
+  $(this).addClass('active');
+  redraw();
+});
