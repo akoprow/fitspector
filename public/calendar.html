@@ -20,6 +20,10 @@
     </script>
 
     <style type="text/css">
+      .choice {
+        display: inline-block;
+        margin-left: 2em;
+      }
       #vis-calendar {
         shape-rendering: crispEdges;
       }
@@ -51,32 +55,27 @@
     <div class="container-fluid">
       <div class="row">
         <!-- Sports -->
-        <div class="span3">
-          Workout types:
-          <span class="dropdown">
-            <a class="btn btn-primary" data-toggle="dropdown" href="#"><i class="icon-asterisk icon-white"></i></i> All</a>
-            <ul class="dropdown-menu">
-              <li><a href="#"><i class="icon-asterisk"></i> All</a></li>
-            </ul>
-          </span>
-        </div>
+        <div class="choice">Workout types:</div>
+        <span class="dropdown">
+          <a class="btn btn-primary" data-toggle="dropdown" href="#"><i class="icon-asterisk icon-white"></i> All</a>
+          <ul class="dropdown-menu">
+            <li><a href="#"><i class="icon-asterisk"></i> All</a></li>
+          </ul>
+        </span>
 
         <!-- Time VS Distance -->
-        <div class="span3">
-          Show:
-          <div class="btn-group" data-toggle="buttons-radio">
-            <button type="button" class="btn btn-primary active"><i class="icon-time icon-white"></i> Time</button>
-            <button type="button" class="btn btn-primary"><i class="icon-resize-horizontal icon-white"></i> Distance</button>
-          </div>
+        <div class="choice">Show:</div>
+        <div class="btn-group" data-toggle="buttons-radio">
+          <button type="button" class="btn btn-primary active"><i class="icon-time icon-white"></i> Time</button>
+          <button type="button" class="btn btn-primary"><i class="icon-resize-horizontal icon-white"></i> Distance</button>
+          <button type="button" class="btn btn-primary"><i class="icon-chevron-up icon-white"></i> Elevation gain</button>
         </div>
 
         <!-- Sports VS Zones -->
-        <div class="span3">
-          Group by:
-          <div class="btn-group" data-toggle="buttons-radio">
-            <button type="button" class="btn btn-primary active">Sports</button>
-            <button type="button" class="btn btn-primary">Zones</button>
-          </div>
+        <div class="choice">Group by:</div>
+        <div class="btn-group" data-toggle="buttons-radio">
+          <button type="button" class="btn btn-primary active">Sports</button>
+          <button type="button" class="btn btn-primary">Zones</button>
         </div>
       </div>
       <div id="vis-calendar"></div>
