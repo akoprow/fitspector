@@ -151,6 +151,17 @@ var drawWorkouts = function(container, cellSize, data) {
 
   var workouts = container.selectAll('.workout')
       .data(data, function(d) { return d.key; });
+  var duration = 300;
+
+  workouts.exit().transition()
+      .duration(duration)
+      .ease('circle')
+      .attr('width', 0)
+      .attr('height', 0)
+      .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5); })
+      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); })
+      .remove();
+
   workouts.enter().append('rect')
       .attr('class', 'workout')
       .attr('width', 0)
@@ -159,18 +170,14 @@ var drawWorkouts = function(container, cellSize, data) {
       .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); });
 
   workouts.transition()
+      .delay(duration)
+      .duration(duration)
+      .ease('circle')
       .attr('width', function(d) { return sizeScale(d.value); })
       .attr('height', function(d) { return sizeScale(d.value); })
       .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5) - sizeScale(d.value)/2; })
       .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5) - sizeScale(d.value)/2; })
       .style('fill', function(d) { return d.color; });
-
-  workouts.exit().transition()
-      .attr('width', 0)
-      .attr('height', 0)
-      .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5); })
-      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); })
-      .remove();
 };
 
 var draw = function(container, cellSize, year) {
