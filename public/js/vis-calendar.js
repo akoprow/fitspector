@@ -148,16 +148,19 @@ var drawWorkouts = function(container, cellSize, data) {
       .domain([0, d3.max(data, function(d) { return d.value; })])
       .rangeRound([0, cellSize - 1]);
 
-  container.selectAll('workout')
-    .data(data)
-    .enter()
-    .append('rect')
+  var workouts = container.selectAll('workout').data(data);
+  workouts.enter().append('rect')
       .attr('class', 'workout')
+      .attr('width', 0)
+      .attr('height', 0)
+      .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5); })
+      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); })
+      .style('fill', function(d) { return d.color; });
+  workouts.transition()
       .attr('width', function(d) { return sizeScale(d.value); })
       .attr('height', function(d) { return sizeScale(d.value); })
       .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5) - sizeScale(d.value)/2; })
-      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5) - sizeScale(d.value)/2; })
-      .style('fill', function(d) { return d.color; });
+      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5) - sizeScale(d.value)/2; });
 };
 
 var draw = function(leftMargin, cellSize, year) {
