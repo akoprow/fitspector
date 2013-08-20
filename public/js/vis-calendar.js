@@ -56,7 +56,8 @@ var prepareData = function(year, sport, unit, group) {
       return {
 	day: d.day,
 	value: total,
-	color: exerciseTypeColor(e.exerciseType)
+	color: exerciseTypeColor(e.exerciseType),
+	key: year + sport + unit + group + d.day
       };
     });
   });
@@ -73,8 +74,8 @@ var drawContainer = function(topMargin, cellSize, year) {
 
   // Main container
   var container = d3.select('#vis-calendar').selectAll('svg')
-    .data([year])
-    .enter()
+      .data([year], function(d) { return d })
+      .enter()
       .append('svg')
       .attr('class', 'year')
       .attr('width', width)
@@ -148,28 +149,36 @@ var drawWorkouts = function(container, cellSize, data) {
       .domain([0, d3.max(data, function(d) { return d.value; })])
       .rangeRound([0, cellSize - 1]);
 
-  var workouts = container.selectAll('workout').data(data);
+  var workouts = container.selectAll('.workout')
+      .data(data, function(d) { return d.key; });
   workouts.enter().append('rect')
       .attr('class', 'workout')
       .attr('width', 0)
       .attr('height', 0)
       .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5); })
-      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); })
-      .style('fill', function(d) { return d.color; });
+      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); });
+
   workouts.transition()
       .attr('width', function(d) { return sizeScale(d.value); })
       .attr('height', function(d) { return sizeScale(d.value); })
       .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5) - sizeScale(d.value)/2; })
-      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5) - sizeScale(d.value)/2; });
+      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5) - sizeScale(d.value)/2; })
+      .style('fill', function(d) { return d.color; });
+
+  workouts.exit().transition()
+      .attr('width', 0)
+      .attr('height', 0)
+      .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5); })
+      .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); })
+      .remove();
 };
 
-var draw = function(leftMargin, cellSize, year) {
-  var container = drawContainer(leftMargin, cellSize, year);
+var draw = function(container, cellSize, year) {
   drawDayCells(container, cellSize);
   var show =
       d3.select('#show-time').classed('active') ? 'time' :
 	  (d3.select('#show-distance').classed('active') ? 'distance' : 'elevation');
-  var data = prepareData(year, 'all', 'time', 'exercises');
+  var data = prepareData(year, 'all', show, 'exercises');
   drawWorkouts(container, cellSize, data);
   drawMonthBorders(container, cellSize);
 };
@@ -178,8 +187,10 @@ var draw = function(leftMargin, cellSize, year) {
 var topMargin = 20;
 var cellSize = 45;
 
+var container = drawContainer(topMargin, cellSize, 2013);
+
 var redraw = function() {
-  draw(topMargin, cellSize, 2013);
+  draw(container, cellSize, 2013);
 }
 
 redraw();
