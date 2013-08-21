@@ -19,12 +19,18 @@
     .linediv-r {
         border-top: 1px white solid;
     }
+    .hero-unit h1 {
+	font-size: 40px;
+    }
 }
 body {
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 }
 .centered {
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 .hero-unit h1 {
     font-variant: small-caps;
