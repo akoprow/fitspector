@@ -1,4 +1,4 @@
-@media (min-width: 980px) {
+@media (min-width: 768px) {
     body {
         padding-top: 60px;
     }
@@ -9,7 +9,7 @@
         border-left: 1px white solid;
     }
 }
-@media (max-width: 480px) {
+@media (max-width: 767px) {
     .copy {
         padding: 2.5% 10%;
     }
@@ -23,18 +23,27 @@
 	font-size: 40px;
     }
 }
+@media (min-width: 768px) and (max-width: 1200px) {
+    .payment-buttons .method {
+	float: left;
+	clear: both;
+    }
+}
 body {
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 }
+.payment-buttons .method,
 .centered {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
     display: block;
 }
+.hero-unit .span5 {
+    padding: 3% 0;
+}
 .hero-unit h1 {
     font-variant: small-caps;
-    margin-top: 50px;
 }
 .hero-unit h4 {
     font-family: 'Indie Flower', cursive;
@@ -201,6 +210,7 @@ div.addthis_toolbox {
 }
 .pledge {
     position: relative;
+    padding-top: 25px;
 }
 .pledge form {
     margin: 0;
