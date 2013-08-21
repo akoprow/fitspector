@@ -17,6 +17,15 @@
     .carousel .carousel-caption-container {
       position: relative;
       height: 620px;
+      width: 1170px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .carousel-caption-container:before,
+    .carousel-caption-container:after {
+      clear: both;
+      display: table;
+      content: "";
     }
     .carousel img {
       position: absolute;
@@ -39,7 +48,6 @@
 	display: block;
         background-color: #eee;
         border: 1px solid #aaa;
-	width: 95%;
     }
     .carousel-caption h4,
     .carousel-caption p {
