@@ -1,3 +1,58 @@
+@media (min-width: 1200px) {
+    .slide1 .carousel-caption {
+	margin-top: 15%;
+	margin-left: 8%;
+	width: 40%;
+    }
+    .slide2 .carousel-caption {
+	margin-top: 1%;
+	margin-left: 50%;
+	width: 30%;
+    }
+    .slide3 .carousel-caption {
+	margin-top: 5%;
+	margin-left: 50%;
+	width: 30%;
+    }
+    .carousel .carousel-caption-container {
+      position: relative;
+      height: 620px;
+    }
+    .carousel img {
+      position: absolute;
+      display: inline-block;
+      top: 0;
+      left: 0;
+    }
+    .carousel-caption {
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 1px solid #888;
+    }
+    .carousel-caption blockquote {
+      color: #BBB;
+    }
+}
+@media (max-width: 1199px) {
+    .carousel-caption {
+	float: left;
+	clear: left;
+	display: block;
+        background-color: #eee;
+        border: 1px solid #aaa;
+	width: 95%;
+    }
+    .carousel-caption h4,
+    .carousel-caption p {
+	color: #333 !important;
+    }
+    .carousel-caption blockquote {
+      color: #555;
+    }
+    .carousel-control {
+      top: 20% !important;
+    }
+}
+
 @media (min-width: 768px) {
     body {
         padding-top: 60px;
@@ -50,22 +105,12 @@ body {
     font-size: 120%;
 }
 .carousel {
-    width: 90%;
     margin-left: 5%;
-}
-.carousel .container {
-    position: relative;
-    height: 620px;
+    margin-right: 5%;
 }
 .carousel h4 {
     font-size: 170%;
     margin-bottom: 30px;
-}
-.carousel img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    min-width: 100%;
 }
 .carousel .btn {
     margin-top: 20px;
@@ -74,9 +119,7 @@ body {
     margin-bottom: 10px;
 }
 .carousel-caption {
-    background-color: rgba(0, 0, 0, 0.4);
     position: static;
-    border: 1px solid #888;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
@@ -85,27 +128,11 @@ body {
 .carousel-caption blockquote {
     margin: 2em 0 0;
     font-size: 120%;
-    color: #BBB;
 }
 .carousel-caption blockquote.text-right {
     border-left: none;
     border-right: 5px solid #eeeeee;
     padding-right: 20px;
-}
-.slide1 .carousel-caption {
-    margin-top: 15%;
-    margin-left: 8%;
-    width: 40%;
-}
-.slide2 .carousel-caption {
-    margin-top: 1%;
-    margin-left: 50%;
-    width: 30%;
-}
-.slide3 .carousel-caption {
-    margin-top: 5%;
-    margin-left: 50%;
-    width: 30%;
 }
 .navbar li {
     line-height: 40px;
