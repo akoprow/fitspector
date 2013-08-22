@@ -171,6 +171,10 @@ p {
 .thermometer,
 .order,
 .social,
+.stats-disclaimer {
+    color: #777;
+    line-height: 10px;
+}
 .statistics {
     text-align: center;
 }
