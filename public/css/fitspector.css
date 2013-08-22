@@ -301,7 +301,18 @@ div.addthis_toolbox {
     margin-top: -10px;
     margin-bottom: 10px;
 }
+#mce-EMAIL-alert form {
+    margin-top: 10px;
+}
+#mce-EMAIL-alert a > img {
+    margin: 0 4px;
+    -webkit-filter: opacity(0.7)
+}
+#mce-EMAIL-alert a:hover > img {
+    -webkit-filter: opacity(1)
+}
 #mce-EMAIL-box {
+    margin-left: 4px;
     margin-bottom: 0;
 }
 #mc-embedded-subscribe-form {

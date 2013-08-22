@@ -15,7 +15,7 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
-  $('#goToNewsletter').on('click', function() {
+  $('.goToNewsletter').on('click', function() {
     var props = { scrollTop: $('#mce-EMAIL-alert').offset().top - ($(window).height()/2) };
     var options = {
       duration: 1000,
