@@ -63,7 +63,7 @@ var workoutsData = computeData();
 
 var dailyDataBySports = function(type, d) {
   var total = 0;
-  return _.map(d.exercises, function(e) {
+  return _.map(d.exercises, function(e, idx) {
     if (!sports[e.exerciseType]) {
       throw new Error('Unknown exercise: ' + e.exerciseType);
     }
@@ -74,6 +74,7 @@ var dailyDataBySports = function(type, d) {
     }
     return {
       day: d.day,
+      key: d.day + idx,
       value: total,
       color: sports[e.exerciseType].color,
     };
@@ -108,12 +109,13 @@ var dailyDataByZones = function(type, d) {
   });
   zones = _.filter(zones, function(z) { return z.value > 0; });
   var total = 0;
-  return _.map(zones, function(zone) {
+  return _.map(zones, function(zone, idx) {
     total += zone.value;
     return {
       day: d.day,
       value: total,
-      color: zone.color
+      color: zone.color,
+      key: d.day + idx
     }
   });
 };
@@ -234,7 +236,7 @@ var drawWorkouts = function(container, cellSize, data) {
       .rangeRound([0, cellSize - 1]);
 
   var workouts = container.selectAll('.workout')
-      .data(data, function(d, i) { return d.day + i; });
+      .data(data, function(d, i) { return d.key; });
   var duration = 300;
 
   workouts.exit().transition()
