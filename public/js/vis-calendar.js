@@ -217,7 +217,8 @@ var draw = function(container, cellSize, year) {
   var show =
       d3.select('#show-time').classed('active') ? 'time' :
 	  (d3.select('#show-distance').classed('active') ? 'distance' : 'elevation');
-  var data = prepareData(year, 'all', show, 'exercises');
+  var sport = $('#sport-filter-active #sport').attr('data-value');
+  var data = prepareData(year, sport, show, 'exercises');
   drawWorkouts(container, cellSize, data);
   drawMonthBorders(container, cellSize);
 };
@@ -241,10 +242,11 @@ $('#show-choice .btn').on('click', function(event) {
   redraw();
 });
 
-var sortedSports = [{name: 'All'}].concat(_.sortBy(sports, function(s) { s.name }));
-_.forEach(sortedSports, function(value, key) {
-  var a = $('<a href="#">' + value.name + '</a>').on('click', {sport: value.name}, function(event) {
-    $('#sport-filter-active').text(event.data.sport);
+var sportsPlusAll = _.extend({'all': {name: 'All'}}, sports);
+_.each(sportsPlusAll, function(value, key, list) {
+  var a = $('<a href="#">' + value.name + '</a>').on('click', function(event) {
+    $('#sport-filter-active').empty().append('<span id="sport" data-value="' + key + '">' + value.name + '</span>');
+    redraw();
   });
   $('#sport-filter').append($('<li>').append(a));
 });
