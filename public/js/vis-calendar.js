@@ -89,7 +89,7 @@ var prepareData = function(year, sport, unit, group) {
 	day: d.day,
 	value: total,
 	color: sports[e.exerciseType].color,
-	key: year + sport + unit + group + d.day
+	key: d.day
       };
     });
   });
