@@ -64,7 +64,11 @@ var dailyDataBySports = function(unit, d) {
     if (!sports[e.exerciseType]) {
       throw new Error('Unknown exercise: ' + e.exerciseType);
     }
-    total += (unit == 'time' ? e.totalTime : e.totalDistance);
+    switch (unit) {
+      case 'time' : total += e.totalTime; break;
+      case 'distance': total += e.totalDistance; break;
+      default: throw Error('Unknown unit');
+    }
     return {
       day: d.day,
       value: total,
@@ -95,7 +99,11 @@ var prepareData = function(year, sport, unit, group) {
 
   // Compute visual representation.
   data = _.map(data, function(d) {
-    return dailyDataBySports(unit, d);
+    if (group == 'sports') {
+      return dailyDataBySports(unit, d);
+    } else {
+      return [];
+    }
   });
 
   // Join all data into a single array and reverse it.
@@ -241,6 +249,13 @@ redraw();
 $('#show-choice .btn').on('click', function(event) {
   event.stopPropagation();
   $('#show-choice .btn').removeClass('active');
+  $(this).addClass('active');
+  redraw();
+});
+
+$('#group-by-choice .btn').on('click', function(event) {
+  event.stopPropagation();
+  $('#group-by-choice .btn').removeClass('active');
   $(this).addClass('active');
   redraw();
 });
