@@ -187,7 +187,6 @@ var drawWorkouts = function(container, cellSize, data) {
 
   workouts.exit().transition()
       .duration(duration)
-      .ease('circle')
       .attr('width', 0)
       .attr('height', 0)
       .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5); })
@@ -204,7 +203,6 @@ var drawWorkouts = function(container, cellSize, data) {
   workouts.transition()
       .delay(duration)
       .duration(duration)
-      .ease('circle')
       .attr('width', function(d) { return sizeScale(d.value); })
       .attr('height', function(d) { return sizeScale(d.value); })
       .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5) - sizeScale(d.value)/2; })
