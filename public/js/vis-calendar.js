@@ -9,7 +9,7 @@ var computeData = function() {
   var makeWorkout = function(d) {
     var date = new Date(d.startedAt);
     return {
-      exerciseType: d.exerciseType,
+      exerciseType: d.exerciseType.toLowerCase(),
       day: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
       date: date,
       time: d.time,
@@ -27,12 +27,41 @@ var computeData = function() {
 
 var workoutsData = computeData();
 
+var sports = {
+  'run': {
+    name: 'Running',
+    color: '#b3dc6c'
+  },
+  'wt': {
+    name: 'Weight training',
+    color: '#9fc6e7'
+  },
+  'yoga': {
+    name: 'Yoga',
+    color: '#fad165'
+  },
+  'hik': {
+    name: 'Hiking',
+    color: '#ac725e'
+  },
+  'volb': {
+    name: 'Volleyball',
+    color: '#f691b2'
+  },
+  'sq': {
+    name: 'Squash',
+    color: '#b99aff'
+  },
+  'xcs': {
+    name: 'Cross-country skiing',
+    color: '#c2c2c2'
+  }
+}
+
 // sport = 'all' or sport id
 // unit = 'time' or 'distance'
 // group = 'exercises' or 'zones'
 var prepareData = function(year, sport, unit, group) {
-  var exerciseTypeColor = d3.scale.category10();
-
   // Filter by year.
   var data = _.filter(workoutsData, function(d) {
     return d.day.getFullYear() === year;
@@ -52,11 +81,14 @@ var prepareData = function(year, sport, unit, group) {
   data = _.map(data, function(d) {
     var total = 0;
     return _.map(d.exercises, function(e) {
+      if (!sports[e.exerciseType]) {
+	throw new Error('Unknown exercise: ' + e.exerciseType);
+      }
       total += (unit == 'time' ? e.totalTime : e.totalDistance);
       return {
 	day: d.day,
 	value: total,
-	color: exerciseTypeColor(e.exerciseType),
+	color: sports[e.exerciseType].color,
 	key: year + sport + unit + group + d.day
       };
     });
