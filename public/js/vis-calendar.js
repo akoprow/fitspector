@@ -58,9 +58,25 @@ var sports = {
   }
 }
 
+var dailyDataBySports = function(unit, d) {
+  var total = 0;
+  return _.map(d.exercises, function(e) {
+    if (!sports[e.exerciseType]) {
+      throw new Error('Unknown exercise: ' + e.exerciseType);
+    }
+    total += (unit == 'time' ? e.totalTime : e.totalDistance);
+    return {
+      day: d.day,
+      value: total,
+      color: sports[e.exerciseType].color,
+      key: d.day
+    };
+  });
+};
+
 // sport = 'all' or sport id
 // unit = 'time' or 'distance'
-// group = 'exercises' or 'zones'
+// group = 'sports' or 'zones'
 var prepareData = function(year, sport, unit, group) {
   // Filter by year.
   var data = _.filter(workoutsData, function(d) {
@@ -79,19 +95,7 @@ var prepareData = function(year, sport, unit, group) {
 
   // Compute visual representation.
   data = _.map(data, function(d) {
-    var total = 0;
-    return _.map(d.exercises, function(e) {
-      if (!sports[e.exerciseType]) {
-	throw new Error('Unknown exercise: ' + e.exerciseType);
-      }
-      total += (unit == 'time' ? e.totalTime : e.totalDistance);
-      return {
-	day: d.day,
-	value: total,
-	color: sports[e.exerciseType].color,
-	key: d.day
-      };
-    });
+    return dailyDataBySports(unit, d);
   });
 
   // Join all data into a single array and reverse it.
@@ -216,7 +220,8 @@ var draw = function(container, cellSize, year) {
       d3.select('#show-time').classed('active') ? 'time' :
 	  (d3.select('#show-distance').classed('active') ? 'distance' : 'elevation');
   var sport = $('#sport-filter-active #sport').attr('data-value');
-  var data = prepareData(year, sport, show, 'exercises');
+  var grouping = d3.select('#group-by-sport').classed('active') ? 'sports' : 'zones';
+  var data = prepareData(year, sport, show, grouping);
   drawWorkouts(container, cellSize, data);
   drawMonthBorders(container, cellSize);
 };
