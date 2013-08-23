@@ -211,7 +211,16 @@ div.addthis_toolbox {
 .howitworks .step {
     margin-bottom: 10px;
 }
-
+.howitworks h5 {
+    margin-left: 0.5em;
+    display: inline-block;
+}
+.howitworks em {
+    margin-left: 1em;
+}
+.howitworks .alert {
+    margin-top: 1em;
+}
 #tooltip {
     text-align: center;
     color: #fff;
