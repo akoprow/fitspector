@@ -234,9 +234,17 @@ var redraw = function() {
 
 redraw();
 
-$('body').on('click', '#show-choice .btn', function(event) {
+$('#show-choice .btn').on('click', function(event) {
   event.stopPropagation();
   $('#show-choice .btn').removeClass('active');
   $(this).addClass('active');
   redraw();
+});
+
+var sortedSports = [{name: 'All'}].concat(_.sortBy(sports, function(s) { s.name }));
+_.forEach(sortedSports, function(value, key) {
+  var a = $('<a href="#">' + value.name + '</a>').on('click', {sport: value.name}, function(event) {
+    $('#sport-filter-active').text(event.data.sport);
+  });
+  $('#sport-filter').append($('<li>').append(a));
 });

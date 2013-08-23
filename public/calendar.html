@@ -49,6 +49,9 @@
       }
       #vis-calendar .workout {
       }
+      #sport-filter-active {
+        width: 130px;
+      }
     </style>
   </head>
   <body>
@@ -57,10 +60,10 @@
         <!-- Sports -->
         <div class="choice">Workout types:</div>
         <span class="dropdown">
-          <a class="btn btn-primary" data-toggle="dropdown" href="#"><i class="icon-asterisk icon-white"></i> All</a>
-          <ul class="dropdown-menu">
-            <li><a href="#"><i class="icon-asterisk"></i> All</a></li>
-          </ul>
+          <a id="sport-filter-active" class="btn btn-primary" data-toggle="dropdown" href="#">
+            <i class="icon-asterisk icon-white"></i> All
+          </a>
+          <ul id="sport-filter" class="dropdown-menu"></ul>
         </span>
 
         <!-- Time VS Distance -->
