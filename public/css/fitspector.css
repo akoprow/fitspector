@@ -92,6 +92,10 @@
 	clear: both;
     }
 }
+p {
+    font-size: 16px !important;
+    line-height: 20px !important;
+}
 body {
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 }
@@ -219,7 +223,10 @@ div.addthis_toolbox {
     margin-left: 1em;
 }
 .howitworks .alert {
-    margin-top: 1em;
+    padding: 20px;
+}
+.howitworks p.text {
+    font-size: 14px !important;
 }
 #tooltip {
     text-align: center;
@@ -306,6 +313,10 @@ div.addthis_toolbox {
 }
 .pledge.level5:after {
     content: 'Mom, is that you?'
+}
+.preorder-expl li,
+.pledge li {
+    margin-top: 3px;
 }
 .preorder {
     display: block;
