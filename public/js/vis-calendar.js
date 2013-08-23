@@ -1,32 +1,3 @@
-// date manipulations
-var getWeekday = d3.time.format('%w');
-var getWeek = d3.time.format('%U');
-
-var computeData = function() {
-  var sum = function(d) {
-    return _.reduce(d, function(x, y) { return x + y }, 0);
-  };
-  var makeWorkout = function(d) {
-    var date = new Date(d.startedAt);
-    return {
-      exerciseType: d.exerciseType.toLowerCase(),
-      day: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
-      date: date,
-      time: d.time,
-      pace: d.pace,
-      totalTime: sum(d.time),
-      totalDistance: sum(d.pace)
-    }
-  };
-  var data = _.map(workouts, makeWorkout);
-  var data = _.groupBy(data, function(d) { return d.day });
-  var data = _.pairs(data);
-  var data = _.map(data, function(d) { return { day: d[1][0].day, exercises: d[1] }; });
-  return data;
-};
-
-var workoutsData = computeData();
-
 var sports = {
   'run': {
     name: 'Running',
@@ -58,30 +29,99 @@ var sports = {
   }
 }
 
-var dailyDataBySports = function(unit, d) {
+var timeZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
+var paceZoneColors = ['#ccc', "#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"];
+
+// date manipulations
+var getWeekday = d3.time.format('%w');
+var getWeek = d3.time.format('%U');
+
+var computeData = function() {
+  var sum = function(d) {
+    return _.reduce(d, function(x, y) { return x + y }, 0);
+  };
+  var makeWorkout = function(d) {
+    var date = new Date(d.startedAt);
+    return {
+      exerciseType: d.exerciseType.toLowerCase(),
+      day: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+      date: date,
+      time: d.time,
+      pace: d.pace,
+      totalTime: sum(d.time),
+      totalDistance: sum(d.pace)
+    }
+  };
+  var data = _.map(workouts, makeWorkout);
+  var data = _.groupBy(data, function(d) { return d.day });
+  var data = _.pairs(data);
+  var data = _.map(data, function(d) { return { day: d[1][0].day, exercises: d[1] }; });
+  return data;
+};
+
+var workoutsData = computeData();
+
+var dailyDataBySports = function(type, d) {
   var total = 0;
   return _.map(d.exercises, function(e) {
     if (!sports[e.exerciseType]) {
       throw new Error('Unknown exercise: ' + e.exerciseType);
     }
-    switch (unit) {
+    switch (type) {
       case 'time' : total += e.totalTime; break;
       case 'distance': total += e.totalDistance; break;
-      default: throw Error('Unknown unit');
+      default: throw Error('Unknown data type: ' + type);
     }
     return {
       day: d.day,
       value: total,
       color: sports[e.exerciseType].color,
-      key: d.day
     };
   });
 };
 
+var addZones = function(z1, z2) {
+  var data = _.zip(z1, z2);
+  return _.map(data, function(values) {
+    return _.reduce(values, function(v1, v2) { return v1 + v2; });
+  });
+};
+
+var dailyDataByZones = function(type, d) {
+  var zones = [0, 0, 0, 0, 0, 0, 0];
+  _.each(d.exercises, function(e) {
+    if (!sports[e.exerciseType]) {
+      throw new Error('Unknown exercise: ' + e.exerciseType);
+    }
+    switch (type) {
+      case 'time' : zones = addZones(zones, e.time); break;
+      case 'distance': zones = addZones(zones, e.pace); break;
+      default: throw Error('Unknown data type: ' + type);
+    }
+  });
+  zones = _.map(zones, function(zone, idx) {
+    return {
+      day: d.day,
+      value: zone,
+      color: type == 'time' ? timeZoneColors[idx] : paceZoneColors[idx]
+    };
+  });
+  zones = _.filter(zones, function(z) { return z.value > 0; });
+  var total = 0;
+  return _.map(zones, function(zone) {
+    total += zone.value;
+    return {
+      day: d.day,
+      value: total,
+      color: zone.color
+    }
+  });
+};
+
 // sport = 'all' or sport id
-// unit = 'time' or 'distance'
+// type = 'time' or 'distance'
 // group = 'sports' or 'zones'
-var prepareData = function(year, sport, unit, group) {
+var prepareData = function(year, sport, type, group) {
   // Filter by year.
   var data = _.filter(workoutsData, function(d) {
     return d.day.getFullYear() === year;
@@ -99,10 +139,10 @@ var prepareData = function(year, sport, unit, group) {
 
   // Compute visual representation.
   data = _.map(data, function(d) {
-    if (group == 'sports') {
-      return dailyDataBySports(unit, d);
-    } else {
-      return [];
+    switch (group) {
+      case 'sports': return dailyDataBySports(type, d);
+      case 'zones': return dailyDataByZones(type, d);
+      default: throw Error('Unknown grouping: ' + group);
     }
   });
 
@@ -194,7 +234,7 @@ var drawWorkouts = function(container, cellSize, data) {
       .rangeRound([0, cellSize - 1]);
 
   var workouts = container.selectAll('.workout')
-      .data(data, function(d) { return d.key; });
+      .data(data, function(d, i) { return d.day + i; });
   var duration = 300;
 
   workouts.exit().transition()
