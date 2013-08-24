@@ -173,10 +173,9 @@ var dailyDataByZones = function($scope, d) {
   });
 };
 
-var prepareData = function($scope) {
+var filterData = function($scope) {
   var year = $scope.year;
   var sport = $scope.sportFilter.id;
-  var type = $scope.displayType.id;
 
   // Filter by year.
   var data = _.filter(workoutsData, function(d) {
@@ -192,6 +191,12 @@ var prepareData = function($scope) {
       })
     };
   });
+
+  return data;
+};
+
+var computeWorkoutData = function($scope, data) {
+  var type = $scope.displayType.id;
 
   // Compute visual representation.
   data = _.map(data, function(d) {
@@ -209,6 +214,41 @@ var prepareData = function($scope) {
   // Join all data into a single array and reverse it.
   var res = [];
   data = res.concat.apply(res, data);
+  return data.reverse();
+};
+
+var computeTotals = function($scope, data) {
+  var type = $scope.displayType.id;
+  var sportTotals = {};
+  _.each(data, function(d) {
+    _.each(d.exercises, function(e) {
+      var v = sportTotals[e.exerciseType] || {time: 0, distance: 0, elevation: 0, num: 0};
+      v.time += e.totalTime;
+      v.distance += e.totalDistance;
+      v.elevation += e.totalElevation;
+      v.num++;
+      sportTotals[e.exerciseType] = v;
+    });
+  });
+  var data = _.map(sportTotals, function(value, key) {
+    return _.extend(value, {id: key});
+  });
+  var sortBy;
+  switch (type) {
+    case 'time':
+    case 'hr':
+      sortBy = 'time';
+      break;
+    case 'distance':
+    case 'pace':
+      sortBy = 'distance';
+      break;
+    case 'elevation':
+      sortBy = 'elevation';
+      break;
+    default: throw Error('Unknown type: ' + type);
+  }
+  data = _.sortBy(data, sortBy);
   return data.reverse();
 };
 
@@ -322,10 +362,17 @@ var drawWorkouts = function(container, cellSize, data) {
       .style('fill', function(d) { return d.color; });
 };
 
+var drawSportBoxes = function(container, data) {
+  var x = 0;
+};
+
 var draw = function($scope, container, cellSize, year) {
   drawDayCells(container, cellSize);
-  var data = prepareData($scope);
-  drawWorkouts(container, cellSize, data);
+  var data = filterData($scope);
+  var workoutData = computeWorkoutData($scope, data);
+  drawWorkouts(container, cellSize, workoutData);
+  var totals = computeTotals($scope, data);
+  drawSportBoxes(container, totals);
   drawMonthBorders(container, cellSize);
 };
 
