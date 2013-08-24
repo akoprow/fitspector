@@ -18,6 +18,9 @@
     <script type="text/javascript"
             src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js">
     </script>
+    <script type="text/javascript"
+            src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js">
+    </script>
 
     <style type="text/css">
       .choice {
@@ -50,7 +53,7 @@
       }
       #vis-calendar .workout {
       }
-      #sport-filter-active {
+      #selected-sport-filter {
         width: 130px;
       }
       .centered {
@@ -61,37 +64,33 @@
       }
     </style>
   </head>
-  <body>
+  <body ng-app>
     <div class="container-fluid">
-      <div class="row centered">
+      <div class="row centered" ng-controller="VisCalendar">
         <!-- Sports -->
-        <div class="choice">Workout types:</div>
+        <div class="choice">Filter by sport:</div>
         <span class="dropdown">
-          <a id="sport-filter-active" class="btn btn-primary" data-toggle="dropdown" href="#">
-            <i class="icon-asterisk icon-white"></i><span id="sport" data-value="all">All</span>
+          <a id="selected-sport-filter" class="btn btn-primary" data-toggle="dropdown" href="#">
+            {{sportFilter.name}}
           </a>
-          <ul id="sport-filter" class="dropdown-menu"></ul>
+          <ul class="dropdown-menu">
+            <li ng-repeat="sport in sports">
+              <a href="#" ng-click="setSportFilter(sport)">
+                <span>{{sport.name}}</span>
+              </a>
+            </li>
+          </ul>
         </span>
 
         <!-- Time VS Distance -->
-        <div class="choice">Show:</div>
+        <div class="choice">Analyze:</div>
         <div id="show-choice" class="btn-group">
-          <button id="show-time" type="button" class="btn btn-primary active">
-            <i class="icon-time icon-white"></i> Time
+          <button type="button" class="btn btn-primary"
+                  ng-repeat="type in allDisplayTypes"
+                  ng-class="{active: displayType.id == type.id}"
+                  ng-click="setDisplayType(type)">
+            <i class="icon-{{type.icon}} icon-white"></i> {{type.name}}
           </button>
-          <button id="show-distance" type="button" class="btn btn-primary">
-            <i class="icon-resize-horizontal icon-white"></i> Distance
-          </button>
-          <button id="show-elevation" type="button" class="btn btn-primary">
-            <i class="icon-chevron-up icon-white"></i> Elevation gain
-          </button>
-        </div>
-
-        <!-- Sports VS Zones -->
-        <div class="choice">Group by:</div>
-        <div id="group-by-choice" class="btn-group">
-          <button id="group-by-sport" type="button" class="btn btn-primary active">Sports</button>
-          <button id="group-by-zones" type="button" class="btn btn-primary">Zones</button>
         </div>
       </div>
       <div id="vis-calendar"></div>

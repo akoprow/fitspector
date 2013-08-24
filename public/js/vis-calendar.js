@@ -1,36 +1,89 @@
-var sports = {
-  'run': {
-    name: 'Running',
-    color: '#b3dc6c'
-  },
-  'wt': {
-    name: 'Weight training',
-    color: '#9fc6e7'
-  },
-  'yoga': {
-    name: 'Yoga',
-    color: '#fad165'
-  },
-  'hik': {
-    name: 'Hiking',
-    color: '#ac725e'
-  },
-  'volb': {
-    name: 'Volleyball',
-    color: '#f691b2'
-  },
-  'sq': {
-    name: 'Squash',
-    color: '#b99aff'
-  },
-  'xcs': {
-    name: 'Cross-country skiing',
-    color: '#c2c2c2'
-  }
-}
+function VisCalendar($scope) {
+  $scope.sports = [
+    {
+      id: 'all',
+      name: 'All'
+    },
+    {
+      id: 'run',
+      name: 'Running',
+      color: '#b3dc6c'
+    },
+    {
+      id: 'wt',
+      name: 'Weight training',
+      color: '#9fc6e7'
+    },
+    {
+      id: 'yoga',
+      name: 'Yoga',
+      color: '#fad165'
+    },
+    {
+      id: 'hik',
+      name: 'Hiking',
+      color: '#ac725e'
+    },
+    {
+      id: 'volb',
+      name: 'Volleyball',
+      color: '#f691b2'
+    },
+    {
+      id: 'sq',
+      name: 'Squash',
+      color: '#b99aff'
+    },
+    {
+      id: 'xcs',
+      name: 'Cross-country skiing',
+      color: '#c2c2c2'
+    }
+  ];
 
-var timeZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
-var paceZoneColors = ['#ccc', "#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"];
+  $scope.allDisplayTypes = [
+    {
+      id: 'time',
+      name: 'Time',
+      icon: 'time'
+    },
+    {
+      id: 'distance',
+      name: 'Distance',
+      icon: 'road'
+    },
+    {
+      id: 'hr',
+      name: 'HR zones',
+      icon: 'heart'
+    },
+    {
+      id: 'pace',
+      name: 'Pace zones',
+      icon: ''
+    },
+    {
+      id: 'elevation',
+      name: 'Elevation zones',
+      icon: 'signal'
+    }
+  ];
+
+  $scope.timeZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
+  $scope.paceZoneColors = ['#ccc', "#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"];
+  $scope.year = 2013;
+  $scope.sportFilter = $scope.sports[0];
+  $scope.displayType = $scope.allDisplayTypes[0];
+
+  $scope.setSportFilter = function(sport) {
+    $scope.sportFilter = sport;
+  }
+  $scope.setDisplayType = function(type) {
+    $scope.displayType = type;
+  }
+
+//  redraw($scope);
+};
 
 // date manipulations
 var getWeekday = d3.time.format('%w');
@@ -61,16 +114,21 @@ var computeData = function() {
 
 var workoutsData = computeData();
 
-var dailyDataBySports = function(type, d) {
+var dailyDataBySports = function($scope, d) {
   var total = 0;
   return _.map(d.exercises, function(e, idx) {
     if (!sports[e.exerciseType]) {
       throw new Error('Unknown exercise: ' + e.exerciseType);
     }
     switch (type) {
-      case 'time' : total += e.totalTime; break;
-      case 'distance': total += e.totalDistance; break;
-      default: throw Error('Unknown data type: ' + type);
+      case 'time':
+        total += e.totalTime;
+        break;
+      case 'distance':
+        total += e.totalDistance;
+        break;
+      default:
+        throw Error('Unknown data type: ' + type);
     }
     return {
       day: d.day,
@@ -88,23 +146,43 @@ var addZones = function(z1, z2) {
   });
 };
 
-var dailyDataByZones = function(type, d) {
+var dailyDataByZones = function($scope, d) {
+  var type = $scope.displayType;
   var zones = [0, 0, 0, 0, 0, 0, 0];
+  var colors;
+  switch (type) {
+    case 'hr':
+      colors = $scope.timeZoneColors;
+      break;
+    case 'pace':
+      colors = $scope.paceZoneColors;
+      break;
+    default:
+      throw Error('Unknown data type: ' + type);
+  }
+
   _.each(d.exercises, function(e) {
     if (!sports[e.exerciseType]) {
       throw new Error('Unknown exercise: ' + e.exerciseType);
     }
     switch (type) {
-      case 'time' : zones = addZones(zones, e.time); break;
-      case 'distance': zones = addZones(zones, e.pace); break;
-      default: throw Error('Unknown data type: ' + type);
+      case 'time':
+      case 'hr':
+        zones = addZones(zones, e.time);
+        break;
+      case 'distance':
+      case 'pace':
+        zones = addZones(zones, e.pace);
+        break;
+      default:
+        throw Error('Unknown data type: ' + type);
     }
   });
   zones = _.map(zones, function(zone, idx) {
     return {
       day: d.day,
       value: zone,
-      color: type == 'time' ? timeZoneColors[idx] : paceZoneColors[idx]
+      color: colors[idx]
     };
   });
   zones = _.filter(zones, function(z) { return z.value > 0; });
@@ -123,7 +201,11 @@ var dailyDataByZones = function(type, d) {
 // sport = 'all' or sport id
 // type = 'time' or 'distance'
 // group = 'sports' or 'zones'
-var prepareData = function(year, sport, type, group) {
+var prepareData = function($scope) {
+  var year = $scope.year;
+  var sport = $scope.filterSports;
+  var type = $scope.displayType;
+
   // Filter by year.
   var data = _.filter(workoutsData, function(d) {
     return d.day.getFullYear() === year;
@@ -141,9 +223,13 @@ var prepareData = function(year, sport, type, group) {
 
   // Compute visual representation.
   data = _.map(data, function(d) {
-    switch (group) {
-      case 'sports': return dailyDataBySports(type, d);
-      case 'zones': return dailyDataByZones(type, d);
+    switch (type) {
+      case 'time':
+      case 'distance':
+        return dailyDataBySports($scope, d);
+      case 'hr':
+      case 'pace':
+        return dailyDataByZones($scope, d);
       default: throw Error('Unknown grouping: ' + group);
     }
   });
@@ -264,49 +350,18 @@ var drawWorkouts = function(container, cellSize, data) {
       .style('fill', function(d) { return d.color; });
 };
 
-var draw = function(container, cellSize, year) {
+var draw = function($scope, container, cellSize, year) {
   drawDayCells(container, cellSize);
-  var show =
-      d3.select('#show-time').classed('active') ? 'time' :
-	  (d3.select('#show-distance').classed('active') ? 'distance' : 'elevation');
-  var sport = $('#sport-filter-active #sport').attr('data-value');
-  var grouping = d3.select('#group-by-sport').classed('active') ? 'sports' : 'zones';
-  var data = prepareData(year, sport, show, grouping);
+  var data = prepareData($scope);
   drawWorkouts(container, cellSize, data);
   drawMonthBorders(container, cellSize);
 };
 
-// constants
 var topMargin = 20;
 var cellSize = 45;
 
 var container = drawContainer(topMargin, cellSize, 2013);
 
-var redraw = function() {
-  draw(container, cellSize, 2013);
+var redraw = function($scope) {
+  draw($scope, container, cellSize);
 }
-
-redraw();
-
-$('#show-choice .btn').on('click', function(event) {
-  event.stopPropagation();
-  $('#show-choice .btn').removeClass('active');
-  $(this).addClass('active');
-  redraw();
-});
-
-$('#group-by-choice .btn').on('click', function(event) {
-  event.stopPropagation();
-  $('#group-by-choice .btn').removeClass('active');
-  $(this).addClass('active');
-  redraw();
-});
-
-var sportsPlusAll = _.extend({'all': {name: 'All'}}, sports);
-_.each(sportsPlusAll, function(value, key, list) {
-  var a = $('<a href="#">' + value.name + '</a>').on('click', function(event) {
-    $('#sport-filter-active').empty().append('<span id="sport" data-value="' + key + '">' + value.name + '</span>');
-    redraw();
-  });
-  $('#sport-filter').append($('<li>').append(a));
-});
