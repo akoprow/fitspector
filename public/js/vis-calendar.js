@@ -362,7 +362,9 @@ var drawWorkouts = function(container, cellSize, data) {
       .style('fill', function(d) { return d.color; });
 };
 
-var drawSportIcons = function(data) {
+var drawSportIcons = function($scope, data) {
+  var type = $scope.displayType.id;
+  var coloredIcons = type == 'time' || type == 'distance';
   var boxes = d3.select('#sport-totals')
       .selectAll('img')
       .data(data);
@@ -388,7 +390,9 @@ var drawSportIcons = function(data) {
       // TODO(koper) Change it into a property on sport.
       return 'img/sport/' + s.id + '.png';
     })
-    .style('background-color', function(s) { return s.color; });
+    .style('background-color', function(s) {
+      return coloredIcons ? s.color : '#ccc';
+    });
 };
 
 var draw = function($scope, container, cellSize, year) {
@@ -397,7 +401,7 @@ var draw = function($scope, container, cellSize, year) {
   var workoutData = computeWorkoutData($scope, data);
   drawWorkouts(container, cellSize, workoutData);
   var totals = computeTotals($scope, data);
-  drawSportIcons(totals);
+  drawSportIcons($scope, totals);
   drawMonthBorders(container, cellSize);
 };
 
