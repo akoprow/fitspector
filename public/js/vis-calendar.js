@@ -368,8 +368,7 @@ var drawSportIcons = function(data) {
       .data(data);
   boxes.enter()
     .append('img')
-    .attr('width', 48)
-    .attr('height', 48);
+    .classed('sport', true);
   boxes.exit()
     .remove();
   boxes
