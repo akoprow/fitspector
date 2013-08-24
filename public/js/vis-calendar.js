@@ -231,7 +231,7 @@ var computeTotals = function($scope, data) {
     });
   });
   var data = _.map(sportTotals, function(value, key) {
-    return _.extend(value, {id: key});
+    return _.extend(value, _.extend($scope.sports[key], {id: key}));
   });
   var sortBy;
   switch (type) {
@@ -364,12 +364,21 @@ var drawWorkouts = function(container, cellSize, data) {
 
 var drawSportIcons = function(data) {
   var boxes = d3.select('#sport-totals')
-      .selectAll('div')
+      .selectAll('img')
       .data(data);
   boxes.enter()
-    .append('div')
+    .append('img')
+    .attr('width', 48)
+    .attr('height', 48);
   boxes.exit()
     .remove();
+  boxes
+    .attr('src', function(s) {
+      // TODO(koper) Change it into a property on sport.
+      return 'img/sport/' + s.id + '.png';
+    })
+    .style('background-color', function(s) { return s.color; });
+/*
   boxes.text(function(s) {
     return 'Sport: ' + s.id +
 	', training sessions: ' + s.num +
@@ -377,6 +386,7 @@ var drawSportIcons = function(data) {
 	'h, distance: ' + Math.floor(s.distance/1000) +
 	'km.';
   });
+*/
 };
 
 var draw = function($scope, container, cellSize, year) {
