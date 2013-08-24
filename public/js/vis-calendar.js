@@ -1,46 +1,18 @@
 function VisCalendar($scope) {
-  $scope.sports = [
-    {
-      id: 'all',
-      name: 'All'
-    },
-    {
-      id: 'run',
-      name: 'Running',
-      color: '#b3dc6c'
-    },
-    {
-      id: 'wt',
-      name: 'Weight training',
-      color: '#9fc6e7'
-    },
-    {
-      id: 'yoga',
-      name: 'Yoga',
-      color: '#fad165'
-    },
-    {
-      id: 'hik',
-      name: 'Hiking',
-      color: '#ac725e'
-    },
-    {
-      id: 'volb',
-      name: 'Volleyball',
-      color: '#f691b2'
-    },
-    {
-      id: 'sq',
-      name: 'Squash',
-      color: '#b99aff'
-    },
-    {
-      id: 'xcs',
-      name: 'Cross-country skiing',
-      color: '#c2c2c2'
-    }
-  ];
+  $scope.sports = {
+    all: { name: 'All' },
+    run: { name: 'Running', color: '#b3dc6c' },
+    wt: { name: 'Weight training', color: '#9fc6e7' },
+    yoga: { name: 'Yoga', color: '#fad165' },
+    hik: { name: 'Hiking', color: '#ac725e' },
+    volb: { name: 'Volleyball', color: '#f691b2' },
+    sq: { name: 'Squash', color: '#b99aff' },
+    xcs: { name: 'Cross-country skiing', color: '#c2c2c2' }
+  };
 
+  $scope.allSports = _.map(['all', 'run', 'wt', 'yoga', 'hik', 'volb', 'sq', 'xcs'], function(sport) {
+    return _.extend($scope.sports[sport], { id: sport });
+  });
   $scope.allDisplayTypes = [
     {
       id: 'time',
@@ -72,17 +44,19 @@ function VisCalendar($scope) {
   $scope.timeZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
   $scope.paceZoneColors = ['#ccc', "#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"];
   $scope.year = 2013;
-  $scope.sportFilter = $scope.sports[0];
+  $scope.sportFilter = $scope.allSports[0];
   $scope.displayType = $scope.allDisplayTypes[0];
 
   $scope.setSportFilter = function(sport) {
     $scope.sportFilter = sport;
+    redraw($scope);
   }
   $scope.setDisplayType = function(type) {
     $scope.displayType = type;
+    redraw($scope);
   }
 
-//  redraw($scope);
+  redraw($scope);
 };
 
 // date manipulations
@@ -115,9 +89,10 @@ var computeData = function() {
 var workoutsData = computeData();
 
 var dailyDataBySports = function($scope, d) {
+  var type = $scope.displayType.id;
   var total = 0;
   return _.map(d.exercises, function(e, idx) {
-    if (!sports[e.exerciseType]) {
+    if (!$scope.sports[e.exerciseType]) {
       throw new Error('Unknown exercise: ' + e.exerciseType);
     }
     switch (type) {
@@ -134,7 +109,7 @@ var dailyDataBySports = function($scope, d) {
       day: d.day,
       key: d.day + idx,
       value: total,
-      color: sports[e.exerciseType].color,
+      color: $scope.sports[e.exerciseType].color,
     };
   });
 };
@@ -147,7 +122,7 @@ var addZones = function(z1, z2) {
 };
 
 var dailyDataByZones = function($scope, d) {
-  var type = $scope.displayType;
+  var type = $scope.displayType.id;
   var zones = [0, 0, 0, 0, 0, 0, 0];
   var colors;
   switch (type) {
@@ -162,7 +137,7 @@ var dailyDataByZones = function($scope, d) {
   }
 
   _.each(d.exercises, function(e) {
-    if (!sports[e.exerciseType]) {
+    if (!$scope.sports[e.exerciseType]) {
       throw new Error('Unknown exercise: ' + e.exerciseType);
     }
     switch (type) {
@@ -198,13 +173,10 @@ var dailyDataByZones = function($scope, d) {
   });
 };
 
-// sport = 'all' or sport id
-// type = 'time' or 'distance'
-// group = 'sports' or 'zones'
 var prepareData = function($scope) {
   var year = $scope.year;
-  var sport = $scope.filterSports;
-  var type = $scope.displayType;
+  var sport = $scope.sportFilter.id;
+  var type = $scope.displayType.id;
 
   // Filter by year.
   var data = _.filter(workoutsData, function(d) {
@@ -230,7 +202,7 @@ var prepareData = function($scope) {
       case 'hr':
       case 'pace':
         return dailyDataByZones($scope, d);
-      default: throw Error('Unknown grouping: ' + group);
+      default: throw Error('Unknown grouping: ' + type);
     }
   });
 
