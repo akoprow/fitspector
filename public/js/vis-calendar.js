@@ -368,7 +368,19 @@ var drawSportIcons = function(data) {
       .data(data);
   boxes.enter()
     .append('img')
-    .classed('sport', true);
+    .classed('sport', true)
+    .attr('data-toggle', 'popover')
+    .attr('data-title', function(s) { return s.name; })
+    .attr('data-html', true)
+    .attr('data-placement', 'bottom')
+    .attr('data-content', function(s) {
+      return '<div class="sport-popover">' +
+	  '<div class="sessions"><span class="text"><i class="icon icon-ok"></i> Sessions:</span><span class="value">' + s.num + 'x</span></div>' +
+	  '<div class="time"><span class="text"><i class="icon icon-time"></i> Time:</span><span class="value">' + Math.floor(s.time/3600) + 'h</span></div>' +
+	  '<div class="distance"><span class="text"><i class="icon icon-road"></i> Distance:</span><span class="value">' + Math.floor(s.distance/1000) + 'km</span></div>' +
+	  '</div>'
+    });
+
   boxes.exit()
     .remove();
   boxes
@@ -377,15 +389,6 @@ var drawSportIcons = function(data) {
       return 'img/sport/' + s.id + '.png';
     })
     .style('background-color', function(s) { return s.color; });
-/*
-  boxes.text(function(s) {
-    return 'Sport: ' + s.id +
-	', training sessions: ' + s.num +
-	', time: ' + Math.floor(s.time/3600) +
-	'h, distance: ' + Math.floor(s.distance/1000) +
-	'km.';
-  });
-*/
 };
 
 var draw = function($scope, container, cellSize, year) {
@@ -405,4 +408,9 @@ var container = drawContainer(topMargin, cellSize, 2013);
 
 var redraw = function($scope) {
   draw($scope, container, cellSize);
-}
+};
+
+$('body').popover({
+  selector: 'img.sport',
+  trigger: 'hover'
+});
