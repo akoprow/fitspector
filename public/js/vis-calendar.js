@@ -362,8 +362,21 @@ var drawWorkouts = function(container, cellSize, data) {
       .style('fill', function(d) { return d.color; });
 };
 
-var drawSportBoxes = function(container, data) {
-  var x = 0;
+var drawSportIcons = function(data) {
+  var boxes = d3.select('#sport-totals')
+      .selectAll('div')
+      .data(data);
+  boxes.enter()
+    .append('div')
+  boxes.exit()
+    .remove();
+  boxes.text(function(s) {
+    return 'Sport: ' + s.id +
+	', training sessions: ' + s.num +
+	', time: ' + Math.floor(s.time/3600) +
+	'h, distance: ' + Math.floor(s.distance/1000) +
+	'km.';
+  });
 };
 
 var draw = function($scope, container, cellSize, year) {
@@ -372,7 +385,7 @@ var draw = function($scope, container, cellSize, year) {
   var workoutData = computeWorkoutData($scope, data);
   drawWorkouts(container, cellSize, workoutData);
   var totals = computeTotals($scope, data);
-  drawSportBoxes(container, totals);
+  drawSportIcons(totals);
   drawMonthBorders(container, cellSize);
 };
 
