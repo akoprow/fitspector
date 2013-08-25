@@ -392,7 +392,9 @@ var drawSportIcons = function($scope, data) {
 	entries.attr('src', function(s) {
           // TODO(koper) Change it into a property on sport.
           return 'img/sport/' + s.id + '.png';
-        });
+        })
+    	  .attr('data-toggle', 'tooltip')
+          .attr('data-title', function(s) { return s.name; });
         break;
       case 'sessions':
         entries.text(function(s) { return s.num ? s.num + 'x' : ''; });
@@ -448,3 +450,7 @@ var container = drawContainer(topMargin, cellSize, 2013);
 var redraw = function($scope) {
   draw($scope, container, cellSize);
 };
+
+$('body').tooltip({
+  selector: '#sport-summary .icon img'
+});
