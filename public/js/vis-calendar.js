@@ -376,7 +376,8 @@ var drawWorkouts = function(container, cellSize, data) {
 var drawSportIcons = function($scope, data) {
   var type = $scope.displayType.id;
   var showAvg = $scope.sportSummaryType.id == 'weeklyAvg';
-  var coloredIcons = type == 'time' || type == 'distance';
+  // Make icons white when sport colors don't show up in the chart.
+  var sportIconsColor = type == 'time' || type == 'distance' ? null : '#fff';
   var sportIconWidth = 55;  // img width + border + padding
   var numWeeks = 365 / 7;
 
@@ -422,7 +423,7 @@ var drawSportIcons = function($scope, data) {
         .attr('data-toggle', 'tooltip')
         .attr('data-title', function(s) { return s.name; })
         .on('mouseover', function(s) {
-          setMetricBackgroundColor(s.id, coloredIcons ? s.color : '#ccc');
+          setMetricBackgroundColor(s.id, sportIconsColor || s.color);
          })
         .on('mouseout', function(s) {
           setMetricBackgroundColor(s.id, '#f5f5f5');
@@ -444,7 +445,7 @@ var drawSportIcons = function($scope, data) {
       .text(' ');
     if (metric == 'icon') {
       update.style('background-color', function(s) {
-        return coloredIcons ? s.color : '#ccc';
+        return sportIconsColor || s.color;
       })
     };
     var dataUpdate = update.filter(hasData);

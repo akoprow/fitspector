@@ -23,10 +23,6 @@
     </script>
 
     <style type="text/css">
-      .choice {
-        display: inline-block;
-        margin-left: 2em;
-      }
       #vis-calendar {
         margin-top: 2em;
         shape-rendering: crispEdges;
@@ -36,7 +32,7 @@
         display: block;
       }
       #vis-calendar .yearLabel {
-        font: 16px sans-serif;
+        font: 24px sans-serif;
       }
       #vis-calendar .year text {
         text-anchor: start
@@ -55,6 +51,10 @@
       }
       #selected-sport-filter {
         width: 130px;
+      }
+      .choice {
+        display: inline-block;
+        margin-left: 2em;
       }
       .centered {
         text-align: center;
@@ -130,7 +130,7 @@
   <body ng-app>
     <div class="container-fluid" ng-controller="VisCalendar">
       <div class="row-fluid centered">
-        <div class="span12 well">
+        <div class="well">
           <!-- Sports -->
           <div class="choice">Filter by sport:</div>
           <span class="dropdown">
@@ -159,7 +159,7 @@
         </div>
       </div>
       <div class="row-fluid">
-        <div class="span4 well">
+        <div class="well">
           <table id="sport-summary">
             <tr class="icon">
               <th>
