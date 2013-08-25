@@ -13,6 +13,10 @@ function VisCalendar($scope) {
   $scope.allSports = _.map(['all', 'run', 'wt', 'yoga', 'hik', 'volb', 'sq', 'xcs'], function(sport) {
     return _.extend($scope.sports[sport], { id: sport });
   });
+  $scope.allSportSummaryTypes = [
+    {id: 'weeklyAvg', name: 'Weekly avg.'},
+    {id: 'total', name: 'Total'}
+  ];
   $scope.allDisplayTypes = [
     {
       id: 'time',
@@ -46,15 +50,20 @@ function VisCalendar($scope) {
   $scope.year = 2013;
   $scope.sportFilter = $scope.allSports[0];
   $scope.displayType = $scope.allDisplayTypes[0];
+  $scope.sportSummaryType = $scope.allSportSummaryTypes[0];
 
   $scope.setSportFilter = function(sport) {
     $scope.sportFilter = sport;
     redraw($scope);
-  }
+  };
   $scope.setDisplayType = function(type) {
     $scope.displayType = type;
     redraw($scope);
-  }
+  };
+  $scope.setSportSummaryType = function(type) {
+    $scope.sportSummaryType = type;
+    redraw($scope);
+  };
 
   redraw($scope);
 };
@@ -366,9 +375,10 @@ var drawWorkouts = function(container, cellSize, data) {
 
 var drawSportIcons = function($scope, data) {
   var type = $scope.displayType.id;
+  var showAvg = $scope.sportSummaryType.id == 'weeklyAvg';
   var coloredIcons = type == 'time' || type == 'distance';
   var sportIconWidth = 55;  // img width + border + padding
-  var transitionLength = 300;
+  var numWeeks = 365 / 7;
 
   var leftPosition = function(d, i) {
     return +(i * sportIconWidth) + 'px';
@@ -379,6 +389,16 @@ var drawSportIcons = function($scope, data) {
 
   // Displaying all sport metrics
   _.each(['icon', 'sessions', 'time', 'distance', 'elevation'], function(metric) {
+    var hasData = function(s) {
+      switch (metric) {
+	case 'icon': return true;
+	case 'sessions': return s.num > 0;
+	case 'time': return s.time > 0;
+	case 'distance': return s.distance > 0;
+	case 'elevation': return s.elevation > 0;
+      };
+    };
+
     // selection
     var eltType = metric == 'icon' ? 'img' : 'span';
     var entries = d3.select('#sport-summary .' + metric + ' .data')
@@ -388,23 +408,14 @@ var drawSportIcons = function($scope, data) {
     // enter
     var enter = entries.enter()
       .append(eltType)
-      .classed('hidden', true)
-      .filter(function(s) {
-        switch (metric) {
-  	  case 'icon': return true;
-  	  case 'sessions': return s.num > 0;
-	  case 'time': return s.time > 0;
-	  case 'distance': return s.distance > 0;
-	  case 'elevation': return s.elevation > 0;
-        };
-      })
       .attr('class', function(s) { return s.id })
-      .classed('hidden', false)
+      .classed('value', metric != 'icon')
+      .classed('hasData', hasData)
       .style('left', leftPosition)
       .style('opacity', 0);
-    switch (metric) {
-      case 'icon':
-	enter.attr('src', function(s) {
+    if (metric == 'icon') {
+      enter
+        .attr('src', function(s) {
           // TODO(koper) Change it into a property on sport.
           return 'img/sport/' + s.id + '.png';
         })
@@ -416,21 +427,6 @@ var drawSportIcons = function($scope, data) {
         .on('mouseout', function(s) {
           setMetricBackgroundColor(s.id, '#f5f5f5');
         });
-        break;
-      case 'sessions':
-        enter.text(function(s) { return s.num + 'x'; });
-        break;
-      case 'time':
-        enter.text(function(s) { return Math.floor(s.time / 3600) + 'h'; });
-        break;
-      case 'distance':
-        enter.text(function(s) { return Math.floor(s.distance / 1000) + 'km'; });
-        break;
-      case 'elevation':
-        enter.text(function(s) { return ''; });
-        break;
-      default:
-        throw new Error('Unknown metric: ' + metric);
     };
 
     // exit
@@ -440,16 +436,56 @@ var drawSportIcons = function($scope, data) {
       .remove();
 
     // update
-    entries.transition()
+    var update = entries.transition()
       .delay(entries.exit().empty() ? 0 : TRANSITIONS_DURATION)
       .duration(TRANSITIONS_DURATION)
       .style('left', leftPosition)
-      .style('opacity', metric == 'icon' ? 0.8 : 1.0);
+      .style('opacity', metric == 'icon' ? 0.8 : 1.0)
+      .text(' ');
     if (metric == 'icon') {
-      entries.style('background-color', function(s) {
+      update.style('background-color', function(s) {
         return coloredIcons ? s.color : '#ccc';
-      });
-    }
+      })
+    };
+    var dataUpdate = update.filter(hasData);
+    switch (metric) {
+      case 'icon':
+        break;
+      case 'sessions':
+        dataUpdate.text(function(s) {
+	  if (showAvg) {
+	    return (s.num / numWeeks).toFixed(1);
+	  } else {
+	    return s.num;
+	  }
+	});
+        break;
+      case 'time':
+        dataUpdate.text(function(s) {
+   	  var h = s.time / 3600;
+ 	  if (showAvg) {
+	    return (h / numWeeks).toFixed(1);
+	  } else {
+	    return h.toFixed(0);
+	  }
+	});
+        break;
+      case 'distance':
+        dataUpdate.text(function(s) {
+   	  var km = s.distance / 1000;
+ 	  if (showAvg) {
+	    return (km / numWeeks).toFixed(1);
+	  } else {
+	    return km.toFixed(0);
+	  }
+	});
+        break;
+      case 'elevation':
+        dataUpdate.text(function(s) { return ''; });
+        break;
+      default:
+        throw new Error('Unknown metric: ' + metric);
+    };
   });
 };
 

@@ -68,13 +68,31 @@
       #sport-summary .data {
         position: relative;
       }
-      #sport-summary .data span {
+      #sport-summary .data .value {
         width: 50px;
+        height: 20px;
+        line-height: 20px;
+        display: block;
         text-align: center;
         position: absolute;
         top: 0;
         font-size: 10pt;
         padding: 3px;
+      }
+      #sport-summary .data .value:after {
+        font-size: 80%;
+      }
+      #sport-summary .sessions .data .value.hasData:after {
+        content: 'x';
+      }
+      #sport-summary .time .data .value.hasData:after {
+        content: 'h';
+      }
+      #sport-summary .distance .data .value.hasData:after {
+        content: 'km';
+      }
+      #sport-summary .elevation .data .value.hasData:after {
+        content: 'm';
       }
       #sport-summary .icon td.data img {
         position: absolute;
@@ -97,12 +115,12 @@
         text-align: right;
         padding: 3px;
       }
-      #sport-summary .data-row:hover th,
-      #sport-summary .data-row:hover td span {
-        background-color: #fff !important;
+      #sport-summary .icon th {
+        text-align: center;
       }
-      #sport-summary .data-row td span.hidden {
-        display: none;
+      #sport-summary .data-row:hover th,
+      #sport-summary .data-row:hover td .value {
+        background-color: #fff !important;
       }
       #sport-summary .icon {
         margin: 0 15px;
@@ -110,8 +128,8 @@
     </style>
   </head>
   <body ng-app>
-    <div class="container-fluid">
-      <div class="row-fluid centered" ng-controller="VisCalendar">
+    <div class="container-fluid" ng-controller="VisCalendar">
+      <div class="row-fluid centered">
         <div class="span12 well">
           <!-- Sports -->
           <div class="choice">Filter by sport:</div>
@@ -144,7 +162,15 @@
         <div class="span4 well">
           <table id="sport-summary">
             <tr class="icon">
-              <th></th>
+              <th>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-mini btn-primary" ng-repeat="type in allSportSummaryTypes"
+                    ng-class="{active: sportSummaryType.id == type.id}"
+                    ng-click="setSportSummaryType(type)">
+                    {{type.name}}
+                  </button>
+                </div>
+              </th>
               <td class="data"></td>
             </tr>
             <tr class="data-row sessions">
