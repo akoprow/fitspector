@@ -60,6 +60,7 @@ function VisCalendar($scope) {
 };
 
 // constants
+var SHORT_TRANSITIONS_DURATION = 200;
 var TRANSITIONS_DURATION = 400;
 
 // date manipulations
@@ -373,6 +374,12 @@ var drawSportIcons = function($scope, data) {
   var leftPosition = function(d, i) {
     return +(i * sportIconWidth) + 'px';
   };
+  var setMetricBackgroundColor = function(id, bgColor) {
+    d3.selectAll('#sport-summary .data span.' + id)
+      .transition()
+      .duration(SHORT_TRANSITIONS_DURATION)
+      .style('background-color', bgColor);
+  };
 
   // Displaying all sport metrics
   _.each(['icon', 'sessions', 'time', 'distance', 'elevation'], function(metric) {
@@ -385,6 +392,7 @@ var drawSportIcons = function($scope, data) {
     // enter
     entries.enter()
       .append(eltType)
+      .attr('class', function(s) { return s.id })
       .style('left', leftPosition)
       .style('opacity', 0);
     switch (metric) {
@@ -393,8 +401,14 @@ var drawSportIcons = function($scope, data) {
           // TODO(koper) Change it into a property on sport.
           return 'img/sport/' + s.id + '.png';
         })
-    	  .attr('data-toggle', 'tooltip')
-          .attr('data-title', function(s) { return s.name; });
+        .attr('data-toggle', 'tooltip')
+        .attr('data-title', function(s) { return s.name; })
+        .on('mouseover', function(s) {
+          setMetricBackgroundColor(s.id, coloredIcons ? s.color : '#ccc');
+         })
+        .on('mouseout', function(s) {
+          setMetricBackgroundColor(s.id, '#f5f5f5');
+        });
         break;
       case 'sessions':
         entries.text(function(s) { return s.num ? s.num + 'x' : ''; });
