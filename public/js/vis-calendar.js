@@ -370,13 +370,14 @@ var drawSportIcons = function($scope, data) {
   var sportIconWidth = 48 + 2 + 5;  // img width + border + padding
   var transitionLength = 300;
 
-  // icons
   var leftPosition = function(d, i) {
     return +(i * sportIconWidth) + 'px';
   };
+
+  // icons
   var icons = d3.select('#sport-summary .sports .data')
-      .selectAll('img')
-      .data(data, function(s) { return s.id; });
+    .selectAll('img')
+    .data(data, function(s) { return s.id; });
   icons.enter()
     .append('img')
     .attr('src', function(s) {
@@ -401,6 +402,26 @@ var drawSportIcons = function($scope, data) {
     })
     .style('left', leftPosition)
     .style('opacity', .8);
+
+  // sessions
+  var sessions = d3.select('#sport-summary .sessions .data')
+    .selectAll('span')
+    .data(data, function(s) { return s.id; });
+  sessions.enter()
+    .append('span')
+    .classed('value', true)
+    .text(function(s) { return s.num + 'x'; })
+    .style('left', leftPosition)
+    .style('opacity', 0);
+  sessions.exit().transition()
+    .duration(TRANSITIONS_DURATION)
+    .style('opacity', 0)
+    .remove();
+  sessions.transition()
+    .delay(icons.exit().empty() ? 0 : TRANSITIONS_DURATION)
+    .duration(TRANSITIONS_DURATION)
+    .style('left', leftPosition)
+    .style('opacity', 1);
 
 /*
       return '<div class="sport-popover">' +
