@@ -1,3 +1,7 @@
+// Constants
+var TRANSITIONS_DURATION = 400;
+
+// Calendar controller
 function VisCalendar($scope) {
   $scope.sports = {
     all: { name: 'All' },
@@ -36,7 +40,7 @@ function VisCalendar($scope) {
     {
       id: 'pace',
       name: 'Pace zones',
-      icon: ''
+      icon: 'fast-forward'
     },
     {
       id: 'elevation',
@@ -78,9 +82,6 @@ function VisCalendar($scope) {
   redraw();
 };
 
-// constants
-var TRANSITIONS_DURATION = 400;
-
 var computeData = function() {
   var sum = function(d) {
     return _.reduce(d, function(x, y) { return x + y }, 0);
@@ -104,6 +105,7 @@ var computeData = function() {
   return data;
 };
 
+// TODO(koper) Remove this global...
 var workoutsData = computeData();
 
 var dailyDataBySports = function($scope, d) {
@@ -556,13 +558,19 @@ var drawSportIcons = function($scope, data) {
 };
 
 var drawData = function($scope, container) {
+  // Prepare the data.
   var data = filterData($scope);
+
+  // Draw workouts data.
   var workoutData = computeWorkoutData($scope, data);
   drawWorkouts($scope, container, workoutData);
+
+  // Draw sport summaries.
   var totals = computeTotals($scope, data);
   drawSportIcons($scope, totals);
 };
 
+// TODO(koper) Use Angular-UI instead?
 $('body').tooltip({
   selector: '#sport-summary .icon img'
 });
