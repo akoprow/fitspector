@@ -59,6 +59,9 @@ function VisCalendar($scope) {
   redraw($scope);
 };
 
+// constants
+var TRANSITIONS_DURATION = 400;
+
 // date manipulations
 var getWeekday = d3.time.format('%w');
 var getWeek = d3.time.format('%U');
@@ -335,10 +338,9 @@ var drawWorkouts = function(container, cellSize, data) {
 
   var workouts = container.selectAll('.workout')
       .data(data, function(d, i) { return d.key; });
-  var duration = 300;
 
   workouts.exit().transition()
-      .duration(duration)
+      .duration(TRANSITIONS_DURATION)
       .attr('width', 0)
       .attr('height', 0)
       .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5); })
@@ -353,8 +355,8 @@ var drawWorkouts = function(container, cellSize, data) {
       .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); });
 
   workouts.transition()
-      .delay(duration)
-      .duration(duration)
+      .delay(workouts.exit().empty() ? 0 : TRANSITIONS_DURATION)
+      .duration(TRANSITIONS_DURATION)
       .attr('width', function(d) { return sizeScale(d.value); })
       .attr('height', function(d) { return sizeScale(d.value); })
       .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5) - sizeScale(d.value)/2; })
@@ -365,23 +367,31 @@ var drawWorkouts = function(container, cellSize, data) {
 var drawSportIcons = function($scope, data) {
   var type = $scope.displayType.id;
   var coloredIcons = type == 'time' || type == 'distance';
+  var sportIconWidth = 48 + 2 + 5;  // img width + border + padding
+  var transitionLength = 300;
 
   // icons
+  var leftPosition = function(d, i) {
+    return +(i * sportIconWidth) + 'px';
+  };
   var icons = d3.select('#sport-summary .sports .data')
       .selectAll('img')
       .data(data, function(s) { return s.id; });
   icons.enter()
     .append('img')
-    .classed('sport', true)
     .attr('src', function(s) {
       // TODO(koper) Change it into a property on sport.
       return 'img/sport/' + s.id + '.png';
     })
+    .style('left', leftPosition)
     .style('opacity', 0);
   icons.exit().transition()
-      .style('opacity', 0)
-      .remove();
+    .duration(TRANSITIONS_DURATION)
+    .style('opacity', 0)
+    .remove();
   icons.transition()
+    .delay(icons.exit().empty() ? 0 : TRANSITIONS_DURATION)
+    .duration(TRANSITIONS_DURATION)
     .attr('src', function(s) {
       // TODO(koper) Change it into a property on sport.
       return 'img/sport/' + s.id + '.png';
@@ -389,7 +399,8 @@ var drawSportIcons = function($scope, data) {
     .style('background-color', function(s) {
       return coloredIcons ? s.color : '#ccc';
     })
-    .style('opacity', .9);
+    .style('left', leftPosition)
+    .style('opacity', .8);
 
 /*
       return '<div class="sport-popover">' +
