@@ -365,9 +365,9 @@ var drawWorkouts = function(container, cellSize, data) {
 var drawSportIcons = function($scope, data) {
   var type = $scope.displayType.id;
   var coloredIcons = type == 'time' || type == 'distance';
-  var boxes = d3.select('#sport-totals')
+  var boxes = d3.select('#sport-summary .sports .data')
       .selectAll('img')
-      .data(data);
+      .data(data, function(s) { return s.id; });
   boxes.enter()
     .append('img')
     .classed('sport', true)
