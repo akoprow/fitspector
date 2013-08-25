@@ -7,7 +7,7 @@ function VisCalendar($scope) {
     hik: { name: 'Hiking', color: '#ac725e' },
     volb: { name: 'Volleyball', color: '#f691b2' },
     sq: { name: 'Squash', color: '#b99aff' },
-    xcs: { name: 'Cross-country skiing', color: '#c2c2c2' }
+    xcs: { name: 'Cross-country skiing', color: '#cca6ac' }
   };
 
   $scope.allSports = _.map(['all', 'run', 'wt', 'yoga', 'hik', 'volb', 'sq', 'xcs'], function(sport) {
@@ -395,13 +395,13 @@ var drawSportIcons = function($scope, data) {
         });
         break;
       case 'sessions':
-        entries.text(function(s) { return s.num + 'x'; });
+        entries.text(function(s) { return s.num ? s.num + 'x' : ''; });
         break;
       case 'time':
-        entries.text(function(s) { return Math.floor(s.time / 3600) + 'h'; });
+        entries.text(function(s) { return s.time ? Math.floor(s.time / 3600) + 'h' : ''; });
         break;
       case 'distance':
-        entries.text(function(s) { return Math.floor(s.distance / 1000) + 'km'; });
+        entries.text(function(s) { return s.distance ? Math.floor(s.distance / 1000) + 'km' : ''; });
         break;
       case 'elevation':
         entries.text(function(s) { return ''; });
@@ -420,11 +420,13 @@ var drawSportIcons = function($scope, data) {
     entries.transition()
       .delay(entries.exit().empty() ? 0 : TRANSITIONS_DURATION)
       .duration(TRANSITIONS_DURATION)
-      .style('background-color', function(s) {
-        return coloredIcons ? s.color : '#ccc';
-      })
       .style('left', leftPosition)
-      .style('opacity', 0.8)
+      .style('opacity', metric == 'icon' ? 0.8 : 1.0);
+    if (metric == 'icon') {
+      entries.style('background-color', function(s) {
+        return coloredIcons ? s.color : '#ccc';
+      });
+    }
   });
 };
 
