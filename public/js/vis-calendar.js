@@ -54,20 +54,28 @@ function VisCalendar($scope) {
   $scope.displayType = $scope.allDisplayTypes[0];
   $scope.sportSummaryType = $scope.allSportSummaryTypes[0];
 
+  $scope.topMargin = 20;
+  $scope.cellSize = 45;
+
+  var container = drawCalendar($scope);
+  var redraw = function() {
+    drawData($scope, container);
+  };
+
   $scope.setSportFilter = function(sport) {
     $scope.sportFilter = sport;
-    redraw($scope);
+    redraw();
   };
   $scope.setDisplayType = function(type) {
     $scope.displayType = type;
-    redraw($scope);
+    redraw();
   };
   $scope.setSportSummaryType = function(type) {
     $scope.sportSummaryType = type;
-    redraw($scope);
+    redraw();
   };
 
-  redraw($scope);
+  redraw();
 };
 
 // constants
@@ -266,13 +274,13 @@ var computeTotals = function($scope, data) {
   return data.reverse();
 };
 
-var drawContainer = function(topMargin, cellSize, year) {
-  var width = 2 + cellSize*53;
-  var height = topMargin + cellSize * 8;
+var drawCalendar = function($scope) {
+  var width = 2 + $scope.cellSize*53;
+  var height = $scope.topMargin + $scope.cellSize * 8;
 
   // Main container
   var container = d3.select('#vis-calendar').selectAll('svg')
-      .data([year], function(d) { return d })
+      .data([$scope.year], function(d) { return d })
       .enter()
       .append('svg')
       .attr('class', 'year')
@@ -280,8 +288,8 @@ var drawContainer = function(topMargin, cellSize, year) {
       .attr('height', height);
 
   // Year label
-  var offsetX = cellSize * 53 / 2;
-  var offsetY = topMargin / 2;
+  var offsetX = $scope.cellSize * 53 / 2;
+  var offsetY = $scope.topMargin / 2;
   container.append('text')
     .attr('transform', 'translate(' + offsetX  + ',' + offsetY + ')')
     .attr('class', 'yearLabel')
@@ -290,12 +298,18 @@ var drawContainer = function(topMargin, cellSize, year) {
     .text(function(d) { return d; });
 
   // Container body
-  var offsetY = 0.5*cellSize + topMargin;
-  return container.append('g')
+  var offsetY = 0.5*$scope.cellSize + $scope.topMargin;
+
+  container = container.append('g')
       .attr('transform', 'translate(1,' + offsetY + ')');
+
+  drawDayCells($scope, container);
+  drawMonthBorders($scope, container);
+
+  return container;
 };
 
-var drawDayCells = function($scope, container, cellSize) {
+var drawDayCells = function($scope, container) {
   container.selectAll('.day')
     .data(function(d) {
       return d3.time.days(
@@ -306,26 +320,27 @@ var drawDayCells = function($scope, container, cellSize) {
     .append('rect')
     .attr('class', 'day')
     .classed('future', function(d) { return d > $scope.now; })
-    .attr('width', cellSize)
-    .attr('height', cellSize)
-    .attr('x', function(d) { return cellSize * getWeek(d); })
-    .attr('y', function(d) { return cellSize * getWeekday(d); });
+    .attr('width', $scope.cellSize)
+    .attr('height', $scope.cellSize)
+    .attr('x', function(d) { return $scope.cellSize * getWeek(d); })
+    .attr('y', function(d) { return $scope.cellSize * getWeekday(d); });
 };
 
-var monthPath = function(t0) {
-  var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0);
-  var d0 = +getWeekday(t0);
-  var w0 = +getWeek(t0);
-  var d1 = +getWeekday(t1);
-  var w1 = +getWeek(t1);
-  return 'M' + (w0 + 1) * cellSize + ',' + d0 * cellSize
-      + 'H' + w0 * cellSize + 'V' + 7 * cellSize
-      + 'H' + w1 * cellSize + 'V' + (d1 + 1) * cellSize
-      + 'H' + (w1 + 1) * cellSize + 'V' + 0
-      + 'H' + (w0 + 1) * cellSize + 'Z';
-}
+var drawMonthBorders = function($scope, container) {
+  var cellSize = $scope.cellSize;
+  var monthPath = function(t0) {
+    var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0);
+    var d0 = +getWeekday(t0);
+    var w0 = +getWeek(t0);
+    var d1 = +getWeekday(t1);
+    var w1 = +getWeek(t1);
+    return 'M' + (w0 + 1) * cellSize + ',' + d0 * cellSize
+        + 'H' + w0 * cellSize + 'V' + 7 * cellSize
+        + 'H' + w1 * cellSize + 'V' + (d1 + 1) * cellSize
+        + 'H' + (w1 + 1) * cellSize + 'V' + 0
+        + 'H' + (w0 + 1) * cellSize + 'Z';
+  };
 
-var drawMonthBorders = function(container, cellSize) {
   container.selectAll('.month')
     .data(function(d) {
       return d3.time.months(
@@ -337,16 +352,16 @@ var drawMonthBorders = function(container, cellSize) {
     .attr('d', monthPath);
 };
 
-var drawWorkouts = function(container, cellSize, data) {
+var drawWorkouts = function($scope, container, data) {
   var xScale = d3.scale.linear()
       .domain([0, 52])
-      .rangeRound([0, cellSize*52]);
+      .rangeRound([0, $scope.cellSize*52]);
   var yScale = d3.scale.linear()
       .domain([0, 6])
-      .rangeRound([0, cellSize*6]);
+      .rangeRound([0, $scope.cellSize*6]);
   var sizeScale = d3.scale.sqrt()
       .domain([0, d3.max(data, function(d) { return d.value; })])
-      .rangeRound([0, cellSize - 1]);
+      .rangeRound([0, $scope.cellSize - 1]);
 
   var workouts = container.selectAll('.workout')
       .data(data, function(d, i) { return d.key; });
@@ -376,10 +391,11 @@ var drawWorkouts = function(container, cellSize, data) {
       .style('fill', function(d) { return d.color; });
 };
 
-var drawSportIcons = function($scope, year, data) {
+var drawSportIcons = function($scope, data) {
   var sportIconWidth = 55;  // img width + border + padding
   var millisecPerDay = 24 * 60 * 60 * 1000;
-  var numDays = ($scope.now.getFullYear() == year) ? ($scope.now - new Date(year, 0, 1)) / millisecPerDay : 365;
+  var numDays = ($scope.now.getFullYear() == $scope.year) ?
+      ($scope.now - new Date($scope.year, 0, 1)) / millisecPerDay : 365;
   var numWeeks = numDays / 7;
 
   var getType = function() { return $scope.displayType.id; };
@@ -516,23 +532,12 @@ var drawSportIcons = function($scope, year, data) {
   });
 };
 
-var draw = function($scope, container, cellSize, year) {
-  drawDayCells($scope, container, cellSize);
+var drawData = function($scope, container) {
   var data = filterData($scope);
   var workoutData = computeWorkoutData($scope, data);
-  drawWorkouts(container, cellSize, workoutData);
+  drawWorkouts($scope, container, workoutData);
   var totals = computeTotals($scope, data);
-  drawSportIcons($scope, year, totals);
-  drawMonthBorders(container, cellSize);
-};
-
-var topMargin = 20;
-var cellSize = 45;
-
-var container = drawContainer(topMargin, cellSize, 2013);
-
-var redraw = function($scope) {
-  draw($scope, container, cellSize, 2013);
+  drawSportIcons($scope, totals);
 };
 
 $('body').tooltip({
