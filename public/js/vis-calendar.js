@@ -365,27 +365,22 @@ var drawWorkouts = function(container, cellSize, data) {
 var drawSportIcons = function($scope, data) {
   var type = $scope.displayType.id;
   var coloredIcons = type == 'time' || type == 'distance';
-  var boxes = d3.select('#sport-summary .sports .data')
+
+  // icons
+  var icons = d3.select('#sport-summary .sports .data')
       .selectAll('img')
       .data(data, function(s) { return s.id; });
-  boxes.enter()
+  icons.enter()
     .append('img')
     .classed('sport', true)
-    .attr('data-toggle', 'popover')
-    .attr('data-title', function(s) { return s.name; })
-    .attr('data-html', true)
-    .attr('data-placement', 'bottom')
-    .attr('data-content', function(s) {
-      return '<div class="sport-popover">' +
-	  '<div class="sessions"><span class="text"><i class="icon icon-ok"></i> Sessions:</span><span class="value">' + s.num + 'x</span></div>' +
-	  '<div class="time"><span class="text"><i class="icon icon-time"></i> Time:</span><span class="value">' + Math.floor(s.time/3600) + 'h</span></div>' +
-	  '<div class="distance"><span class="text"><i class="icon icon-road"></i> Distance:</span><span class="value">' + Math.floor(s.distance/1000) + 'km</span></div>' +
-	  '</div>'
+    .attr('src', function(s) {
+      // TODO(koper) Change it into a property on sport.
+      return 'img/sport/' + s.id + '.png';
     });
-
-  boxes.exit()
-    .remove();
-  boxes
+  icons.exit().transition()
+      .style('opacity', 0)
+      .remove();
+  icons
     .attr('src', function(s) {
       // TODO(koper) Change it into a property on sport.
       return 'img/sport/' + s.id + '.png';
@@ -393,6 +388,15 @@ var drawSportIcons = function($scope, data) {
     .style('background-color', function(s) {
       return coloredIcons ? s.color : '#ccc';
     });
+
+/*
+      return '<div class="sport-popover">' +
+	  '<div class="sessions"><span class="text"><i class="icon icon-ok"></i> Sessions:</span><span class="value">' + s.num + 'x</span></div>' +
+	  '<div class="time"><span class="text"><i class="icon icon-time"></i> Time:</span><span class="value">' + Math.floor(s.time/3600) + 'h</span></div>' +
+	  '<div class="distance"><span class="text"><i class="icon icon-road"></i> Distance:</span><span class="value">' + Math.floor(s.distance/1000) + 'km</span></div>' +
+	  '</div>'
+*/
+
 };
 
 var draw = function($scope, container, cellSize, year) {
@@ -413,8 +417,3 @@ var container = drawContainer(topMargin, cellSize, 2013);
 var redraw = function($scope) {
   draw($scope, container, cellSize);
 };
-
-$('body').popover({
-  selector: 'img.sport',
-  trigger: 'hover'
-});
