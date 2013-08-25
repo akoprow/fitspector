@@ -294,6 +294,8 @@ var drawContainer = function(topMargin, cellSize, year) {
 };
 
 var drawDayCells = function(container, cellSize) {
+  var now = new Date(2013, 6, 31); // TODO(koper) This should be changed to now in the final product.
+
   container.selectAll('.day')
     .data(function(d) {
       return d3.time.days(
@@ -303,6 +305,7 @@ var drawDayCells = function(container, cellSize) {
   .enter()
     .append('rect')
     .attr('class', 'day')
+    .classed('future', function(d) { return d > now; })
     .attr('width', cellSize)
     .attr('height', cellSize)
     .attr('x', function(d) { return cellSize * getWeek(d); })
