@@ -367,7 +367,7 @@ var drawWorkouts = function(container, cellSize, data) {
 var drawSportIcons = function($scope, data) {
   var type = $scope.displayType.id;
   var coloredIcons = type == 'time' || type == 'distance';
-  var sportIconWidth = 48 + 2 + 5;  // img width + border + padding
+  var sportIconWidth = 55;  // img width + border + padding
   var transitionLength = 300;
 
   var leftPosition = function(d, i) {
@@ -386,14 +386,25 @@ var drawSportIcons = function($scope, data) {
       .data(data, function(s) { return s.id; });
 
     // enter
-    entries.enter()
+    var enter = entries.enter()
       .append(eltType)
+      .classed('hidden', true)
+      .filter(function(s) {
+        switch (metric) {
+  	  case 'icon': return true;
+  	  case 'sessions': return s.num > 0;
+	  case 'time': return s.time > 0;
+	  case 'distance': return s.distance > 0;
+	  case 'elevation': return s.elevation > 0;
+        };
+      })
       .attr('class', function(s) { return s.id })
+      .classed('hidden', false)
       .style('left', leftPosition)
       .style('opacity', 0);
     switch (metric) {
       case 'icon':
-	entries.attr('src', function(s) {
+	enter.attr('src', function(s) {
           // TODO(koper) Change it into a property on sport.
           return 'img/sport/' + s.id + '.png';
         })
@@ -407,16 +418,16 @@ var drawSportIcons = function($scope, data) {
         });
         break;
       case 'sessions':
-        entries.text(function(s) { return s.num + 'x'; });
+        enter.text(function(s) { return s.num + 'x'; });
         break;
       case 'time':
-        entries.text(function(s) { return Math.floor(s.time / 3600) + 'h'; });
+        enter.text(function(s) { return Math.floor(s.time / 3600) + 'h'; });
         break;
       case 'distance':
-        entries.text(function(s) { return Math.floor(s.distance / 1000) + 'km'; });
+        enter.text(function(s) { return Math.floor(s.distance / 1000) + 'km'; });
         break;
       case 'elevation':
-        entries.text(function(s) { return ''; });
+        enter.text(function(s) { return ''; });
         break;
       default:
         throw new Error('Unknown metric: ' + metric);

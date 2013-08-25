@@ -69,7 +69,7 @@
         position: relative;
       }
       #sport-summary .data span {
-        width: 48px;
+        width: 50px;
         text-align: center;
         position: absolute;
         top: 0;
@@ -97,9 +97,12 @@
         text-align: right;
         padding: 3px;
       }
-      #sport-summary tr.data-row:hover th,
-      #sport-summary tr.data-row:hover td span {
+      #sport-summary .data-row:hover th,
+      #sport-summary .data-row:hover td span {
         background-color: #fff !important;
+      }
+      #sport-summary .data-row td span.hidden {
+        display: none;
       }
       #sport-summary .icon {
         margin: 0 15px;
