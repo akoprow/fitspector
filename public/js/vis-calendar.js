@@ -60,7 +60,6 @@ function VisCalendar($scope) {
 };
 
 // constants
-var SHORT_TRANSITIONS_DURATION = 200;
 var TRANSITIONS_DURATION = 400;
 
 // date manipulations
@@ -375,16 +374,13 @@ var drawSportIcons = function($scope, data) {
     return +(i * sportIconWidth) + 'px';
   };
   var setMetricBackgroundColor = function(id, bgColor) {
-    d3.selectAll('#sport-summary .data span.' + id)
-      .transition()
-      .duration(SHORT_TRANSITIONS_DURATION)
-      .style('background-color', bgColor);
+    d3.selectAll('#sport-summary .data span.' + id).style('background-color', bgColor);
   };
 
   // Displaying all sport metrics
   _.each(['icon', 'sessions', 'time', 'distance', 'elevation'], function(metric) {
-    var eltType = metric == 'icon' ? 'img' : 'span';
     // selection
+    var eltType = metric == 'icon' ? 'img' : 'span';
     var entries = d3.select('#sport-summary .' + metric + ' .data')
       .selectAll(eltType)
       .data(data, function(s) { return s.id; });
@@ -411,13 +407,13 @@ var drawSportIcons = function($scope, data) {
         });
         break;
       case 'sessions':
-        entries.text(function(s) { return s.num ? s.num + 'x' : ''; });
+        entries.text(function(s) { return s.num + 'x'; });
         break;
       case 'time':
-        entries.text(function(s) { return s.time ? Math.floor(s.time / 3600) + 'h' : ''; });
+        entries.text(function(s) { return Math.floor(s.time / 3600) + 'h'; });
         break;
       case 'distance':
-        entries.text(function(s) { return s.distance ? Math.floor(s.distance / 1000) + 'km' : ''; });
+        entries.text(function(s) { return Math.floor(s.distance / 1000) + 'km'; });
         break;
       case 'elevation':
         entries.text(function(s) { return ''; });

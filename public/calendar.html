@@ -74,6 +74,7 @@
         position: absolute;
         top: 0;
         font-size: 10pt;
+        padding: 3px;
       }
       #sport-summary .icon td.data img {
         position: absolute;
@@ -95,6 +96,10 @@
         padding-right: 20px;
         text-align: right;
         padding: 3px;
+      }
+      #sport-summary tr.data-row:hover th,
+      #sport-summary tr.data-row:hover td span {
+        background-color: #fff !important;
       }
       #sport-summary .icon {
         margin: 0 15px;
@@ -139,19 +144,19 @@
               <th></th>
               <td class="data"></td>
             </tr>
-            <tr class="sessions">
+            <tr class="data-row sessions">
               <th><span class="text">Sessions <i class="icon icon-ok"></i></th>
               <td class="data"></td>
             </tr>
-            <tr class="time">
+            <tr class="data-row time">
               <th><span class="text">Time <i class="icon icon-time"></i></th>
               <td class="data"></td>
             </tr>
-            <tr class="distance">
+            <tr class="data-row distance">
               <th><span class="text">Distance <i class="icon icon-road"></i></th>
               <td class="data"></td>
             </tr>
-            <tr class="elevation">
+            <tr class="data-row elevation">
               <th><span class="text">Elevation gain <i class="icon icon-chevron-up"></i></th>
               <td class="data"></td>
             </tr>
