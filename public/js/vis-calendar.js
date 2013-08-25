@@ -54,7 +54,7 @@ function VisCalendar($scope) {
   $scope.displayType = $scope.allDisplayTypes[0];
   $scope.sportSummaryType = $scope.allSportSummaryTypes[0];
 
-  $scope.topMargin = 20;
+  $scope.topMargin = 15;
   $scope.cellSize = 45;
 
   var container = drawCalendar($scope);
@@ -80,10 +80,6 @@ function VisCalendar($scope) {
 
 // constants
 var TRANSITIONS_DURATION = 400;
-
-// date manipulations
-var getWeekday = d3.time.format('%w');
-var getWeek = d3.time.format('%U');
 
 var computeData = function() {
   var sum = function(d) {
@@ -277,25 +273,41 @@ var computeTotals = function($scope, data) {
 var drawCalendar = function($scope) {
   var width = 2 + $scope.cellSize*53;
   var height = $scope.topMargin + $scope.cellSize * 8;
+  var getWeek = d3.time.format('%U');
 
   // Main container
   var container = d3.select('#vis-calendar').selectAll('svg')
-      .data([$scope.year], function(d) { return d })
+      .data([$scope.year])
       .enter()
       .append('svg')
       .attr('class', 'year')
       .attr('width', width)
       .attr('height', height);
 
-  // Year label
-  var offsetX = $scope.cellSize * 53 / 2;
+  // Monthly labels
   var offsetY = $scope.topMargin / 2;
-  container.append('text')
-    .attr('transform', 'translate(' + offsetX  + ',' + offsetY + ')')
-    .attr('class', 'yearLabel')
+  container.selectAll('.monthLabel')
+    .data(function(year) {
+      return d3.time.months(
+	  new Date(year, 0, 1),
+	  new Date(year + 1, 0, 1));
+    })
+  .enter()
+    .append('text')
+    .attr('class', 'monthLabel')
+    .attr('transform', function(d1) {
+      var dateOffset = function(d) {
+	var week = +getWeek(d);
+	return week * $scope.cellSize;
+      };
+      var d2 = new Date(d1.getFullYear(), d1.getMonth() + 1, 0);
+      var offsetX = (dateOffset(d1) + dateOffset(d2) + $scope.cellSize) / 2;
+      return 'translate(' + offsetX + ',' + offsetY + ')';
+    })
+    .attr('class', 'monthLabel')
     .style('text-anchor', 'middle')
     .style('alignment-baseline', 'central')
-    .text(function(d) { return d; });
+    .text(d3.time.format('%b'));
 
   // Container body
   var offsetY = 0.5*$scope.cellSize + $scope.topMargin;
@@ -310,6 +322,9 @@ var drawCalendar = function($scope) {
 };
 
 var drawDayCells = function($scope, container) {
+  var getWeekday = d3.time.format('%w');
+  var getWeek = d3.time.format('%U');
+
   container.selectAll('.day')
     .data(function(d) {
       return d3.time.days(
@@ -327,7 +342,10 @@ var drawDayCells = function($scope, container) {
 };
 
 var drawMonthBorders = function($scope, container) {
+  var getWeekday = d3.time.format('%w');
+  var getWeek = d3.time.format('%U');
   var cellSize = $scope.cellSize;
+
   var monthPath = function(t0) {
     var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0);
     var d0 = +getWeekday(t0);
@@ -341,18 +359,23 @@ var drawMonthBorders = function($scope, container) {
         + 'H' + (w0 + 1) * cellSize + 'Z';
   };
 
-  container.selectAll('.month')
+  // Draw month borders
+  var enter = container.selectAll('.month')
     .data(function(d) {
       return d3.time.months(
 	  new Date(d, 0, 1),
 	  new Date(d + 1, 0, 1));
     })
-  .enter().append('path')
+  .enter()
+    .append('path')
     .attr('class', 'month')
     .attr('d', monthPath);
 };
 
 var drawWorkouts = function($scope, container, data) {
+  var getWeekday = d3.time.format('%w');
+  var getWeek = d3.time.format('%U');
+
   var xScale = d3.scale.linear()
       .domain([0, 52])
       .rangeRound([0, $scope.cellSize*52]);
