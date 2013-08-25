@@ -374,63 +374,58 @@ var drawSportIcons = function($scope, data) {
     return +(i * sportIconWidth) + 'px';
   };
 
-  // icons
-  var icons = d3.select('#sport-summary .sports .data')
-    .selectAll('img')
-    .data(data, function(s) { return s.id; });
-  icons.enter()
-    .append('img')
-    .attr('src', function(s) {
-      // TODO(koper) Change it into a property on sport.
-      return 'img/sport/' + s.id + '.png';
-    })
-    .style('left', leftPosition)
-    .style('opacity', 0);
-  icons.exit().transition()
-    .duration(TRANSITIONS_DURATION)
-    .style('opacity', 0)
-    .remove();
-  icons.transition()
-    .delay(icons.exit().empty() ? 0 : TRANSITIONS_DURATION)
-    .duration(TRANSITIONS_DURATION)
-    .attr('src', function(s) {
-      // TODO(koper) Change it into a property on sport.
-      return 'img/sport/' + s.id + '.png';
-    })
-    .style('background-color', function(s) {
-      return coloredIcons ? s.color : '#ccc';
-    })
-    .style('left', leftPosition)
-    .style('opacity', .8);
+  // Displaying all sport metrics
+  _.each(['icon', 'sessions', 'time', 'distance', 'elevation'], function(metric) {
+    var eltType = metric == 'icon' ? 'img' : 'span';
+    // selection
+    var entries = d3.select('#sport-summary .' + metric + ' .data')
+      .selectAll(eltType)
+      .data(data, function(s) { return s.id; });
 
-  // sessions
-  var sessions = d3.select('#sport-summary .sessions .data')
-    .selectAll('span')
-    .data(data, function(s) { return s.id; });
-  sessions.enter()
-    .append('span')
-    .classed('value', true)
-    .text(function(s) { return s.num + 'x'; })
-    .style('left', leftPosition)
-    .style('opacity', 0);
-  sessions.exit().transition()
-    .duration(TRANSITIONS_DURATION)
-    .style('opacity', 0)
-    .remove();
-  sessions.transition()
-    .delay(icons.exit().empty() ? 0 : TRANSITIONS_DURATION)
-    .duration(TRANSITIONS_DURATION)
-    .style('left', leftPosition)
-    .style('opacity', 1);
+    // enter
+    entries.enter()
+      .append(eltType)
+      .style('left', leftPosition)
+      .style('opacity', 0);
+    switch (metric) {
+      case 'icon':
+	entries.attr('src', function(s) {
+          // TODO(koper) Change it into a property on sport.
+          return 'img/sport/' + s.id + '.png';
+        });
+        break;
+      case 'sessions':
+        entries.text(function(s) { return s.num + 'x'; });
+        break;
+      case 'time':
+        entries.text(function(s) { return Math.floor(s.time / 3600) + 'h'; });
+        break;
+      case 'distance':
+        entries.text(function(s) { return Math.floor(s.distance / 1000) + 'km'; });
+        break;
+      case 'elevation':
+        entries.text(function(s) { return ''; });
+        break;
+      default:
+        throw new Error('Unknown metric: ' + metric);
+    };
 
-/*
-      return '<div class="sport-popover">' +
-	  '<div class="sessions"><span class="text"><i class="icon icon-ok"></i> Sessions:</span><span class="value">' + s.num + 'x</span></div>' +
-	  '<div class="time"><span class="text"><i class="icon icon-time"></i> Time:</span><span class="value">' + Math.floor(s.time/3600) + 'h</span></div>' +
-	  '<div class="distance"><span class="text"><i class="icon icon-road"></i> Distance:</span><span class="value">' + Math.floor(s.distance/1000) + 'km</span></div>' +
-	  '</div>'
-*/
+    // exit
+    entries.exit().transition()
+      .duration(TRANSITIONS_DURATION)
+      .style('opacity', 0)
+      .remove();
 
+    // update
+    entries.transition()
+      .delay(entries.exit().empty() ? 0 : TRANSITIONS_DURATION)
+      .duration(TRANSITIONS_DURATION)
+      .style('background-color', function(s) {
+        return coloredIcons ? s.color : '#ccc';
+      })
+      .style('left', leftPosition)
+      .style('opacity', 0.8)
+  });
 };
 
 var draw = function($scope, container, cellSize, year) {

@@ -62,19 +62,20 @@
         margin-right: auto;
         display: block;
       }
-      #sport-summary .sports {
+      #sport-summary tr.icon {
         height: 50px;
       }
       #sport-summary .data {
         position: relative;
       }
-      #sport-summary .data .value {
+      #sport-summary .data span {
         width: 48px;
         text-align: center;
         position: absolute;
         top: 0;
+        font-size: 10pt;
       }
-      #sport-summary .sports .data img {
+      #sport-summary .icon td.data img {
         position: absolute;
         display: inline-block;
         top: 0;
@@ -85,17 +86,17 @@
         border-radius: 10px;
         opacity: .8;
       }
-      #sport-summary .sports .data img:hover {
+      #sport-summary .icon td.data img:hover {
         opacity: 1.0 !important;
       }
       #sport-summary th {
         text-align: left;
         font-weight: normal;
         padding-right: 20px;
+        text-align: right;
       }
-      #sport-summary th,
-      #sport-summary td {
-        border-bottom: 1px dotted #999;
+      #sport-summary .icon {
+        margin-left: 10px;
       }
     </style>
   </head>
@@ -133,24 +134,24 @@
       <div class="row-fluid">
         <div class="span4 well">
           <table id="sport-summary">
-            <tr class="sports">
+            <tr class="icon">
               <th></th>
               <td class="data"></td>
             </tr>
             <tr class="sessions">
-              <th><span class="text"><i class="icon icon-ok"></i> Sessions:</th>
+              <th><span class="text">Sessions <i class="icon icon-ok"></i></th>
               <td class="data"></td>
             </tr>
             <tr class="time">
-              <th><span class="text"><i class="icon icon-time"></i> Time:</th>
+              <th><span class="text">Time <i class="icon icon-time"></i></th>
               <td class="data"></td>
             </tr>
             <tr class="distance">
-              <th><span class="text"><i class="icon icon-road"></i> Distance:</th>
+              <th><span class="text">Distance <i class="icon icon-road"></i></th>
               <td class="data"></td>
             </tr>
             <tr class="elevation">
-              <th><span class="text"><i class="icon icon-chevron-up"></i> Elevation gain:</th>
+              <th><span class="text">Elevation gain <i class="icon icon-chevron-up"></i></th>
               <td class="data"></td>
             </tr>
           </table>
