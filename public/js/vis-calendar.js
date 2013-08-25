@@ -374,12 +374,12 @@ var drawWorkouts = function(container, cellSize, data) {
 };
 
 var drawSportIcons = function($scope, data) {
-  var type = $scope.displayType.id;
-  var showAvg = $scope.sportSummaryType.id == 'weeklyAvg';
-  // Make icons white when sport colors don't show up in the chart.
-  var sportIconsColor = type == 'time' || type == 'distance' ? null : '#fff';
   var sportIconWidth = 55;  // img width + border + padding
   var numWeeks = 365 / 7;
+
+  var getType = function() { return $scope.displayType.id; };
+  var showAvg = $scope.sportSummaryType.id == 'weeklyAvg';
+  // Make icons white when sport colors don't show up in the chart.
 
   var leftPosition = function(d, i) {
     return +(i * sportIconWidth) + 'px';
@@ -397,7 +397,30 @@ var drawSportIcons = function($scope, data) {
 	case 'time': return s.time > 0;
 	case 'distance': return s.distance > 0;
 	case 'elevation': return s.elevation > 0;
+	default: throw new Error('Uknown metric: ' + metric);
       };
+    };
+    var sportBackgroundColor = function(s) {
+      var hasData = function() {
+    	switch (getType()) {
+  	  case 'hr': // fall-through
+	  case 'time': return s.time > 0;
+	  case 'distance': // fall-through
+	  case 'pace': return s.distance > 0;
+	  case 'elevation': return s.elevation > 0;
+	}
+      };
+      if (getType() == 'time' || getType() == 'distance') { // sport colors matter
+        if (hasData()) {
+  	  return s.color; // sport with data
+	} else {
+	  return '#ccc'; // inactive sport
+	}
+      } else if (hasData()) {
+	return '#fff';
+      } else {
+	return '#ccc';
+      }
     };
 
     // selection
@@ -423,10 +446,10 @@ var drawSportIcons = function($scope, data) {
         .attr('data-toggle', 'tooltip')
         .attr('data-title', function(s) { return s.name; })
         .on('mouseover', function(s) {
-          setMetricBackgroundColor(s.id, sportIconsColor || s.color);
+          setMetricBackgroundColor(s.id, sportBackgroundColor(s));
          })
         .on('mouseout', function(s) {
-          setMetricBackgroundColor(s.id, '#f5f5f5');
+          setMetricBackgroundColor(s.id,  'transparent');
         });
     };
 
@@ -444,9 +467,7 @@ var drawSportIcons = function($scope, data) {
       .style('opacity', metric == 'icon' ? 0.8 : 1.0)
       .text(' ');
     if (metric == 'icon') {
-      update.style('background-color', function(s) {
-        return sportIconsColor || s.color;
-      })
+      update.style('background-color', sportBackgroundColor);
     };
     var dataUpdate = update.filter(hasData);
     switch (metric) {
