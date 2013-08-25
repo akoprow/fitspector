@@ -376,18 +376,20 @@ var drawSportIcons = function($scope, data) {
     .attr('src', function(s) {
       // TODO(koper) Change it into a property on sport.
       return 'img/sport/' + s.id + '.png';
-    });
+    })
+    .style('opacity', 0);
   icons.exit().transition()
       .style('opacity', 0)
       .remove();
-  icons
+  icons.transition()
     .attr('src', function(s) {
       // TODO(koper) Change it into a property on sport.
       return 'img/sport/' + s.id + '.png';
     })
     .style('background-color', function(s) {
       return coloredIcons ? s.color : '#ccc';
-    });
+    })
+    .style('opacity', .9);
 
 /*
       return '<div class="sport-popover">' +
