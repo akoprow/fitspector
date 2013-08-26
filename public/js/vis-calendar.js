@@ -128,24 +128,24 @@ var getExplanations = function($scope) {
     switch ($scope.displayType.id) {
       case 'hr':
       case 'time':
-        return 'Box sizees correspond to workout time (see legend <i class="icon icon-arrow-right"></i>)';
+        return 'Box sizees correspond to workout time (see legend on the right)';
       case 'pace':
       case 'distance':
       case 'elevation':
-        return 'Box sizes correspond to workout distance (see legend <i class="icon icon-arrow-right"></i>)';
+        return 'Box sizes correspond to workout distance (see legend on the right)';
     };
   };
   var getColorText = function() {
     switch ($scope.displayType.id) {
       case 'time':
       case 'distance':
-        return 'Box colors correspond to workout types (see sports <i class="icon icon-arrow-left"></i>)';
+        return 'Box colors correspond to workout types (see sports list on the left)';
       case 'hr':
-        return 'Box colors corresponds to HR zones (see legend <i class="icon icon-arrow-right"></i>)';
+        return 'Box colors correspond to HR zones (see legend on the right)';
       case 'pace':
-        return 'Box colors corresponds to pace zones (see legend <i class="icon icon-arrow-right"></i>)';
+        return 'Box colors correspond to pace zones (see legend on the right)';
       case 'elevation':
-        return 'Box colors corresponds to climb categories (see legend <i class="icon icon-arrow-right"></i>)';
+        return 'Box colors correspond to climb categories (see legend on the right)';
     };
   };
   return [getGeneralText(), getSizeText(), getColorText()];

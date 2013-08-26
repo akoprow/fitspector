@@ -136,18 +136,28 @@
       .well .btn-group {
         display: block;
       }
-      .well .year-selection {
+      .well .year-selection,
+      .well .help {
         margin-top: 10px;
-      }
-      .analysis-info div {
-        margin-bottom: 10px;
-      }
-      .analysis-info li {
-        line-height: 16px;
       }
     </style>
   </head>
   <body ng-app ng-controller="VisCalendar">
+    <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Visuzalization explained</h3>
+      </div>
+      <div class="modal-body">
+        <p>Few words about what you currently see:</p>
+        <ul ng-repeat="info in getExplanations()">
+          <li ng-bind-html-unsafe="info">
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+      </div>
+    </div>
     <div class="container-fluid">
       <div class="row-fluid centered">
         <div class="well">
@@ -168,6 +178,9 @@
               <i class="icon-white icon-chevron-right"></i>
             </button>
           </div>
+          <button class="btn btn-mini btn-info help" data-toggle="modal" data-target="#help-modal">
+            <i class="icon-white icon-info-sign"></i> Help me understand what I see
+          </button>
         </div>
       </div>
       <div class="row-fluid">
@@ -202,14 +215,6 @@
               <td class="data"></td>
             </tr>
           </table>
-        </div>
-        <div class="span4">
-          <div class="alert alert-info analysis-info">
-            <div><i class="icon icon-info-sign"></i> Few words about your analysis:</div>
-            <ul ng-repeat="info in getExplanations()">
-              <li ng-bind-html-unsafe="info">
-            </ul>
-          </div>
         </div>
       </div>
       <div class="row-fluid">
