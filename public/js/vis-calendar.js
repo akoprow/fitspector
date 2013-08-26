@@ -323,6 +323,29 @@ var drawCalendar = function($scope) {
   return container;
 };
 
+var generatePopoverBody = function(d) {
+  return '...';
+};
+
+var installWorkoutPopover = function(sel, $scope) {
+  var dayId = function(d) {
+    return 'day-' + d.getTime();
+  };
+  sel.attr('id', dayId)
+    .on('mouseover', function(d) {
+      $('#' + dayId(d)).popover({
+	title: d3.time.format('%A, %d %B %Y')(d),
+	container: '#vis-calendar',
+	content: generatePopoverBody(d),
+	placement: d.getMonth() < 6 ? 'right' : 'left',
+	html: true
+      }).popover('show');
+    })
+    .on('mouseout', function(d) {
+      $('#' + dayId(d)).popover('hide');
+    });
+};
+
 var drawDayCells = function($scope, container) {
   var getWeekday = d3.time.format('%w');
   var getWeek = d3.time.format('%U');
@@ -339,16 +362,9 @@ var drawDayCells = function($scope, container) {
     .classed('future', function(d) { return d > $scope.now; })
     .attr('width', $scope.cellSize)
     .attr('height', $scope.cellSize)
-    .attr('rel', function(d) { return d > $scope.now ? '' : 'popover' }) // no popover for future dates.
-    .attr('data-toggle', 'popover')
-    .attr('data-placement', function(d) {
-      return d.getMonth() < 6 ? 'right' : 'left';
-    })
-    .attr('data-title', d3.time.format('%A, %d %B %Y'))
-    .attr('data-content', 'Content')
-    .attr('data-container', '#vis-calendar')
     .attr('x', function(d) { return $scope.cellSize * getWeek(d); })
-    .attr('y', function(d) { return $scope.cellSize * getWeekday(d); });
+    .attr('y', function(d) { return $scope.cellSize * getWeekday(d); })
+    .call(installWorkoutPopover, $scope);
 };
 
 var drawMonthBorders = function($scope, container) {
@@ -584,6 +600,5 @@ $('body').tooltip({
   selector: '[rel=tooltip]'
 });
 $('body').popover({
-  selector: '[rel=popover]',
-  trigger: 'hover'
+  selector: '[rel=popover]'
 });

@@ -160,7 +160,7 @@
                     ng-repeat="type in allDisplayTypes"
                     ng-class="{active: displayType.id == type.id}"
                     ng-click="setDisplayType(type)">
-              <i class="icon-{{type.icon}} icon-white"></i> {{type.name}}
+              <i class="icon-{{type.icon}} icon-white"></i><span class="hidden-phone"> {{type.name}}</span>
             </button>
           </div>
         </div>
