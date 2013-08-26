@@ -14,6 +14,19 @@ directives.directive('workout', function() {
   };
 });
 
+directives.directive('workouts', function() {
+  return {
+    restrict: 'E',
+    template: '<workout ng-repeat="workout in workouts" data="workout"></workout>',
+    scope: {},
+    link: function($scope, element, attrs) {
+      // TODO(koper) This should take workouts data from DataService instead of the global variable.
+      var day = new Date(parseInt(attrs.day));
+      $scope.workouts = workoutsData[day];
+    }
+  };
+});
+
 // Calendar controller
 app.controller('VisCalendar', ['$scope', function($scope) {
   $scope.sports = {
