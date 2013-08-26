@@ -178,13 +178,11 @@ var computeData = function() {
     }
   };
   var data = _.map(workouts, makeWorkout);
-  var data = _.groupBy(data, function(d) { return d.day });
-  var data = _.pairs(data);
-  var data = _.map(data, function(d) { return { day: d[1][0].day, exercises: d[1] }; });
+  var data = _.groupBy(data, "day");
   return data;
 };
 
-// TODO(koper) Remove this global...
+// TODO(koper) Remove this global... make a DataService instead.
 var workoutsData = computeData();
 
 var dailyDataBySports = function($scope, d) {
@@ -276,8 +274,11 @@ var filterData = function($scope) {
   var year = $scope.year.id;
   var sport = $scope.sportFilter.id;
 
+  var workouts = _.pairs(workoutsData);
+  workouts = _.map(workouts, function(d) { return { day: d[1][0].day, exercises: d[1] }; });
+
   // Filter by year.
-  var data = _.filter(workoutsData, function(d) {
+  var data = _.filter(workouts, function(d) {
     return d.day.getFullYear() === year;
   });
 
