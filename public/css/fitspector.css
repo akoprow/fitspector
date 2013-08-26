@@ -186,6 +186,11 @@ p {
 .statistics p {
     color: white;
 }
+.stats-header {
+    font-size: 120%;
+    color: white;
+    text-align: center;
+}
 
 .copy {
     padding: 2.5% 0;
