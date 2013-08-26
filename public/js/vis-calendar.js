@@ -339,6 +339,11 @@ var drawDayCells = function($scope, container) {
     .classed('future', function(d) { return d > $scope.now; })
     .attr('width', $scope.cellSize)
     .attr('height', $scope.cellSize)
+    .attr('rel', 'popover')
+    .attr('data-toggle', 'popover')
+    .attr('data-title', 'Title')
+    .attr('data-content', 'Content')
+    .attr('data-container', '#vis-calendar')
     .attr('x', function(d) { return $scope.cellSize * getWeek(d); })
     .attr('y', function(d) { return $scope.cellSize * getWeekday(d); });
 };
@@ -489,6 +494,7 @@ var drawSportIcons = function($scope, data) {
           // TODO(koper) Change it into a property on sport.
           return 'img/sport/' + s.id + '.png';
         })
+        .attr('rel', 'tooltip')
         .attr('data-toggle', 'tooltip')
         .attr('data-title', function(s) { return s.name; })
         .on('mouseover', function(s) {
@@ -570,7 +576,11 @@ var drawData = function($scope, container) {
   drawSportIcons($scope, totals);
 };
 
-// TODO(koper) Use Angular-UI instead?
+// TODO(koper) Use Angular-UI instead? Use d3-bootstrap?
 $('body').tooltip({
-  selector: '#sport-summary .icon img'
+  selector: '[rel=tooltip]'
+});
+$('body').popover({
+  selector: '[rel=popover]',
+  trigger: 'hover'
 });
