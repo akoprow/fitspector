@@ -559,7 +559,7 @@ var drawSportIcons = function($scope, data) {
 	  return '#ccc'; // inactive sport
 	}
       } else if (hasData()) {
-	return '#fff';
+	return '#f5f5f5';
       } else {
 	return '#ccc';
       }
