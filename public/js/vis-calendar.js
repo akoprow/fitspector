@@ -323,7 +323,10 @@ var drawCalendar = function($scope) {
   return container;
 };
 
-var generatePopoverBody = function(d) {
+var generatePopoverBody = function($scope, d) {
+  if (d > $scope.now) {
+    return "Date in the future<br/>We know you'll work out hard!";
+  }
   return '...';
 };
 
@@ -336,7 +339,7 @@ var installWorkoutPopover = function(sel, $scope) {
       $('#' + dayId(d)).popover({
 	title: d3.time.format('%A, %d %B %Y')(d),
 	container: '#vis-calendar',
-	content: generatePopoverBody(d),
+	content: generatePopoverBody($scope, d),
 	placement: d.getMonth() < 6 ? 'right' : 'left',
 	html: true
       }).popover('show');
