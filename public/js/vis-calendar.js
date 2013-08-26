@@ -1,3 +1,6 @@
+// TODO: Make 'data' service.
+// TODO: Make workouts directive.
+
 // Constants
 var TRANSITIONS_DURATION = 400;
 
@@ -51,9 +54,30 @@ function VisCalendar($scope) {
   // TODO(koper) This should be changed to now in the final product (+ possibly remove property)
   $scope.now = new Date(2013, 6, 31);
 
+  // TODO(koper) Change into year selection component and get rid of literals.
+  $scope.year = { id: 2013 };
+  $scope.disablePrevYear = function() {
+    return $scope.year.id <= 2012;
+  };
+  $scope.disableNextYear = function() {
+    return $scope.year.id >= 2013;
+  };
+  $scope.currentYear = function() {
+    $scope.year.id = 2013;
+  };
+  $scope.nextYear = function() {
+    if (!$scope.disableNextYear()) {
+      $scope.year.id++;
+    }
+  };
+  $scope.prevYear = function() {
+    if (!$scope.disablePrevYear()) {
+      $scope.year.id--;
+    };
+  };
+
   $scope.timeZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
   $scope.paceZoneColors = ['#ccc', "#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"];
-  $scope.year = 2013;
   $scope.sportFilter = $scope.allSports[0];
   $scope.displayType = $scope.allDisplayTypes[0];
   $scope.sportSummaryType = $scope.allSportSummaryTypes[0];
@@ -194,7 +218,7 @@ var dailyDataByZones = function($scope, d) {
 };
 
 var filterData = function($scope) {
-  var year = $scope.year;
+  var year = $scope.year.id;
   var sport = $scope.sportFilter.id;
 
   // Filter by year.
@@ -279,7 +303,7 @@ var drawCalendar = function($scope) {
 
   // Main container
   var container = d3.select('#vis-calendar').selectAll('svg')
-      .data([$scope.year])
+      .data([$scope.year.id])
       .enter()
       .append('svg')
       .attr('class', 'year')
@@ -447,7 +471,7 @@ var drawSportIcons = function($scope, data) {
   var sportIconWidth = 55;  // img width + border + padding
   var millisecPerDay = 24 * 60 * 60 * 1000;
   var numDays = ($scope.now.getFullYear() == $scope.year) ?
-      ($scope.now - new Date($scope.year, 0, 1)) / millisecPerDay : 365;
+      ($scope.now - new Date($scope.year.id, 0, 1)) / millisecPerDay : 365;
   var numWeeks = numDays / 7;
 
   var getType = function() { return $scope.displayType.id; };
