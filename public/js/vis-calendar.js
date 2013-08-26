@@ -4,8 +4,18 @@
 // Constants
 var TRANSITIONS_DURATION = 400;
 
+var directives = angular.module('fitspector.directives', []);
+var app = angular.module('fitspector', ['fitspector.directives']);
+
+directives.directive('workout', function() {
+  return {
+    restrict: 'E',
+    template: 'Howdie how'
+  };
+});
+
 // Calendar controller
-function VisCalendar($scope) {
+app.controller('VisCalendar', ['$scope', function($scope) {
   $scope.sports = {
     all: { name: 'All' },
     run: { name: 'Running', color: '#b3dc6c' },
@@ -107,7 +117,7 @@ function VisCalendar($scope) {
   };
 
   redraw();
-};
+}]);
 
 var getExplanations = function($scope) {
   var getGeneralText = function() {
