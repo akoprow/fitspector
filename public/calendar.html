@@ -139,6 +139,12 @@
       .well .year-selection {
         margin-top: 10px;
       }
+      .analysis-info div {
+        margin-bottom: 10px;
+      }
+      .analysis-info li {
+        line-height: 16px;
+      }
     </style>
   </head>
   <body ng-app ng-controller="VisCalendar">
@@ -165,7 +171,7 @@
         </div>
       </div>
       <div class="row-fluid">
-        <div class="well">
+        <div class="span4">
           <table id="sport-summary">
             <tr class="icon">
               <th>
@@ -196,6 +202,14 @@
               <td class="data"></td>
             </tr>
           </table>
+        </div>
+        <div class="span4">
+          <div class="alert alert-info analysis-info">
+            <div><i class="icon icon-info-sign"></i> Few words about your analysis:</div>
+            <ul ng-repeat="info in getExplanations()">
+              <li ng-bind-html-unsafe="info">
+            </ul>
+          </div>
         </div>
       </div>
       <div class="row-fluid">

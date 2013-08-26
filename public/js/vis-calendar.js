@@ -102,8 +102,53 @@ function VisCalendar($scope) {
     $scope.sportSummaryType = type;
     redraw();
   };
+  $scope.getExplanations = function() {
+    return getExplanations($scope);
+  };
 
   redraw();
+};
+
+var getExplanations = function($scope) {
+  var getGeneralText = function() {
+    switch ($scope.displayType.id) {
+      case 'time':
+        return 'You are visualizing workout time, grouped by different sports.';
+      case 'distance':
+        return 'You are visualizing workout distance, grouped by different sports.';
+      case 'hr':
+        return 'You are visualizing workout time, grouped by HR zones.';
+      case 'pace':
+        return 'You are visualizing workout distance, grouped by pace zones.';
+      case 'elevation':
+        return 'You are visualizing workout elevation change, grouped by climb categories.';
+    };
+  };
+  var getSizeText = function() {
+    switch ($scope.displayType.id) {
+      case 'hr':
+      case 'time':
+        return 'Box sizees correspond to workout time (see legend <i class="icon icon-arrow-right"></i>)';
+      case 'pace':
+      case 'distance':
+      case 'elevation':
+        return 'Box sizes correspond to workout distance (see legend <i class="icon icon-arrow-right"></i>)';
+    };
+  };
+  var getColorText = function() {
+    switch ($scope.displayType.id) {
+      case 'time':
+      case 'distance':
+        return 'Box colors correspond to workout types (see sports <i class="icon icon-arrow-left"></i>)';
+      case 'hr':
+        return 'Box colors corresponds to HR zones (see legend <i class="icon icon-arrow-right"></i>)';
+      case 'pace':
+        return 'Box colors corresponds to pace zones (see legend <i class="icon icon-arrow-right"></i>)';
+      case 'elevation':
+        return 'Box colors corresponds to climb categories (see legend <i class="icon icon-arrow-right"></i>)';
+    };
+  };
+  return [getGeneralText(), getSizeText(), getColorText()];
 };
 
 var computeData = function() {
