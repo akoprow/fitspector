@@ -341,7 +341,10 @@ var drawDayCells = function($scope, container) {
     .attr('height', $scope.cellSize)
     .attr('rel', 'popover')
     .attr('data-toggle', 'popover')
-    .attr('data-title', 'Title')
+    .attr('data-placement', function(d) {
+      return d.getMonth() < 6 ? 'left' : 'right';
+    })
+    .attr('data-title', d3.time.format('%A, %d %B %Y'))
     .attr('data-content', 'Content')
     .attr('data-container', '#vis-calendar')
     .attr('x', function(d) { return $scope.cellSize * getWeek(d); })
