@@ -6,7 +6,7 @@
 // Constants
 var TRANSITIONS_DURATION = 400;
 var TOP_MARGIN = 15;
-var CELL_SIZE = 20;
+var CELL_SIZE = 30;
 
 // --------------------------------------------------------------------------------------------------------
 // -------------------------------------- Global page modifications ---------------------------------------
@@ -573,8 +573,11 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('x', function(d) { return cellSize * getWeek(d); })
       .attr('y', function(d) { return cellSize * getWeekday(d); })
       .on('click', function(d) {
+        var elt = this;
         $scope.$apply(function() {
+          container.selectAll('.day').classed('selected', false);
           $scope.selectedDay = d;
+          d3.select(elt).classed('selected', true);
         });
       });
   };
