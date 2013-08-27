@@ -155,11 +155,15 @@ directives.directive('workouts', ['DataProvider', function(DataProvider) {
     restrict: 'E',
     replace: true,
     template: '<workout ng-repeat="workout in workouts" model="workout"></workout>',
-    scope: {},
-    link: function($scope, element, attrs) {
-      // TODO(koper) This should take workouts data from DataService instead of the global variable.
-      var day = new Date(parseInt(attrs.day));
-      $scope.workouts = DataProvider.getDayWorkouts(day);
+    scope: {
+      day: '='
+    },
+    link: function($scope, $elem, $attrs) {
+      $scope.$watch('day', function(dayString) {
+	// TODO(koper) This should take workouts data from DataService instead of the global variable.
+	var day = new Date(parseInt(dayString));
+	$scope.workouts = DataProvider.getDayWorkouts(day);
+      });
     }
   };
 }]);
@@ -169,7 +173,7 @@ directives.directive('workouts', ['DataProvider', function(DataProvider) {
 // --------------------------------------------------------------------------------------------------------
 
 // Calendar controller
-app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataProvider) {
+app.controller('VisCalendar', ['$scope', '$compile', 'DataProvider', function($scope, $compile, DataProvider) {
   $scope.allSportSummaryTypes = [
     {id: 'weeklyAvg', name: 'Weekly avg.'},
     {id: 'total', name: 'Total'}
@@ -230,8 +234,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
   $scope.topMargin = 15;
   $scope.cellSize = 45;
+  $scope.highlightedDay = null;
 
-  var container = drawCalendar($scope);
+  var container = drawCalendar($scope, $compile);
   var redraw = function() {
     drawData($scope, DataProvider, container);
   };
@@ -464,7 +469,7 @@ var computeTotals = function($scope, DataProvider, data) {
   return data.reverse();
 };
 
-var drawCalendar = function($scope) {
+var drawCalendar = function($scope, $compile) {
   var width = 2 + $scope.cellSize*53;
   var height = $scope.topMargin + $scope.cellSize * 8;
   var getWeek = d3.time.format('%U');
@@ -509,29 +514,34 @@ var drawCalendar = function($scope) {
   container = container.append('g')
       .attr('transform', 'translate(1,' + offsetY + ')');
 
-  drawDayCells($scope, container);
+  drawDayCells($scope, $compile, container);
   drawMonthBorders($scope, container);
 
   return container;
 };
 
-var generatePopoverBody = function($scope, d) {
+var generatePopoverBody = function($scope, $compile, d) {
   if (d > $scope.now) {
     return "Date in the future<br/>We know you'll work out hard!";
+  } else {
+    var html = $compile('<workouts day="' + d.getTime() + '"></workouts>')($scope);
+    return html;
   }
-  return '...';
 };
 
-var installWorkoutPopover = function(sel, $scope) {
+var installWorkoutPopover = function(sel, $scope, $compile) {
   var dayId = function(d) {
     return 'day-' + d.getTime();
   };
   sel.attr('id', dayId)
     .on('mouseover', function(d) {
+      $scope.$apply(function() {
+	$scope.highlightedDay = d;
+      });
       $('#' + dayId(d)).popover({
 	title: d3.time.format('%A, %d %B %Y')(d),
 	container: '#vis-calendar',
-	content: generatePopoverBody($scope, d),
+	content: generatePopoverBody($scope, $compile, d),
 	placement: d.getMonth() < 6 ? 'right' : 'left',
 	html: true
       }).popover('show');
@@ -541,7 +551,7 @@ var installWorkoutPopover = function(sel, $scope) {
     });
 };
 
-var drawDayCells = function($scope, container) {
+var drawDayCells = function($scope, $compile, container) {
   var getWeekday = d3.time.format('%w');
   var getWeek = d3.time.format('%U');
 
@@ -559,7 +569,7 @@ var drawDayCells = function($scope, container) {
     .attr('height', $scope.cellSize)
     .attr('x', function(d) { return $scope.cellSize * getWeek(d); })
     .attr('y', function(d) { return $scope.cellSize * getWeekday(d); })
-    .call(installWorkoutPopover, $scope);
+    .call(installWorkoutPopover, $scope, $compile);
 };
 
 var drawMonthBorders = function($scope, container) {

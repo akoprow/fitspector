@@ -145,7 +145,11 @@
     </style>
   </head>
   <body ng-app="fitspector" ng-controller="VisCalendar">
-    Workout directive: <workouts day="1368514800000"></workouts>
+<!--
+    <workouts day="1368514800000"></workouts>
+    <workouts day="highlightedDay.getTime()"></workouts>
+-->
+    Selected day: {{highlightedDay.getTime()}}
 
     <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog">
       <div class="modal-header">
