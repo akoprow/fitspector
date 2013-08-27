@@ -23,6 +23,13 @@
     </script>
 
     <style type="text/css">
+      .sport-icon {
+        width: 48px;
+        height: 48px;
+        max-width: 48px;
+        border: 1px solid #333;
+        border-radius: 10px;
+      }
       #vis-calendar {
         margin-top: 2em;
         shape-rendering: crispEdges;
@@ -69,9 +76,6 @@
         margin-right: auto;
         display: block;
       }
-      #sport-summary tr.icon {
-        height: 50px;
-      }
       #sport-summary .data {
         display: block;
         position: relative;
@@ -102,15 +106,13 @@
       #sport-summary .elevation .data .value.hasData:after {
         content: 'm';
       }
+      #sport-summary tr.icon {
+        height: 50px;
+      }
       #sport-summary .icon td.data img {
         position: absolute;
         display: inline-block;
         top: 0;
-        width: 48px;
-        height: 48px;
-        max-width: 48px;
-        border: 1px solid #333;
-        border-radius: 10px;
         opacity: .8;
       }
       #sport-summary .icon td.data img:hover {

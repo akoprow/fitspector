@@ -75,12 +75,33 @@ var computeData = function() {
 };
 
 // --------------------------------------------------------------------------------------------------------
+// ------------------------------------------ sport-icon directive ----------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+directives.directive('sportIcon', ['DataProvider', function(DataProvider) {
+  return {
+    restrict: 'E',
+    replace: true,
+    template: '<img ng-src="img/sport/{{sport.id}}.png" class="sport-icon"' +
+	' rel="tooltip" data-toggle="tooltip" data-title="{{sport.name}}"' +
+	' style="background-color: {{sport.color}}"></img>',
+    scope: {
+      sportId: '='
+    },
+    link: function($scope, elem, attrs) {
+      $scope.sport = DataProvider.sports[$scope.sportId];
+    }
+  };
+}]);
+
+// --------------------------------------------------------------------------------------------------------
 // ------------------------------------------- workout directive ------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
 directives.directive('workout', ['DataProvider', function(DataProvider) {
   return {
     restrict: 'E',
+    replace: true,
     templateUrl: 'views/workout.html',
     scope: {
       model: '='
@@ -95,6 +116,7 @@ directives.directive('workout', ['DataProvider', function(DataProvider) {
 directives.directive('workouts', ['DataProvider', function(DataProvider) {
   return {
     restrict: 'E',
+    replace: true,
     template: '<workout ng-repeat="workout in workouts" model="workout"></workout>',
     scope: {},
     link: function($scope, element, attrs) {
@@ -654,6 +676,7 @@ var drawSportIcons = function($scope, data) {
           return 'img/sport/' + s.id + '.png';
         })
         .attr('rel', 'tooltip')
+	.classed('sport-icon', true)
         .attr('data-toggle', 'tooltip')
         .attr('data-title', function(s) { return s.name; })
         .on('mouseover', function(s) {
