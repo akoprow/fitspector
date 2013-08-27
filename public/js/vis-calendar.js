@@ -33,7 +33,11 @@ services.factory('DataProvider', function() {
     hik: { name: 'Hiking', color: '#ac725e' },
     volb: { name: 'Volleyball', color: '#f691b2' },
     sq: { name: 'Squash', color: '#b99aff' },
-    xcs: { name: 'Cross-country skiing', color: '#cca6ac' }
+    xcs: { name: 'Cross-country skiing', color: '#cca6ac' },
+    swim: { name: 'Swimming', color: '#ffad46' },
+    row: { name: 'Rowing', color: '#d06b64' },
+    bik: { name: 'Cycling', color: '#fa573c' },
+    ten: { name: 'Tennis', color: '#9fe1e7' },
   };
   var workoutsData = computeData();
 
@@ -220,7 +224,7 @@ app.controller('VisCalendar', ['$scope', '$compile', 'DataProvider', function($s
 
   ];
   // TODO(koper) This should be changed to now in the final product (+ possibly remove property)
-  $scope.now = new Date(2013, 6, 31);
+  $scope.now = new Date(2013, 7, 25);
 
   // TODO(koper) Change into year selection component and get rid of literals.
   $scope.year = { id: 2013 };
@@ -659,7 +663,7 @@ var drawSportIcons = function($scope, data) {
     return +(i * sportIconWidth) + 'px';
   };
   var setMetricBackgroundColor = function(id, bgColor) {
-    d3.selectAll('#sport-summary .data span.' + id).style('background-color', bgColor);
+    d3.selectAll('#sport-summary .data span.sport-' + id).style('background-color', bgColor);
   };
 
   // Displaying all sport metrics
@@ -706,12 +710,13 @@ var drawSportIcons = function($scope, data) {
     // enter
     var enter = entries.enter()
       .append(eltType)
-      .attr('class', function(s) { return s.id })
+      .attr('class', function(s) { return 'sport-' + s.id; })
       .classed('value', metric != 'icon')
       .classed('hasData', hasData)
       .style('left', leftPosition)
       .style('opacity', 0);
     if (metric == 'icon') {
+      // TODO(koper) Use directive instead.
       enter
         .attr('src', function(s) {
           // TODO(koper) Change it into a property on sport, which should be changed into a proper class.
