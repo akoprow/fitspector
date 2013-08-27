@@ -4,8 +4,28 @@
 // Constants
 var TRANSITIONS_DURATION = 400;
 
+var services = angular.module('fitspector.services', []);
 var directives = angular.module('fitspector.directives', []);
-var app = angular.module('fitspector', ['fitspector.directives']);
+var app = angular.module('fitspector', ['fitspector.directives', 'fitspector.services']);
+
+services.factory('DataProvider', function() {
+  var sports = {
+    run: { name: 'Running', color: '#b3dc6c' },
+    wt: { name: 'Weight training', color: '#9fc6e7' },
+    yoga: { name: 'Yoga', color: '#fad165' },
+    hik: { name: 'Hiking', color: '#ac725e' },
+    volb: { name: 'Volleyball', color: '#f691b2' },
+    sq: { name: 'Squash', color: '#b99aff' },
+    xcs: { name: 'Cross-country skiing', color: '#cca6ac' }
+  };
+
+  return {
+    sports: sports,
+    allSports: _.map(_.keys(sports), function(sport) {
+      return _.extend(sports[sport], { id: sport });
+    })
+  };
+});
 
 directives.directive('workout', function() {
   return {
@@ -28,21 +48,7 @@ directives.directive('workouts', function() {
 });
 
 // Calendar controller
-app.controller('VisCalendar', ['$scope', function($scope) {
-  $scope.sports = {
-    all: { name: 'All' },
-    run: { name: 'Running', color: '#b3dc6c' },
-    wt: { name: 'Weight training', color: '#9fc6e7' },
-    yoga: { name: 'Yoga', color: '#fad165' },
-    hik: { name: 'Hiking', color: '#ac725e' },
-    volb: { name: 'Volleyball', color: '#f691b2' },
-    sq: { name: 'Squash', color: '#b99aff' },
-    xcs: { name: 'Cross-country skiing', color: '#cca6ac' }
-  };
-
-  $scope.allSports = _.map(['all', 'run', 'wt', 'yoga', 'hik', 'volb', 'sq', 'xcs'], function(sport) {
-    return _.extend($scope.sports[sport], { id: sport });
-  });
+app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataProvider) {
   $scope.allSportSummaryTypes = [
     {id: 'weeklyAvg', name: 'Weekly avg.'},
     {id: 'total', name: 'Total'}
@@ -101,7 +107,7 @@ app.controller('VisCalendar', ['$scope', function($scope) {
 
   $scope.timeZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
   $scope.paceZoneColors = ['#ccc', "#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"];
-  $scope.sportFilter = $scope.allSports[0];
+  $scope.sportFilter = { id: 'all' };
   $scope.displayType = $scope.allDisplayTypes[0];
   $scope.sportSummaryType = $scope.allSportSummaryTypes[0];
 
@@ -110,7 +116,7 @@ app.controller('VisCalendar', ['$scope', function($scope) {
 
   var container = drawCalendar($scope);
   var redraw = function() {
-    drawData($scope, container);
+    drawData($scope, DataProvider, container);
   };
 
   $scope.setSportFilter = function(sport) {
@@ -198,11 +204,11 @@ var computeData = function() {
 // TODO(koper) Remove this global... make a DataService instead.
 var workoutsData = computeData();
 
-var dailyDataBySports = function($scope, d) {
+var dailyDataBySports = function($scope, DataProvider, d) {
   var type = $scope.displayType.id;
   var total = 0;
   return _.map(d.exercises, function(e, idx) {
-    if (!$scope.sports[e.exerciseType]) {
+    if (!DataProvider.sports[e.exerciseType]) {
       throw new Error('Unknown exercise: ' + e.exerciseType);
     }
     switch (type) {
@@ -219,7 +225,7 @@ var dailyDataBySports = function($scope, d) {
       day: d.day,
       key: d.day + idx,
       value: total,
-      color: $scope.sports[e.exerciseType].color,
+      color: DataProvider.sports[e.exerciseType].color,
     };
   });
 };
@@ -231,7 +237,7 @@ var addZones = function(z1, z2) {
   });
 };
 
-var dailyDataByZones = function($scope, d) {
+var dailyDataByZones = function($scope, DataProvider, d) {
   var type = $scope.displayType.id;
   var zones = [0, 0, 0, 0, 0, 0, 0];
   var colors;
@@ -247,7 +253,7 @@ var dailyDataByZones = function($scope, d) {
   }
 
   _.each(d.exercises, function(e) {
-    if (!$scope.sports[e.exerciseType]) {
+    if (!DataProvider.sports[e.exerciseType]) {
       throw new Error('Unknown exercise: ' + e.exerciseType);
     }
     switch (type) {
@@ -308,7 +314,7 @@ var filterData = function($scope) {
   return data;
 };
 
-var computeWorkoutData = function($scope, data) {
+var computeWorkoutData = function($scope, DataProvider, data) {
   var type = $scope.displayType.id;
 
   // Compute visual representation.
@@ -316,10 +322,10 @@ var computeWorkoutData = function($scope, data) {
     switch (type) {
       case 'time':
       case 'distance':
-        return dailyDataBySports($scope, d);
+        return dailyDataBySports($scope, DataProvider, d);
       case 'hr':
       case 'pace':
-        return dailyDataByZones($scope, d);
+        return dailyDataByZones($scope, DataProvider, d);
       default: throw Error('Unknown grouping: ' + type);
     }
   });
@@ -330,7 +336,7 @@ var computeWorkoutData = function($scope, data) {
   return data.reverse();
 };
 
-var computeTotals = function($scope, data) {
+var computeTotals = function($scope, DataProvider, data) {
   var type = $scope.displayType.id;
   var sportTotals = {};
   _.each(data, function(d) {
@@ -344,7 +350,7 @@ var computeTotals = function($scope, data) {
     });
   });
   var data = _.map(sportTotals, function(value, key) {
-    return _.extend(value, _.extend($scope.sports[key], {id: key}));
+    return _.extend(value, _.extend(DataProvider.sports[key], {id: key}));
   });
   var sortBy;
   switch (type) {
@@ -678,16 +684,16 @@ var drawSportIcons = function($scope, data) {
   });
 };
 
-var drawData = function($scope, container) {
+var drawData = function($scope, DataProvider, container) {
   // Prepare the data.
   var data = filterData($scope);
 
   // Draw workouts data.
-  var workoutData = computeWorkoutData($scope, data);
+  var workoutData = computeWorkoutData($scope, DataProvider, data);
   drawWorkouts($scope, container, workoutData);
 
   // Draw sport summaries.
-  var totals = computeTotals($scope, data);
+  var totals = computeTotals($scope, DataProvider, data);
   drawSportIcons($scope, totals);
 };
 
