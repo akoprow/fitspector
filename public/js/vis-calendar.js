@@ -187,11 +187,57 @@ directives.directive('metricTime', function() {
       model: '='
     },
     link: function($scope) {
-      $scope.$watch('model', function(value) {
-	// TODO(koper) There must be a better way to do this conversion...
-	var h = Math.floor(value / 3600);
-	var m = Math.floor((value - h*3600) / 60);
-	$scope.metricValue = h + ':' + (m < 10 ? '0' : '') + m;
+      $scope.$watch('model', function(workout) {
+        var s = workout.totalTime;
+	$scope.metricValue = s;
+        $scope.show = s;
+      });
+    }
+  };
+});
+
+// --------------------------------------------------------------------------------------------------------
+// ---------------------------------------- distance metric directive -------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+directives.directive('metricDistance', function() {
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'views/metric-distance.html',
+    scope: {
+      model: '='
+    },
+    link: function($scope) {
+      $scope.$watch('model', function(workout) {
+        var m = workout.totalDistance;
+        $scope.show = m;
+	$scope.metricValue = m;
+      });
+    }
+  };
+});
+
+// --------------------------------------------------------------------------------------------------------
+// ------------------------------------------ pace metric directive ---------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+directives.directive('metricPace', function() {
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'views/metric-pace.html',
+    scope: {
+      model: '='
+    },
+    link: function($scope) {
+      $scope.$watch('model', function(workout) {
+        var sec = workout.totalTime;
+        var m = workout.totalDistance;
+        $scope.show = sec && m;
+        if ($scope.show) {
+	  $scope.metricValue = sec / (m / 1000);
+        }
       });
     }
   };
