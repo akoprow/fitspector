@@ -38,13 +38,18 @@ services.factory('DataProvider', function() {
     sq: { name: 'Squash', color: '#b99aff' },
     xcs: { name: 'Cross-country skiing', color: '#cca6ac' }
   };
+  var workoutsData = computeData();
 
   return {
+    // TODO(koper) This should not be exposed; instead we should have appropriate ways to access data.
+    workoutsData: workoutsData,
     sports: sports,
     allSports: _.map(_.keys(sports), function(sport) {
       return _.extend(sports[sport], { id: sport });
     }),
-    workoutsData: computeData()
+    getDayWorkouts: function(day) {
+      return workoutsData[day];
+    }
   };
 });
 
@@ -73,12 +78,15 @@ var computeData = function() {
 // ------------------------------------------- workout directive ------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
-directives.directive('workout', function() {
+directives.directive('workout', ['DataProvider', function(DataProvider) {
   return {
     restrict: 'E',
-    template: 'Howdie how'
+    templateUrl: 'views/workout.html',
+    scope: {
+      model: '='
+    },
   };
-});
+}]);
 
 // --------------------------------------------------------------------------------------------------------
 // ------------------------------------------ workouts directive ------------------------------------------
@@ -87,12 +95,12 @@ directives.directive('workout', function() {
 directives.directive('workouts', ['DataProvider', function(DataProvider) {
   return {
     restrict: 'E',
-    template: '<workout ng-repeat="workout in workouts" data="workout"></workout>',
+    template: '<workout ng-repeat="workout in workouts" model="workout"></workout>',
     scope: {},
     link: function($scope, element, attrs) {
       // TODO(koper) This should take workouts data from DataService instead of the global variable.
       var day = new Date(parseInt(attrs.day));
-      $scope.workouts = DataProvider.workoutsData[day];
+      $scope.workouts = DataProvider.getDayWorkouts(day);
     }
   };
 }]);
