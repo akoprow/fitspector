@@ -23,9 +23,31 @@ services.factory('DataProvider', function() {
     sports: sports,
     allSports: _.map(_.keys(sports), function(sport) {
       return _.extend(sports[sport], { id: sport });
-    })
+    }),
+    workoutsData: computeData()
   };
 });
+
+var computeData = function() {
+  var sum = function(d) {
+    return _.reduce(d, function(x, y) { return x + y }, 0);
+  };
+  var makeWorkout = function(d) {
+    var date = new Date(d.startedAt);
+    return {
+      exerciseType: d.exerciseType.toLowerCase(),
+      day: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+      date: date,
+      time: d.time,
+      pace: d.pace,
+      totalTime: sum(d.time),
+      totalDistance: sum(d.pace)
+    }
+  };
+  var data = _.map(workouts, makeWorkout);
+  var data = _.groupBy(data, "day");
+  return data;
+};
 
 directives.directive('workout', function() {
   return {
@@ -34,7 +56,7 @@ directives.directive('workout', function() {
   };
 });
 
-directives.directive('workouts', function() {
+directives.directive('workouts', ['DataProvider', function(DataProvider) {
   return {
     restrict: 'E',
     template: '<workout ng-repeat="workout in workouts" data="workout"></workout>',
@@ -42,10 +64,10 @@ directives.directive('workouts', function() {
     link: function($scope, element, attrs) {
       // TODO(koper) This should take workouts data from DataService instead of the global variable.
       var day = new Date(parseInt(attrs.day));
-      $scope.workouts = workoutsData[day];
+      $scope.workouts = DataProvider.workoutsData[day];
     }
   };
-});
+}]);
 
 // Calendar controller
 app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataProvider) {
@@ -180,30 +202,6 @@ var getExplanations = function($scope) {
   return [getGeneralText(), getSizeText(), getColorText()];
 };
 
-var computeData = function() {
-  var sum = function(d) {
-    return _.reduce(d, function(x, y) { return x + y }, 0);
-  };
-  var makeWorkout = function(d) {
-    var date = new Date(d.startedAt);
-    return {
-      exerciseType: d.exerciseType.toLowerCase(),
-      day: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
-      date: date,
-      time: d.time,
-      pace: d.pace,
-      totalTime: sum(d.time),
-      totalDistance: sum(d.pace)
-    }
-  };
-  var data = _.map(workouts, makeWorkout);
-  var data = _.groupBy(data, "day");
-  return data;
-};
-
-// TODO(koper) Remove this global... make a DataService instead.
-var workoutsData = computeData();
-
 var dailyDataBySports = function($scope, DataProvider, d) {
   var type = $scope.displayType.id;
   var total = 0;
@@ -289,11 +287,11 @@ var dailyDataByZones = function($scope, DataProvider, d) {
   });
 };
 
-var filterData = function($scope) {
+var filterData = function($scope, DataProvider) {
   var year = $scope.year.id;
   var sport = $scope.sportFilter.id;
 
-  var workouts = _.pairs(workoutsData);
+  var workouts = _.pairs(DataProvider.workoutsData);
   workouts = _.map(workouts, function(d) { return { day: d[1][0].day, exercises: d[1] }; });
 
   // Filter by year.
@@ -686,7 +684,7 @@ var drawSportIcons = function($scope, data) {
 
 var drawData = function($scope, DataProvider, container) {
   // Prepare the data.
-  var data = filterData($scope);
+  var data = filterData($scope, DataProvider);
 
   // Draw workouts data.
   var workoutData = computeWorkoutData($scope, DataProvider, data);
