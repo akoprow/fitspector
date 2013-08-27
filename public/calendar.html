@@ -170,7 +170,7 @@
                     ng-repeat="type in allDisplayTypes"
                     ng-class="{active: displayType.id == type.id}"
                     ng-click="setDisplayType(type)">
-              <i class="icon-{{type.icon}} icon-white"></i> <span class="hidden-phone" ng-bind="type.name"></span>
+              <icon type="{{type.id}}" variant="white"></icon> <span class="hidden-phone" ng-bind="type.name"></span>
             </button>
           </div>
           <div class="btn-group year-selection">
@@ -203,19 +203,19 @@
               <td class="data"></td>
             </tr>
             <tr class="data-row sessions">
-              <th><span class="text">Sessions <i class="icon icon-ok"></i></th>
+              <th><span class="text">Sessions <icon type="sessions"></icon></th>
               <td class="data"></td>
             </tr>
             <tr class="data-row time">
-              <th><span class="text">Time <i class="icon icon-time"></i></th>
+              <th><span class="text">Time <icon type="time"></icon></th>
               <td class="data"></td>
             </tr>
             <tr class="data-row distance">
-              <th><span class="text">Distance <i class="icon icon-road"></i></th>
+              <th><span class="text">Distance <icon type="distance"></icon></th>
               <td class="data"></td>
             </tr>
             <tr class="data-row elevation">
-              <th><span class="text">Elevation gain <i class="icon icon-chevron-up"></i></th>
+              <th><span class="text">Elevation gain <icon type="elevation"><icon></th>
               <td class="data"></td>
             </tr>
           </table>

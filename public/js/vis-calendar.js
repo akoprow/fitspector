@@ -25,6 +25,22 @@ $('body').popover({
 var TRANSITIONS_DURATION = 400;
 
 // --------------------------------------------------------------------------------------------------------
+// --------------------------------------------- Icons service --------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+services.factory('Icons', function() {
+  return {
+    time: 'time',
+    distance: 'road',
+    hr: 'heart',
+    pace: 'fast-forward',
+    elevation: 'chevron-up',
+    elevationZones: 'signal',
+    sessions: 'ok'
+  };
+});
+
+// --------------------------------------------------------------------------------------------------------
 // ----------------------------------------- DataProvider service -----------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
@@ -75,10 +91,10 @@ var computeData = function() {
 };
 
 // --------------------------------------------------------------------------------------------------------
-// ------------------------------------------ sport-icon directive ----------------------------------------
+// ------------------------------------------- iconSport directive ----------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
-directives.directive('sportIcon', ['DataProvider', function(DataProvider) {
+directives.directive('iconSport', ['DataProvider', function(DataProvider) {
   return {
     restrict: 'E',
     replace: true,
@@ -90,6 +106,30 @@ directives.directive('sportIcon', ['DataProvider', function(DataProvider) {
     },
     link: function($scope, elem, attrs) {
       $scope.sport = DataProvider.sports[$scope.sportId];
+    }
+  };
+}]);
+
+// --------------------------------------------------------------------------------------------------------
+// --------------------------------------------- icon directive -------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+directives.directive('icon', ['Icons', function(Icons) {
+  return {
+    restrict: 'E',
+    template: '<i class="{{cssClass}} icon-{{iconId}}"></i>',
+    scope: {
+      type: '@',
+      variant: '@'
+    },
+    link: function($scope, elem, attrs) {
+      $scope.cssClass = 'icon';
+      if (attrs.variant == 'white') {
+	$scope.cssClass = 'icon-white';
+      };
+      attrs.$observe('type', function(type) {
+	$scope.iconId = Icons[type];
+      });
     }
   };
 }]);
@@ -132,7 +172,7 @@ directives.directive('workouts', ['DataProvider', function(DataProvider) {
 // --------------------------------------------------------------------------------------------------------
 
 // Calendar controller
-app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataProvider) {
+app.controller('VisCalendar', ['$scope', 'DataProvider', 'Icons', function($scope, DataProvider, Icons) {
   $scope.allSportSummaryTypes = [
     {id: 'weeklyAvg', name: 'Weekly avg.'},
     {id: 'total', name: 'Total'}
@@ -141,28 +181,24 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     {
       id: 'time',
       name: 'Time',
-      icon: 'time'
     },
     {
       id: 'distance',
       name: 'Distance',
-      icon: 'road'
     },
     {
       id: 'hr',
       name: 'HR zones',
-      icon: 'heart'
     },
     {
       id: 'pace',
       name: 'Pace zones',
-      icon: 'fast-forward'
     },
     {
-      id: 'elevation',
+      id: 'elevationZones',
       name: 'Elevation zones',
-      icon: 'signal'
     }
+
   ];
   // TODO(koper) This should be changed to now in the final product (+ possibly remove property)
   $scope.now = new Date(2013, 6, 31);
@@ -672,7 +708,7 @@ var drawSportIcons = function($scope, data) {
     if (metric == 'icon') {
       enter
         .attr('src', function(s) {
-          // TODO(koper) Change it into a property on sport.
+          // TODO(koper) Change it into a property on sport, which should be changed into a proper class.
           return 'img/sport/' + s.id + '.png';
         })
         .attr('rel', 'tooltip')
