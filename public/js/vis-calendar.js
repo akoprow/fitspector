@@ -1,12 +1,32 @@
 // TODO: Make 'data' service.
 // TODO: Make workouts directive.
 
-// Constants
-var TRANSITIONS_DURATION = 400;
+// --------------------------------------------------------------------------------------------------------
+// ------------------------------------------- Angular modules --------------------------------------------
+// --------------------------------------------------------------------------------------------------------
 
 var services = angular.module('fitspector.services', []);
 var directives = angular.module('fitspector.directives', []);
 var app = angular.module('fitspector', ['fitspector.directives', 'fitspector.services']);
+
+// --------------------------------------------------------------------------------------------------------
+// ----------------------------------------------- Globals ------------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+// TODO(koper) Use Angular-UI instead? Use d3-bootstrap?
+$('body').tooltip({
+  selector: '[rel=tooltip]'
+});
+$('body').popover({
+  selector: '[rel=popover]'
+});
+
+// Constants
+var TRANSITIONS_DURATION = 400;
+
+// --------------------------------------------------------------------------------------------------------
+// ----------------------------------------- DataProvider service -----------------------------------------
+// --------------------------------------------------------------------------------------------------------
 
 services.factory('DataProvider', function() {
   var sports = {
@@ -49,12 +69,20 @@ var computeData = function() {
   return data;
 };
 
+// --------------------------------------------------------------------------------------------------------
+// ------------------------------------------- workout directive ------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
 directives.directive('workout', function() {
   return {
     restrict: 'E',
     template: 'Howdie how'
   };
 });
+
+// --------------------------------------------------------------------------------------------------------
+// ------------------------------------------ workouts directive ------------------------------------------
+// --------------------------------------------------------------------------------------------------------
 
 directives.directive('workouts', ['DataProvider', function(DataProvider) {
   return {
@@ -68,6 +96,10 @@ directives.directive('workouts', ['DataProvider', function(DataProvider) {
     }
   };
 }]);
+
+// --------------------------------------------------------------------------------------------------------
+// ---------------------------------------- VisCalendar controller ----------------------------------------
+// --------------------------------------------------------------------------------------------------------
 
 // Calendar controller
 app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataProvider) {
@@ -694,11 +726,3 @@ var drawData = function($scope, DataProvider, container) {
   var totals = computeTotals($scope, DataProvider, data);
   drawSportIcons($scope, totals);
 };
-
-// TODO(koper) Use Angular-UI instead? Use d3-bootstrap?
-$('body').tooltip({
-  selector: '[rel=tooltip]'
-});
-$('body').popover({
-  selector: '[rel=popover]'
-});
