@@ -1,5 +1,19 @@
-// TODO: Make 'data' service.
-// TODO: Make workouts directive.
+
+// --------------------------------------------------------------------------------------------------------
+// ---------------------------------------------- Constants -----------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+// Constants
+var TRANSITIONS_DURATION = 400;
+
+// --------------------------------------------------------------------------------------------------------
+// -------------------------------------- Global page modifications ---------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+// TODO(koper) Use Angular-UI instead? Use d3-bootstrap?
+$('body').tooltip({
+  selector: '[rel=tooltip]'
+});
 
 // --------------------------------------------------------------------------------------------------------
 // ------------------------------------------- Angular modules --------------------------------------------
@@ -8,18 +22,6 @@
 var services = angular.module('fitspector.services', []);
 var directives = angular.module('fitspector.directives', []);
 var app = angular.module('fitspector', ['fitspector.directives', 'fitspector.services']);
-
-// --------------------------------------------------------------------------------------------------------
-// ----------------------------------------------- Globals ------------------------------------------------
-// --------------------------------------------------------------------------------------------------------
-
-// TODO(koper) Use Angular-UI instead? Use d3-bootstrap?
-$('body').tooltip({
-  selector: '[rel=tooltip]'
-});
-
-// Constants
-var TRANSITIONS_DURATION = 400;
 
 // --------------------------------------------------------------------------------------------------------
 // ----------------------------------------- DataProvider service -----------------------------------------
@@ -37,9 +39,9 @@ services.factory('DataProvider', function() {
     swim: { name: 'Swimming', color: '#ffad46' },
     row: { name: 'Rowing', color: '#d06b64' },
     bik: { name: 'Cycling', color: '#fa573c' },
-    ten: { name: 'Tennis', color: '#9fe1e7' },
+    ten: { name: 'Tennis', color: '#9fe1e7' }
   };
-  var workoutsData = computeData();
+  var workoutsData = computeData(workouts);
 
   return {
     // TODO(koper) This should not be exposed; instead we should have appropriate ways to access data.
@@ -54,9 +56,9 @@ services.factory('DataProvider', function() {
   };
 });
 
-var computeData = function() {
+var computeData = function(workouts) {
   var sum = function(d) {
-    return _.reduce(d, function(x, y) { return x + y }, 0);
+    return _.reduce(d, function(x, y) { return x + y; }, 0);
   };
   var makeWorkout = function(d) {
     var date = new Date(d.startedAt);
@@ -68,10 +70,10 @@ var computeData = function() {
       pace: d.pace,
       totalTime: sum(d.time),
       totalDistance: sum(d.pace)
-    }
+    };
   };
   var data = _.map(workouts, makeWorkout);
-  var data = _.groupBy(data, "day");
+  data = _.groupBy(data, "day");
   return data;
 };
 
@@ -124,7 +126,7 @@ directives.directive('icon', function() {
       $scope.cssClass = 'icon';
       if (attrs.variant == 'white') {
 	$scope.cssClass = 'icon-white';
-      };
+      }
       attrs.$observe('type', function(type) {
 	$scope.iconId = getIconId(type);
       });
@@ -147,8 +149,8 @@ directives.directive('metricTime', function() {
     link: function($scope) {
       $scope.$watch('model', function(value) {
 	// TODO(koper) There must be a better way to do this conversion...
-	h = Math.floor(value / 3600);
-	m = Math.floor((value - h*3600) / 60);
+	var h = Math.floor(value / 3600);
+	var m = Math.floor((value - h*3600) / 60);
 	$scope.metricValue = h + ':' + (m < 10 ? '0' : '') + m;
       });
     }
@@ -203,23 +205,23 @@ app.controller('VisCalendar', ['$scope', '$compile', 'DataProvider', function($s
   $scope.allDisplayTypes = [
     {
       id: 'time',
-      name: 'Time',
+      name: 'Time'
     },
     {
       id: 'distance',
-      name: 'Distance',
+      name: 'Distance'
     },
     {
       id: 'hr',
-      name: 'HR zones',
+      name: 'HR zones'
     },
     {
       id: 'pace',
-      name: 'Pace zones',
+      name: 'Pace zones'
     },
     {
       id: 'elevationZones',
-      name: 'Elevation zones',
+      name: 'Elevation zones'
     }
 
   ];
@@ -245,7 +247,7 @@ app.controller('VisCalendar', ['$scope', '$compile', 'DataProvider', function($s
   $scope.prevYear = function() {
     if (!$scope.disablePrevYear()) {
       $scope.year.id--;
-    };
+    }
   };
 
   $scope.timeZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
@@ -255,7 +257,7 @@ app.controller('VisCalendar', ['$scope', '$compile', 'DataProvider', function($s
   $scope.sportSummaryType = $scope.allSportSummaryTypes[0];
 
   $scope.topMargin = 15;
-  $scope.cellSize = 45;
+  $scope.cellSize = 20;
 
   $scope.selectedDay = null;
   $scope.selectedDayText = function() {
@@ -303,7 +305,9 @@ var getExplanations = function($scope) {
         return 'You are visualizing workout distance, grouped by pace zones.';
       case 'elevation':
         return 'You are visualizing workout elevation change, grouped by climb categories.';
-    };
+      default:
+        throw new Error('Unknown displayType: ' + $scope.displayType.id);
+    }
   };
   var getSizeText = function() {
     switch ($scope.displayType.id) {
@@ -314,7 +318,9 @@ var getExplanations = function($scope) {
       case 'distance':
       case 'elevation':
         return 'Box sizes correspond to workout distance (see legend on the right)';
-    };
+      default:
+        throw new Error('Unknown displayType: ' + $scope.displayType.id);
+    }
   };
   var getColorText = function() {
     switch ($scope.displayType.id) {
@@ -327,7 +333,9 @@ var getExplanations = function($scope) {
         return 'Box colors correspond to pace zones (see legend on the right)';
       case 'elevation':
         return 'Box colors correspond to climb categories (see legend on the right)';
-    };
+      default:
+        throw new Error('Unknown displayType: ' + $scope.displayType.id);
+    }
   };
   return [getGeneralText(), getSizeText(), getColorText()];
 };
@@ -353,7 +361,7 @@ var dailyDataBySports = function($scope, DataProvider, d) {
       day: d.day,
       key: d.day + idx,
       value: total,
-      color: DataProvider.sports[e.exerciseType].color,
+      color: DataProvider.sports[e.exerciseType].color
     };
   });
 };
@@ -413,7 +421,7 @@ var dailyDataByZones = function($scope, DataProvider, d) {
       value: total,
       color: zone.color,
       key: d.day + idx
-    }
+    };
   });
 };
 
@@ -477,7 +485,7 @@ var computeTotals = function($scope, DataProvider, data) {
       sportTotals[e.exerciseType] = v;
     });
   });
-  var data = _.map(sportTotals, function(value, key) {
+  data = _.map(sportTotals, function(value, key) {
     return _.extend(value, _.extend(DataProvider.sports[key], {id: key}));
   });
   var sortBy;
@@ -518,8 +526,8 @@ var drawCalendar = function($scope, $compile) {
   container.selectAll('.monthLabel')
     .data(function(year) {
       return d3.time.months(
-	  new Date(year, 0, 1),
-	  new Date(year + 1, 0, 1));
+        new Date(year, 0, 1),
+	new Date(year + 1, 0, 1));
     })
   .enter()
     .append('text')
@@ -539,7 +547,7 @@ var drawCalendar = function($scope, $compile) {
     .text(d3.time.format('%b'));
 
   // Container body
-  var offsetY = 0.5*$scope.cellSize + $scope.topMargin;
+  offsetY = 0.5*$scope.cellSize + $scope.topMargin;
 
   container = container.append('g')
       .attr('transform', 'translate(1,' + offsetY + ')');
@@ -557,8 +565,8 @@ var drawDayCells = function($scope, $compile, container) {
   container.selectAll('.day')
     .data(function(d) {
       return d3.time.days(
-	  new Date(d, 0, 1),
-	  new Date(d + 1, 0, 1));
+	new Date(d, 0, 1),
+	new Date(d + 1, 0, 1));
     })
   .enter()
     .append('rect')
@@ -586,19 +594,19 @@ var drawMonthBorders = function($scope, container) {
     var w0 = +getWeek(t0);
     var d1 = +getWeekday(t1);
     var w1 = +getWeek(t1);
-    return 'M' + (w0 + 1) * cellSize + ',' + d0 * cellSize
-        + 'H' + w0 * cellSize + 'V' + 7 * cellSize
-        + 'H' + w1 * cellSize + 'V' + (d1 + 1) * cellSize
-        + 'H' + (w1 + 1) * cellSize + 'V' + 0
-        + 'H' + (w0 + 1) * cellSize + 'Z';
+    return 'M' + (w0 + 1) * cellSize + ',' + d0 * cellSize +
+      'H' + w0 * cellSize + 'V' + 7 * cellSize +
+      'H' + w1 * cellSize + 'V' + (d1 + 1) * cellSize +
+      'H' + (w1 + 1) * cellSize + 'V' + 0 +
+      'H' + (w0 + 1) * cellSize + 'Z';
   };
 
   // Draw month borders
   var enter = container.selectAll('.month')
     .data(function(d) {
       return d3.time.months(
-	  new Date(d, 0, 1),
-	  new Date(d + 1, 0, 1));
+	new Date(d, 0, 1),
+	new Date(d + 1, 0, 1));
     })
   .enter()
     .append('path')
@@ -670,29 +678,30 @@ var drawSportIcons = function($scope, data) {
   _.each(['icon', 'sessions', 'time', 'distance', 'elevation'], function(metric) {
     var hasData = function(s) {
       switch (metric) {
-	case 'icon': return true;
-	case 'sessions': return s.num > 0;
-	case 'time': return s.time > 0;
-	case 'distance': return s.distance > 0;
-	case 'elevation': return s.elevation > 0;
-	default: throw new Error('Uknown metric: ' + metric);
-      };
+      case 'icon': return true;
+      case 'sessions': return s.num > 0;
+      case 'time': return s.time > 0;
+      case 'distance': return s.distance > 0;
+      case 'elevation': return s.elevation > 0;
+      default: throw new Error('Uknown metric: ' + metric);
+      }
     };
     var sportBackgroundColor = function(s) {
       var hasData = function() {
-    	switch (getType()) {
-  	  case 'hr': // fall-through
-	  case 'time': return s.time > 0;
-	  case 'distance': // fall-through
-	  case 'pace': return s.distance > 0;
-	  case 'elevation': return s.elevation > 0;
+        switch (getType()) {
+        case 'hr': // fall-through
+	case 'time': return s.time > 0;
+	case 'distance': // fall-through
+	case 'pace': return s.distance > 0;
+	case 'elevation': return s.elevation > 0;
+        default: throw new Error('Unknown type: ' + getType());
 	}
       };
       if (getType() == 'time' || getType() == 'distance') { // sport colors matter
         if (hasData()) {
-  	  return s.color; // sport with data
+          return s.color; // sport with data
 	} else {
-	  return '#ccc'; // inactive sport
+          return '#ccc'; // inactive sport
 	}
       } else if (hasData()) {
 	return '#f5f5f5';
@@ -732,7 +741,7 @@ var drawSportIcons = function($scope, data) {
         .on('mouseout', function(s) {
           setMetricBackgroundColor(s.id,  'transparent');
         });
-    };
+    }
 
     // exit
     entries.exit().transition()
@@ -749,46 +758,46 @@ var drawSportIcons = function($scope, data) {
       .text(' ');
     if (metric == 'icon') {
       update.style('background-color', sportBackgroundColor);
-    };
+    }
     var dataUpdate = update.filter(hasData);
     switch (metric) {
       case 'icon':
         break;
       case 'sessions':
         dataUpdate.text(function(s) {
-	  if (showAvg) {
-	    return (s.num / numWeeks).toFixed(1);
-	  } else {
-	    return s.num;
-	  }
-	});
+          if (showAvg) {
+            return (s.num / numWeeks).toFixed(1);
+          } else {
+            return s.num;
+          }
+        });
         break;
       case 'time':
         dataUpdate.text(function(s) {
-   	  var h = s.time / 3600;
- 	  if (showAvg) {
-	    return (h / numWeeks).toFixed(1);
-	  } else {
-	    return h.toFixed(0);
-	  }
-	});
-        break;
+          var h = s.time / 3600;
+          if (showAvg) {
+            return (h / numWeeks).toFixed(1);
+          } else {
+            return h.toFixed(0);
+          }
+        });
+      break;
       case 'distance':
         dataUpdate.text(function(s) {
-   	  var km = s.distance / 1000;
- 	  if (showAvg) {
-	    return (km / numWeeks).toFixed(1);
-	  } else {
-	    return km.toFixed(0);
-	  }
-	});
+          var km = s.distance / 1000;
+          if (showAvg) {
+            return (km / numWeeks).toFixed(1);
+          } else {
+            return km.toFixed(0);
+          }
+        });
         break;
       case 'elevation':
         dataUpdate.text(function(s) { return ''; });
         break;
       default:
         throw new Error('Unknown metric: ' + metric);
-    };
+    }
   });
 };
 
