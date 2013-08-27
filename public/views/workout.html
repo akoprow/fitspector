@@ -1,6 +1,10 @@
 <div class="workout">
   <icon-sport sport-id="model.exerciseType"></icon-sport>
-  <metric-time model="model.totalTime"></metric-time>
-  <icon type="distance"></icon> Distance: {{model.totalDistance}}
-  Sport id: {{model.exerciseType}}
+  <div class="note" ng-bind="model.note"></div>
+  <div class="metrics">
+    <metric-time time="model.totalTime"></metric-time>
+    <metric-distance distance="model.totalDistance"></metric-distance>
+    <metric-pace time="model.totalTime" distance="model.totalDistance"></metric-pace>
+    <metric-hr hr="model.avgHR"></metric-hr>
+  </div>
 </div>

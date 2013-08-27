@@ -72,7 +72,10 @@ var computeData = function(workouts) {
       time: d.time,
       pace: d.pace,
       totalTime: sum(d.time),
-      totalDistance: sum(d.pace)
+      totalDistance: sum(d.pace),
+      note: d.note,
+      // TODO(koper) provide real values
+      avgHR: 127
     };
   };
   var data = _.map(workouts, makeWorkout);
@@ -184,11 +187,10 @@ directives.directive('metricTime', function() {
     replace: true,
     templateUrl: 'views/metric-time.html',
     scope: {
-      model: '='
+      time: '='
     },
     link: function($scope) {
-      $scope.$watch('model', function(workout) {
-        var s = workout.totalTime;
+      $scope.$watch('time', function(s) {
 	$scope.metricValue = s;
         $scope.show = s;
       });
@@ -206,11 +208,10 @@ directives.directive('metricDistance', function() {
     replace: true,
     templateUrl: 'views/metric-distance.html',
     scope: {
-      model: '='
+      distance: '='
     },
     link: function($scope) {
-      $scope.$watch('model', function(workout) {
-        var m = workout.totalDistance;
+      $scope.$watch('distance', function(m) {
         $scope.show = m;
 	$scope.metricValue = m;
       });
@@ -228,16 +229,44 @@ directives.directive('metricPace', function() {
     replace: true,
     templateUrl: 'views/metric-pace.html',
     scope: {
-      model: '='
+      time: '=',
+      distance: '='
     },
     link: function($scope) {
-      $scope.$watch('model', function(workout) {
-        var sec = workout.totalTime;
-        var m = workout.totalDistance;
+      var recompute = function() {
+        var sec = $scope.time;
+        var m = $scope.distance;
         $scope.show = sec && m;
         if ($scope.show) {
 	  $scope.metricValue = sec / (m / 1000);
         }
+      };
+      $scope.$watch('time', function() {
+        recompute();
+      });
+      $scope.$watch('distance', function() {
+        recompute();
+      });
+    }
+  };
+});
+
+// --------------------------------------------------------------------------------------------------------
+// ------------------------------------------- HR metric directive ----------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+directives.directive('metricHr', function() {
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'views/metric-hr.html',
+    scope: {
+      hr: '='
+    },
+    link: function($scope) {
+      $scope.$watch('hr', function(bpm) {
+        $scope.show = bpm;
+        $scope.metricValue = bpm.toFixed(0);
       });
     }
   };
