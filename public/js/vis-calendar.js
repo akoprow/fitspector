@@ -129,6 +129,29 @@ directives.directive('icon', function() {
 });
 
 // --------------------------------------------------------------------------------------------------------
+// --------------------------------------------- time directive ------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+directives.directive('metricTime', function() {
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'views/metric-time.html',
+    scope: {
+      model: '='
+    },
+    link: function($scope) {
+      $scope.$watch('model', function(value) {
+	// TODO(koper) There must be a better way to do this conversion...
+	h = Math.floor(value / 3600);
+	m = Math.floor((value - h*3600) / 60);
+	$scope.metricValue = h + ':' + (m < 10 ? '0' : '') + m;
+      });
+    }
+  };
+});
+
+// --------------------------------------------------------------------------------------------------------
 // ------------------------------------------- workout directive ------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
@@ -139,7 +162,7 @@ directives.directive('workout', ['DataProvider', function(DataProvider) {
     templateUrl: 'views/workout.html',
     scope: {
       model: '='
-    },
+    }
   };
 }]);
 
