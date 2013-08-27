@@ -135,6 +135,7 @@
       #sport-summary .icon {
         margin: 0 15px;
       }
+
       .well .btn-group {
         display: block;
       }
@@ -145,12 +146,6 @@
     </style>
   </head>
   <body ng-app="fitspector" ng-controller="VisCalendar">
-<!--
-    <workouts day="1368514800000"></workouts>
-    <workouts day="highlightedDay.getTime()"></workouts>
--->
-    Selected day: {{highlightedDay.getTime()}}
-
     <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -223,6 +218,13 @@
               <td class="data"></td>
             </tr>
           </table>
+        </div>
+        <div class="span4">
+          <div class="alert alert-info" ng-show="selectedDay">
+            <button type="button" class="close" ng-click="selectedDay = null">&times;</button>
+            <strong>{{selectedDayText()}}</strong>
+            <workouts day="selectedDay"></workouts>
+          </div>
         </div>
       </div>
       <div class="row-fluid">

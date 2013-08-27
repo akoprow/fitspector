@@ -17,9 +17,6 @@ var app = angular.module('fitspector', ['fitspector.directives', 'fitspector.ser
 $('body').tooltip({
   selector: '[rel=tooltip]'
 });
-$('body').popover({
-  selector: '[rel=popover]'
-});
 
 // Constants
 var TRANSITIONS_DURATION = 400;
@@ -154,14 +151,12 @@ directives.directive('workouts', ['DataProvider', function(DataProvider) {
   return {
     restrict: 'E',
     replace: true,
-    template: '<workout ng-repeat="workout in workouts" model="workout"></workout>',
+    templateUrl: 'views/workouts.html',
     scope: {
       day: '='
     },
     link: function($scope, $elem, $attrs) {
-      $scope.$watch('day', function(dayString) {
-	// TODO(koper) This should take workouts data from DataService instead of the global variable.
-	var day = new Date(parseInt(dayString));
+      $scope.$watch('day', function(day) {
 	$scope.workouts = DataProvider.getDayWorkouts(day);
       });
     }
@@ -234,7 +229,15 @@ app.controller('VisCalendar', ['$scope', '$compile', 'DataProvider', function($s
 
   $scope.topMargin = 15;
   $scope.cellSize = 45;
-  $scope.highlightedDay = null;
+
+  $scope.selectedDay = null;
+  $scope.selectedDayText = function() {
+    var day = $scope.selectedDay;
+    if (day) {
+      return d3.time.format('%A, %d %B %Y')(day);
+    }
+    return null;
+  };
 
   var container = drawCalendar($scope, $compile);
   var redraw = function() {
@@ -520,37 +523,6 @@ var drawCalendar = function($scope, $compile) {
   return container;
 };
 
-var generatePopoverBody = function($scope, $compile, d) {
-  if (d > $scope.now) {
-    return "Date in the future<br/>We know you'll work out hard!";
-  } else {
-    var html = $compile('<workouts day="' + d.getTime() + '"></workouts>')($scope);
-    return html;
-  }
-};
-
-var installWorkoutPopover = function(sel, $scope, $compile) {
-  var dayId = function(d) {
-    return 'day-' + d.getTime();
-  };
-  sel.attr('id', dayId)
-    .on('mouseover', function(d) {
-      $scope.$apply(function() {
-	$scope.highlightedDay = d;
-      });
-      $('#' + dayId(d)).popover({
-	title: d3.time.format('%A, %d %B %Y')(d),
-	container: '#vis-calendar',
-	content: generatePopoverBody($scope, $compile, d),
-	placement: d.getMonth() < 6 ? 'right' : 'left',
-	html: true
-      }).popover('show');
-    })
-    .on('mouseout', function(d) {
-      $('#' + dayId(d)).popover('hide');
-    });
-};
-
 var drawDayCells = function($scope, $compile, container) {
   var getWeekday = d3.time.format('%w');
   var getWeek = d3.time.format('%U');
@@ -569,7 +541,11 @@ var drawDayCells = function($scope, $compile, container) {
     .attr('height', $scope.cellSize)
     .attr('x', function(d) { return $scope.cellSize * getWeek(d); })
     .attr('y', function(d) { return $scope.cellSize * getWeekday(d); })
-    .call(installWorkoutPopover, $scope, $compile);
+    .on('click', function(d) {
+      $scope.$apply(function() {
+	$scope.selectedDay = d;
+      });
+    });
 };
 
 var drawMonthBorders = function($scope, container) {
