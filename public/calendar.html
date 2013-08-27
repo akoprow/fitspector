@@ -147,6 +147,13 @@
       .well .help {
         margin-top: 10px;
       }
+      .selected-day-workouts {
+        height: 180px;
+      }
+      .selected-day-workouts .alert {
+        max-height: 170px;
+        overflow: hidden;
+      }
     </style>
   </head>
   <body ng-app="fitspector" ng-controller="VisCalendar">
@@ -224,10 +231,12 @@
           </table>
         </div>
         <div class="span4">
-          <div class="alert alert-info" ng-show="selectedDay">
-            <button type="button" class="close" ng-click="selectedDay = null">&times;</button>
-            <strong>{{selectedDayText()}}</strong>
-            <workouts day="selectedDay"></workouts>
+          <div class="selected-day-workouts">
+            <div class="alert alert-info" ng-show="selectedDay">
+              <button type="button" class="close" ng-click="selectedDay = null">&times;</button>
+              <strong>{{selectedDayText()}}</strong>
+              <workouts day="selectedDay"></workouts>
+            </div>
           </div>
         </div>
       </div>

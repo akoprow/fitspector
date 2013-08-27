@@ -236,7 +236,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // --------------------------
 
   // TODO(koper) Change into year selection component and get rid of literals.
-  $scope.time = { year: 2013 };
+  $scope.time = { year: 2012 };
   $scope.disablePrevYear = function() {
     return $scope.time.year <= 2012;
   };
