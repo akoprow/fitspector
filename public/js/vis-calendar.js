@@ -23,7 +23,8 @@ $('body').tooltip({
 
 var services = angular.module('fitspector.services', []);
 var directives = angular.module('fitspector.directives', []);
-var app = angular.module('fitspector', ['fitspector.directives', 'fitspector.services']);
+var filters = angular.module('fitspector.filters', []);
+var app = angular.module('fitspector', ['fitspector.directives', 'fitspector.services', 'fitspector.filters']);
 
 // --------------------------------------------------------------------------------------------------------
 // ----------------------------------------- DataProvider service -----------------------------------------
@@ -137,7 +138,44 @@ directives.directive('icon', function() {
 });
 
 // --------------------------------------------------------------------------------------------------------
-// --------------------------------------------- time directive ------------------------------------------
+// ---------------------------------------------- time filter --------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+filters.filter('time', function() {
+  return function(sec) {
+    // TODO(koper) There must be a better way to do this conversion...
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec - h*3600) / 60);
+    return h + ':' + (m < 10 ? '0' : '') + m;
+  };
+});
+
+// --------------------------------------------------------------------------------------------------------
+// -------------------------------------------- distance filter -------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+filters.filter('distance', function() {
+  return function(meters) {
+    var km = meters / 1000;
+    return km.toFixed(1);
+  };
+});
+
+// --------------------------------------------------------------------------------------------------------
+// ----------------------------------------------- pace filter --------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+filters.filter('pace', function() {
+  return function(secPerKm) {
+    // TODO(koper) There must be a better way to do this conversion...
+    var m = Math.floor(secPerKm / 60);
+    var s = Math.floor(secPerKm - m * 60);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  };
+});
+
+// --------------------------------------------------------------------------------------------------------
+// ------------------------------------------ time metric directive ---------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
 directives.directive('metricTime', function() {
