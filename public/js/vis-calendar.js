@@ -25,22 +25,6 @@ $('body').popover({
 var TRANSITIONS_DURATION = 400;
 
 // --------------------------------------------------------------------------------------------------------
-// --------------------------------------------- Icons service --------------------------------------------
-// --------------------------------------------------------------------------------------------------------
-
-services.factory('Icons', function() {
-  return {
-    time: 'time',
-    distance: 'road',
-    hr: 'heart',
-    pace: 'fast-forward',
-    elevation: 'chevron-up',
-    elevationZones: 'signal',
-    sessions: 'ok'
-  };
-});
-
-// --------------------------------------------------------------------------------------------------------
 // ----------------------------------------- DataProvider service -----------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
@@ -114,7 +98,20 @@ directives.directive('iconSport', ['DataProvider', function(DataProvider) {
 // --------------------------------------------- icon directive -------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
-directives.directive('icon', ['Icons', function(Icons) {
+directives.directive('icon', function() {
+  var getIconId = function(type) {
+    var icons = {
+      time: 'time',
+      distance: 'road',
+      hr: 'heart',
+      pace: 'fast-forward',
+      elevation: 'chevron-up',
+      elevationZones: 'signal',
+      sessions: 'ok'
+    };
+    return icons[type];
+  };
+
   return {
     restrict: 'E',
     template: '<i class="{{cssClass}} icon-{{iconId}}"></i>',
@@ -128,11 +125,11 @@ directives.directive('icon', ['Icons', function(Icons) {
 	$scope.cssClass = 'icon-white';
       };
       attrs.$observe('type', function(type) {
-	$scope.iconId = Icons[type];
+	$scope.iconId = getIconId(type);
       });
     }
   };
-}]);
+});
 
 // --------------------------------------------------------------------------------------------------------
 // ------------------------------------------- workout directive ------------------------------------------
@@ -172,7 +169,7 @@ directives.directive('workouts', ['DataProvider', function(DataProvider) {
 // --------------------------------------------------------------------------------------------------------
 
 // Calendar controller
-app.controller('VisCalendar', ['$scope', 'DataProvider', 'Icons', function($scope, DataProvider, Icons) {
+app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataProvider) {
   $scope.allSportSummaryTypes = [
     {id: 'weeklyAvg', name: 'Weekly avg.'},
     {id: 'total', name: 'Total'}
