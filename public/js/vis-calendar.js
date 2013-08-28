@@ -74,8 +74,7 @@ var computeData = function(workouts) {
       totalTime: sum(d.time),
       totalDistance: sum(d.pace),
       note: d.note,
-      // TODO(koper) provide real values
-      avgHR: 127
+      avgHR: d.hrAvg
     };
   };
   var data = _.map(workouts, makeWorkout);
