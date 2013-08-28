@@ -654,45 +654,46 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     var getWeek = d3.time.format('%U');
 
     // Main container
-    var container = svgContainer()
-          .data([$scope.time.year])
-          .enter()
-          .append('svg')
-          .attr('class', 'year')
-          .attr('width', width)
-          .attr('height', height);
+    var container = svgContainer().data([$scope.time.year]);
+    var gridY = 0.5 * cellSize + topMargin;
+    container.enter()
+      .append('svg')
+        .attr('class', 'year')
+        .attr('width', width)
+        .attr('height', height)
+      .append('g')
+        .attr('class', 'grid')
+        .attr('transform', 'translate(1,' + gridY + ')');
 
     // Monthly labels
-    var offsetY = topMargin / 2;
+    var labelY = topMargin / 2;
     var labels = container.selectAll('.monthLabel')
       .data(function(year) {
         return d3.time.months(
           new Date(year, 0, 1),
           new Date(year + 1, 0, 1));
-      })
-      .enter()
+      }, function(d) {
+        return d.getMonth();
+      });
+
+    labels.enter()
       .append('text')
-      .attr('class', 'monthLabel')
       .attr('class', 'monthLabel')
       .style('text-anchor', 'middle')
       .style('alignment-baseline', 'central')
       .text(d3.time.format('%b'));
-    labels.attr('transform', function(d1) {
+
+    labels
+      .transition(TRANSITIONS_DURATION)
+      .attr('x', function(d1) {
         var dateOffset = function(d) {
           var week = +getWeek(d);
           return week * cellSize;
         };
         var d2 = new Date(d1.getFullYear(), d1.getMonth() + 1, 0);
-        var offsetX = (dateOffset(d1) + dateOffset(d2) + cellSize) / 2;
-        return 'translate(' + offsetX + ',' + offsetY + ')';
-      });
-
-    // Container body
-    offsetY = 0.5 * cellSize + topMargin;
-
-    container = container.append('g')
-      .attr('class', 'grid')
-      .attr('transform', 'translate(1,' + offsetY + ')');
+        return (dateOffset(d1) + dateOffset(d2) + cellSize) / 2;
+      })
+      .attr('y', labelY);
   };
 
   var drawDayCells = function() {
@@ -700,18 +701,21 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     var getWeek = d3.time.format('%U');
 
     var grid = gridContainer();
-    grid.selectAll('.day')
+    var cells = grid.selectAll('.day')
       .data(function(d) {
         return d3.time.days(
           new Date(d, 0, 1),
           new Date(d + 1, 0, 1));
-      })
-      .enter()
+      }, function(d) { // we key by month + day to keep cells if the year changes.
+        return d.getMonth() + '-' + d.getDate();
+      });
+    cells.enter()
       .append('rect')
       .attr('class', 'day')
-      .classed('future', function(d) { return d > now; })
       .attr('width', cellSize)
-      .attr('height', cellSize)
+      .attr('height', cellSize);
+    cells
+      .classed('future', function(d) { return d > now; })
       .attr('x', function(d) { return cellSize * getWeek(d); })
       .attr('y', function(d) { return cellSize * getWeekday(d); })
       .on('click', function(d) {
