@@ -657,7 +657,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     // Main container
     var container = svgContainer().data([$scope.time.year]);
     var gridY = 0.5 * cellSize + topMargin;
-    container.enter()
+    var enter = container.enter()
       .append('svg')
         .attr('class', 'year')
         .attr('width', width)
@@ -665,6 +665,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .append('g')
         .attr('class', 'grid')
         .attr('transform', 'translate(1,' + gridY + ')');
+    enter.append('g').attr('class', 'dayCellsContainer');
+    enter.append('g').attr('class', 'workoutsContainer');
+    enter.append('g').attr('class', 'monthBordersContainer');
 
     // Monthly labels
     var labelY = topMargin / 2;
@@ -709,7 +712,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       return cellSize * getWeekday(d);
     };
 
-    var grid = gridContainer();
+    var grid = gridContainer().selectAll('.dayCellsContainer');
     var cells = grid.selectAll('.day')
       .data(d3.time.days(
         new Date($scope.time.year, 0, 1),
@@ -766,7 +769,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     };
 
     // Draw month borders
-    var borders = gridContainer().selectAll('path.month')
+    var borders = gridContainer().selectAll('.monthBordersContainer')
+      .selectAll('path.month')
       .data(d3.time.months(
         new Date($scope.time.year, 0, 1),
         new Date($scope.time.year + 1, 0, 1)));
@@ -796,6 +800,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           .rangeRound([0, cellSize - 1]);
 
     var workouts = gridContainer()
+          .selectAll('.workoutsContainer')
           .selectAll('.workout')
           .data(data, function(d) { return d.key; });
 
