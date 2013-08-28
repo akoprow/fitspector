@@ -6,7 +6,6 @@
 // Constants
 var TRANSITIONS_DURATION = 400;
 var TOP_MARGIN = 15;
-var CELL_SIZE = 18;
 
 // --------------------------------------------------------------------------------------------------------
 // -------------------------------------- Global page modifications ---------------------------------------
@@ -473,7 +472,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // --- Drawing functions
   // -----------------------------------------
 
-  var cellSize = CELL_SIZE;
+  var cellSize = 18;
   var topMargin = TOP_MARGIN;
 
   var dailyDataBySports = function(d) {
@@ -652,6 +651,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   };
 
   var drawCalendar = function() {
+    var windowWidth = $('#vis-calendar').width();
+    cellSize = Math.floor((windowWidth - 2) / 53);
+
     var width = 2 + cellSize * 53;
     var height = topMargin + cellSize * 8;
     var getWeek = d3.time.format('%U');
