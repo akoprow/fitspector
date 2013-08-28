@@ -681,10 +681,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('class', 'monthLabel')
       .style('text-anchor', 'middle')
       .style('alignment-baseline', 'central')
+      .attr('x', -100)
+      .attr('y', labelY)
       .text(d3.time.format('%b'));
 
-    labels
-      .transition(TRANSITIONS_DURATION)
+    labels.transition()
+      .delay(TRANSITIONS_DURATION)
+      .duration(TRANSITIONS_DURATION)
       .attr('x', function(d1) {
         var dateOffset = function(d) {
           var week = +getWeek(d);
@@ -692,32 +695,43 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         };
         var d2 = new Date(d1.getFullYear(), d1.getMonth() + 1, 0);
         return (dateOffset(d1) + dateOffset(d2) + cellSize) / 2;
-      })
-      .attr('y', labelY);
+      });
   };
 
   var drawDayCells = function() {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
+    var posX = function(d) {
+      return cellSize * getWeek(d);
+    };
+    var posY = function(d) {
+      return cellSize * getWeekday(d);
+    };
 
     var grid = gridContainer();
     var cells = grid.selectAll('.day')
-      .data(function(d) {
-        return d3.time.days(
-          new Date(d, 0, 1),
-          new Date(d + 1, 0, 1));
-      }, function(d) { // we key by month + day to keep cells if the year changes.
-        return d.getMonth() + '-' + d.getDate();
+      .data(d3.time.days(
+        new Date($scope.time.year, 0, 1),
+        new Date($scope.time.year + 1, 0, 1)
+      ), function(d) { // we key by cell position
+        return posX(d) + '-' + posY(d);
       });
+
     cells.enter()
       .append('rect')
       .attr('class', 'day')
       .attr('width', cellSize)
-      .attr('height', cellSize);
+      .attr('height', cellSize)
+      .attr('x', posX)
+      .attr('y', posY);
+
+    cells.exit().transition(TRANSITIONS_DURATION)
+      .delay(TRANSITIONS_DURATION)
+      .attr('width', 0)
+      .attr('height', 0)
+      .remove();
+
     cells
-      .classed('future', function(d) { return d > now; })
-      .attr('x', function(d) { return cellSize * getWeek(d); })
-      .attr('y', function(d) { return cellSize * getWeekday(d); })
       .on('click', function(d) {
         var elt = this;
         $scope.$apply(function() {
@@ -725,7 +739,11 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           $scope.selectedDay = d;
           d3.select(elt).classed('selected', true);
         });
-      });
+      })
+      .transition()
+        .duration(TRANSITIONS_DURATION)
+        .delay(TRANSITIONS_DURATION)
+        .style('fill', function(d) { return d > now ? '#f5f5f5' : '#fff'; });
   };
 
   var drawMonthBorders = function() {
@@ -747,19 +765,22 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     };
 
     // Draw month borders
-    gridContainer().selectAll('.month')
-      .data(function(d) {
-        return d3.time.months(
-          new Date(d, 0, 1),
-          new Date(d + 1, 0, 1));
-      })
-      .enter()
+    var borders = gridContainer().selectAll('path.month')
+      .data(d3.time.months(
+        new Date($scope.time.year, 0, 1),
+        new Date($scope.time.year + 1, 0, 1)));
+
+    borders.enter()
       .append('path')
-      .attr('class', 'month')
+      .attr('class', 'month');
+
+    borders.transition()
+      .duration(TRANSITIONS_DURATION)
+      .delay(TRANSITIONS_DURATION)
       .attr('d', monthPath);
   };
 
-  var drawWorkouts = function(data) {
+  var drawWorkouts = function(fullRedraw, data) {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
@@ -775,7 +796,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
     var workouts = gridContainer()
           .selectAll('.workout')
-          .data(data, function(d, i) { return d.key; });
+          .data(data, function(d) { return d.key; });
 
     workouts.exit().transition()
       .duration(TRANSITIONS_DURATION)
@@ -793,7 +814,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); });
 
     workouts.transition()
-      .delay(workouts.exit().empty() ? 0 : TRANSITIONS_DURATION)
+      .delay(TRANSITIONS_DURATION * (fullRedraw ? 2 : (workouts.exit().empty() ? 0 : 1)))
       .duration(TRANSITIONS_DURATION)
       .attr('width', function(d) { return sizeScale(d.value); })
       .attr('height', function(d) { return sizeScale(d.value); })
@@ -802,7 +823,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .style('fill', function(d) { return d.color; });
   };
 
-  var drawSportIcons = function(data) {
+  var drawSportIcons = function(fullRedraw, data) {
     var sportIconWidth = 55;  // img width + border + padding
     var millisecPerDay = 24 * 60 * 60 * 1000;
     var numDays = (now.getFullYear() == $scope.year) ?
@@ -891,14 +912,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
       // exit
       entries.exit().transition()
+        .delay(fullRedraw ? TRANSITIONS_DURATION : 0)
         .duration(TRANSITIONS_DURATION)
         .style('opacity', 0)
         .remove();
 
       // update
       var update = entries.transition()
-            .delay(entries.exit().empty() ? 0 : TRANSITIONS_DURATION)
-            .duration(TRANSITIONS_DURATION)
+            .duration(TRANSITIONS_DURATION * (fullRedraw ? 3 : 1))
             .style('left', leftPosition)
             .style('opacity', metric == 'icon' ? 0.8 : 1.0)
             .text(' ');
@@ -960,11 +981,11 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
     // Draw workouts data.
     var workoutData = computeWorkoutData(data);
-    drawWorkouts(workoutData);
+    drawWorkouts(fullRedraw, workoutData);
 
     // Draw sport summaries.
     var totals = computeTotals(data);
-    drawSportIcons(totals);
+    drawSportIcons(fullRedraw, totals);
   };
 
   redraw(true);
