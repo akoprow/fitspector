@@ -238,7 +238,7 @@ directives.directive('metricPace', function() {
         var m = $scope.distance;
         $scope.show = sec && m;
         if ($scope.show) {
-	  $scope.metricValue = sec / (m / 1000);
+          $scope.metricValue = sec / (m / 1000);
         }
       };
       $scope.$watch('time', function() {
@@ -313,10 +313,38 @@ directives.directive('workouts', ['DataProvider', function(DataProvider) {
 
 // Calendar controller
 app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataProvider) {
-  $scope.allSportSummaryTypes = [
-    {id: 'weeklyAvg', name: 'Weekly avg.'},
-    {id: 'total', name: 'Total'}
-  ];
+
+  // TODO(koper) This should be changed to now in the final product (+ possibly remove property)
+  var now = new Date(2013, 7, 25);
+
+  var timeZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
+
+  var paceZoneColors = ['#ccc', "#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"];
+
+  // ---------------------------------------------
+  // --- Handling visualization parameter changes
+  // ---------------------------------------------
+
+  // --- selectedDay ---
+
+  $scope.selectedDay = null;
+  $scope.selectedDayText = function() {
+    var day = $scope.selectedDay;
+    if (day) {
+      return d3.time.format('%A, %d %B %Y')(day);
+    }
+    return null;
+  };
+
+  // --- sportFilter ---
+
+  $scope.sportFilter = { id: 'all' };
+  $scope.setSportFilter = function(sport) {
+    $scope.sportFilter = sport;
+  };
+
+  // --- displayType ---
+
   $scope.allDisplayTypes = [
     {
       id: 'time',
@@ -341,12 +369,26 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
   ];
 
-  // TODO(koper) This should be changed to now in the final product (+ possibly remove property)
-  var now = new Date(2013, 7, 25);
+  $scope.displayType = $scope.allDisplayTypes[0];
 
-  // --------------------------
-  // --- Handling current year
-  // --------------------------
+  $scope.setDisplayType = function(type) {
+    $scope.displayType = type;
+  };
+
+  // --- sportSummaryType ---
+
+  $scope.allSportSummaryTypes = [
+    {id: 'weeklyAvg', name: 'Weekly avg.'},
+    {id: 'total', name: 'Total'}
+  ];
+
+  $scope.sportSummaryType = $scope.allSportSummaryTypes[0];
+
+  $scope.setSportSummaryType = function(type) {
+    $scope.sportSummaryType = type;
+  };
+
+  // --- year ---
 
   // TODO(koper) Change into year selection component and get rid of literals.
   $scope.time = { year: 2012 };
@@ -368,26 +410,6 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     if (!$scope.disablePrevYear()) {
       $scope.time.year--;
     }
-  };
-
-  // ---------------------------------------------
-  // --- Handling display types & sport filtering
-  // ---------------------------------------------
-
-  $scope.displayType = $scope.allDisplayTypes[0];
-  $scope.sportSummaryType = $scope.allSportSummaryTypes[0];
-
-  var timeZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
-  var paceZoneColors = ['#ccc', "#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"];
-  var sportFilter = { id: 'all' };
-
-  $scope.selectedDay = null;
-  $scope.selectedDayText = function() {
-    var day = $scope.selectedDay;
-    if (day) {
-      return d3.time.format('%A, %d %B %Y')(day);
-    }
-    return null;
   };
 
   // --------------
@@ -536,7 +558,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
   var filterData = function() {
     var year = $scope.time.year;
-    var sport = sportFilter.id;
+    var sport = $scope.sportFilter.id;
 
     var workouts = _.pairs(DataProvider.workoutsData);
     workouts = _.map(workouts, function(d) { return { day: d[1][0].day, exercises: d[1] }; });
@@ -926,31 +948,33 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     drawSportIcons(totals);
   };
 
-  // -------------------------------------------
-  // --- Handling drawing & redrawing on events
-  // -------------------------------------------
-
   var container = drawCalendar();
-  var redraw = function() {
+  var redraw = function(fullRedraw) {
+    // TODO(koper) Handle fullRedraw...
     drawData(container);
   };
 
-  // TODO(koper) Add $watch on those variables that does redraw and de-couple it.
-  $scope.setSportFilter = function(sport) {
-    sportFilter = sport;
-    redraw();
-  };
+  redraw(true);
 
-  $scope.setDisplayType = function(type) {
-    $scope.displayType = type;
-    redraw();
-  };
+  // --------------------------------------------
+  // --- Handling redrawing on data model change
+  // --------------------------------------------
 
-  $scope.setSportSummaryType = function(type) {
-    $scope.sportSummaryType = type;
-    redraw();
-  };
+  $scope.$watch('time.year', function() {
+    redraw(true);
+  });
 
-  redraw();
+  $scope.$watch('sportFilter', function() {
+    redraw();
+  });
+
+  $scope.$watch('displayType', function() {
+    redraw();
+  });
+
+  $scope.$watch('sportSummaryType', function() {
+    redraw();
+  });
+
 
 }]);
