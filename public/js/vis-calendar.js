@@ -311,6 +311,8 @@ directives.directive('workouts', ['DataProvider', function(DataProvider) {
 // ---------------------------------------- VisCalendar controller ----------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
+// TODO(koper) Move all the drawing into a directive.
+
 // Calendar controller
 app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataProvider) {
 
@@ -638,13 +640,21 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     return data.reverse();
   };
 
+  var svgContainer = function() {
+    return d3.select('#vis-calendar').selectAll('svg');
+  };
+
+  var gridContainer = function() {
+    return svgContainer().selectAll('g.grid');
+  };
+
   var drawCalendar = function() {
     var width = 2 + cellSize * 53;
     var height = topMargin + cellSize * 8;
     var getWeek = d3.time.format('%U');
 
     // Main container
-    var container = d3.select('#vis-calendar').selectAll('svg')
+    var container = svgContainer()
           .data([$scope.time.year])
           .enter()
           .append('svg')
@@ -654,7 +664,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
     // Monthly labels
     var offsetY = topMargin / 2;
-    container.selectAll('.monthLabel')
+    var labels = container.selectAll('.monthLabel')
       .data(function(year) {
         return d3.time.months(
           new Date(year, 0, 1),
@@ -663,7 +673,11 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .enter()
       .append('text')
       .attr('class', 'monthLabel')
-      .attr('transform', function(d1) {
+      .attr('class', 'monthLabel')
+      .style('text-anchor', 'middle')
+      .style('alignment-baseline', 'central')
+      .text(d3.time.format('%b'));
+    labels.attr('transform', function(d1) {
         var dateOffset = function(d) {
           var week = +getWeek(d);
           return week * cellSize;
@@ -671,29 +685,22 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         var d2 = new Date(d1.getFullYear(), d1.getMonth() + 1, 0);
         var offsetX = (dateOffset(d1) + dateOffset(d2) + cellSize) / 2;
         return 'translate(' + offsetX + ',' + offsetY + ')';
-      })
-      .attr('class', 'monthLabel')
-      .style('text-anchor', 'middle')
-      .style('alignment-baseline', 'central')
-      .text(d3.time.format('%b'));
+      });
 
     // Container body
     offsetY = 0.5 * cellSize + topMargin;
 
     container = container.append('g')
+      .attr('class', 'grid')
       .attr('transform', 'translate(1,' + offsetY + ')');
-
-    drawDayCells(container);
-    drawMonthBorders(container);
-
-    return container;
   };
 
-  var drawDayCells = function(container) {
+  var drawDayCells = function() {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
-    container.selectAll('.day')
+    var grid = gridContainer();
+    grid.selectAll('.day')
       .data(function(d) {
         return d3.time.days(
           new Date(d, 0, 1),
@@ -710,14 +717,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .on('click', function(d) {
         var elt = this;
         $scope.$apply(function() {
-          container.selectAll('.day').classed('selected', false);
+          grid.selectAll('.day').classed('selected', false);
           $scope.selectedDay = d;
           d3.select(elt).classed('selected', true);
         });
       });
   };
 
-  var drawMonthBorders = function(container) {
+  var drawMonthBorders = function() {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
@@ -736,19 +743,19 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     };
 
     // Draw month borders
-    var enter = container.selectAll('.month')
-          .data(function(d) {
-            return d3.time.months(
-              new Date(d, 0, 1),
-              new Date(d + 1, 0, 1));
-          })
-          .enter()
-          .append('path')
-          .attr('class', 'month')
-          .attr('d', monthPath);
+    gridContainer().selectAll('.month')
+      .data(function(d) {
+        return d3.time.months(
+          new Date(d, 0, 1),
+          new Date(d + 1, 0, 1));
+      })
+      .enter()
+      .append('path')
+      .attr('class', 'month')
+      .attr('d', monthPath);
   };
 
-  var drawWorkouts = function(container, data) {
+  var drawWorkouts = function(data) {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
@@ -762,7 +769,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           .domain([0, d3.max(data, function(d) { return d.value; })])
           .rangeRound([0, cellSize - 1]);
 
-    var workouts = container.selectAll('.workout')
+    var workouts = gridContainer()
+          .selectAll('.workout')
           .data(data, function(d, i) { return d.key; });
 
     workouts.exit().transition()
@@ -935,23 +943,24 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     });
   };
 
-  var drawData = function(container) {
+  var redraw = function(fullRedraw) {
+    // Draw the container.
+    if (fullRedraw) {
+      drawCalendar();
+      drawDayCells();
+      drawMonthBorders();
+    };
+
     // Prepare the data.
     var data = filterData();
 
     // Draw workouts data.
     var workoutData = computeWorkoutData(data);
-    drawWorkouts(container, workoutData);
+    drawWorkouts(workoutData);
 
     // Draw sport summaries.
     var totals = computeTotals(data);
     drawSportIcons(totals);
-  };
-
-  var container = drawCalendar();
-  var redraw = function(fullRedraw) {
-    // TODO(koper) Handle fullRedraw...
-    drawData(container);
   };
 
   redraw(true);
