@@ -373,7 +373,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   $scope.displayType = $scope.allDisplayTypes[0];
 
   $scope.setDisplayType = function(type) {
-    $scope.displayType = type;
+    if (type.id != 'elevationZones') {
+      $scope.displayType = type;
+    }
   };
 
   // --- sportSummaryType ---

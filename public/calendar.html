@@ -191,7 +191,13 @@
       <div class="row-fluid centered">
         <div class="well">
           <div class="btn-group analysis-type-selection">
-            <button type="button" class="btn btn-primary"
+            <button type="button"
+                    class="btn btn-primary"
+                    rel="{{{true: 'tooltip', false: ''}[type.id == 'elevationZones']}}"
+                    data-toggle="tooltip"
+                    data-title="Coming soon!"
+                    data-placement="bottom"
+                    ng-class="{disabled: type.id == 'elevationZones'}"
                     ng-repeat="type in allDisplayTypes"
                     ng-class="{active: displayType.id == type.id}"
                     ng-click="setDisplayType(type)">
