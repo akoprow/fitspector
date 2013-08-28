@@ -406,11 +406,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   };
   $scope.nextYear = function() {
     if (!$scope.disableNextYear()) {
+      $scope.selectedDay = null;
       $scope.time.year++;
     }
   };
   $scope.prevYear = function() {
     if (!$scope.disablePrevYear()) {
+      $scope.selectedDay = null;
       $scope.time.year--;
     }
   };
