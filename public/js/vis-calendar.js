@@ -655,7 +655,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     cellSize = Math.floor((windowWidth - 2) / 53);
 
     var width = 2 + cellSize * 53;
-    var height = topMargin + cellSize * 8;
+    var height = topMargin + cellSize * 8 + 2;
     var getWeek = d3.time.format('%U');
 
     // Main container
@@ -664,11 +664,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     var enter = container.enter()
       .append('svg')
         .attr('class', 'year')
-        .attr('width', width)
-        .attr('height', height)
       .append('g')
         .attr('class', 'grid')
         .attr('transform', 'translate(1,' + gridY + ')');
+    // update container size
+    container.transition(TRANSITIONS_DURATION)
+        .attr('width', width)
+        .attr('height', height);
     enter.append('g').attr('class', 'dayCellsContainer');
     enter.append('g').attr('class', 'workoutsContainer');
     enter.append('g').attr('class', 'monthBordersContainer');
@@ -727,11 +729,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
     cells.enter()
       .append('rect')
-      .attr('class', 'day')
-      .attr('width', cellSize)
-      .attr('height', cellSize)
-      .attr('x', posX)
-      .attr('y', posY);
+      .attr('class', 'day');
 
     cells.exit().transition(TRANSITIONS_DURATION)
       .delay(TRANSITIONS_DURATION)
@@ -751,6 +749,10 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .transition()
         .duration(TRANSITIONS_DURATION)
         .delay(TRANSITIONS_DURATION)
+        .attr('x', posX)
+        .attr('y', posY)
+        .attr('width', cellSize)
+        .attr('height', cellSize)
         .style('fill', function(d) { return d > now ? '#f5f5f5' : '#fff'; });
   };
 
@@ -1020,5 +1022,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     redraw();
   });
 
+  $(window).resize(function() {
+    redraw(true);
+  });
 
 }]);
