@@ -198,9 +198,8 @@
                     data-toggle="tooltip"
                     data-title="Coming soon!"
                     data-placement="bottom"
-                    ng-class="{disabled: type.id == 'elevationZones'}"
                     ng-repeat="type in allDisplayTypes"
-                    ng-class="{active: displayType.id == type.id}"
+                    ng-class="{disabled: type.id == 'elevationZones', active: displayType.id == type.id}"
                     ng-click="setDisplayType(type)">
               <icon type="{{type.id}}" variant="white"></icon> <span class="hidden-phone" ng-bind="type.name"></span>
             </button>
