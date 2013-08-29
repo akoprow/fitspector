@@ -4,7 +4,7 @@
 // --------------------------------------------------------------------------------------------------------
 
 // Constants
-var TRANSITIONS_DURATION = 400;
+var TRANSITIONS_DURATION = 3 * 400;
 var TOP_MARGIN = 15;
 
 var LEGEND_LABEL_SIZE = 10;
@@ -1073,8 +1073,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       items.enter()
         .append(type == 'desc' ? 'text' : 'rect')
         .attr('class', type);
-      items
-        .transition(TRANSITIONS_DURATION)
+      var update = items.transition(TRANSITIONS_DURATION);
+      update
         .attr('x', function(d, i) {
           switch (type) {
             case 'mark': return LEGEND_PADDING + cellSize * (i + 0.5) - sizeScale(d.val)/2;
@@ -1092,12 +1092,12 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           }
         });
       if (type == 'desc') {
-        items.text(function(d, i) {
+        update.text(function(d, i) {
           // TODO(koper) Too much magic... basically for smaller cell sizes we only have space to show every second label in distance legend.
           return (mode == 'distance' && i % 2 && cellSize < 28) ? '' : d.text;
         });
       } else {
-        items
+        update
           .attr('width', boxSize)
           .attr('height', boxSize);
       }
@@ -1135,22 +1135,16 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // --- Handling redrawing on data model change
   // --------------------------------------------
 
-  $scope.$watch('time.year', function() {
-    redraw(true);
-  });
+  var handleRedraw = function(nv, ov) {
+    if (nv !== ov) {
+      redraw();
+    }
+  };
 
-  $scope.$watch('sportFilter', function() {
-    redraw();
-  });
-
-  $scope.$watch('displayType', function() {
-    redraw();
-  });
-
-  $scope.$watch('sportSummaryType', function() {
-    redraw();
-  });
-
+  $scope.$watch('time.year', handleRedraw);
+  $scope.$watch('sportFilter', handleRedraw);
+  $scope.$watch('displayType', handleRedraw);
+  $scope.$watch('sportSummaryType', handleRedraw);
   $(window).resize(function() {
     redraw(true);
   });
