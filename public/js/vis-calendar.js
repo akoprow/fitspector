@@ -1014,7 +1014,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       case 'hr':
         // 1h, 2h, ... 9h, 10h
         var h = 3600;
-        return _.range(h, 11 * h, h);
+        return _.map(
+          _.range(1, 11, 1),
+          function(v) {
+            return {
+              val: 3600 * v,
+              text: v + 'h'
+            };
+          });
       case 'distance':
       case 'pace':
         // 10km, 20km, ... 70km
@@ -1026,14 +1033,15 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     };
 
     // Text size for the description
-    var height = cellSize + 1 + LEGEND_LABEL_SIZE;
-    d3.select('#legend-size .desc').style('line-height', height + 'px');
+    d3.select('#legend-size .text')
+      .style('line-height', cellSize + 'px')
+      .style('margin-top', LEGEND_LABEL_SIZE + 'px');
 
     var data = legendData();
     var container = d3.select('#legend-size svg');
     container
       .attr('width', cellSize * data.length + 1)
-      .attr('height', height);
+      .attr('height', cellSize + 1 + LEGEND_LABEL_SIZE);
 
     // Draw boxes, marks in them and labels on top
     // TODO(koper) Somewhat share the positioning logic with drawing workout boxes. Perhaps use a layout? Or auxiliary functions.
@@ -1041,7 +1049,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     _.each(['box', 'mark', 'desc'], function(type) {
       var boxSize = function(d) {
         switch (type) {
-        case 'mark': return sizeScale(d);
+        case 'mark': return sizeScale(d.val);
         case 'box': return cellSize;
         case 'desc': return cellSize;
         default: throw new Error('Unknown element: ' + type);
@@ -1057,7 +1065,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         .transition(TRANSITIONS_DURATION)
         .attr('x', function(d, i) {
           switch (type) {
-            case 'mark': return cellSize * (i + 0.5) - sizeScale(d)/2;
+            case 'mark': return cellSize * (i + 0.5) - sizeScale(d.val)/2;
             case 'box': return cellSize * i;
             case 'desc': return cellSize * (i + 0.5);
             default: throw new Error('Unknown element: ' + type);
@@ -1065,14 +1073,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         })
         .attr('y', function(d, i) {
           switch (type) {
-            case 'mark': return LEGEND_LABEL_SIZE + (cellSize - sizeScale(d)) / 2;
+            case 'mark': return LEGEND_LABEL_SIZE + (cellSize - sizeScale(d.val)) / 2;
             case 'box': return LEGEND_LABEL_SIZE;
-            case 'desc': return LEGEND_LABEL_SIZE;
+            case 'desc': return LEGEND_LABEL_SIZE - 2;
             default: throw new Error('Unknown element: ' + type);
           }
         });
       if (type == 'desc') {
-        items.text('1h');
+        items.text(function(d) { return d.text; });
       } else {
         items
           .attr('width', boxSize)

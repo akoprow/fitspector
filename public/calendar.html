@@ -34,16 +34,6 @@
       #vis-calendar .year text {
         text-anchor: middle;
       }
-      #legend-size .mark {
-        fill: #ccc;
-      }
-      #legend-size svg {
-        overflow: visible;
-      }
-      #legend-size .desc {
-        text-anchor: middle;
-        font-size: 8pt;
-      }
       #legend-size .box,
       #vis-calendar .day {
         fill: #fff;
@@ -179,10 +169,22 @@
         float: left;
       }
 
-      #legend-size .desc {
-        vertical-align: top;
+      #legend-size .mark {
+        fill: #ccc;
       }
-      #legend-size .desc:after {
+      #legend-size svg {
+        overflow: visible;
+      }
+      #legend-size .desc {
+        text-anchor: middle;
+        font-size: 7pt;
+      }
+      #legend-size .text {
+        vertical-align: top;
+        display: inline-block;
+        font-size: 12pt;
+      }
+      #legend-size .text:after {
         vertical-align: top;
         content: ': ';
         margin-right: 5px;
@@ -288,7 +290,7 @@
         </div>
         <div class="span4">
           <div id="legend-size" class="pull-right">
-            <span class="desc" ng-bind="getSizeExplanation()"></span>
+            <span class="text" ng-bind="getSizeExplanation()"></span>
             <svg></svg>
           </div>
         </div>
