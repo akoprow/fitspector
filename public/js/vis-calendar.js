@@ -478,8 +478,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   var cellSize = 18;
   var topMargin = TOP_MARGIN;
 
-  var dailyDataBySports = function(d) {
-    var type = $scope.displayType.id;
+  var dailyDataBySports = function(type, d) {
     var total = 0;
     return _.map(d.exercises, function(e, idx) {
       if (!DataProvider.sports[e.exerciseType]) {
@@ -511,8 +510,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     });
   };
 
-  var dailyDataByZones = function(d) {
-    var type = $scope.displayType.id;
+  var dailyDataByZones = function(type, d) {
     var zones = [0, 0, 0, 0, 0, 0, 0];
     var colors;
     switch (type) {
@@ -586,18 +584,16 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     return data;
   };
 
-  var computeWorkoutData = function(data) {
-    var type = $scope.displayType.id;
-
+  var computeWorkoutData = function(data, type) {
     // Compute visual representation.
     data = _.map(data, function(d) {
       switch (type) {
       case 'time':
       case 'distance':
-        return dailyDataBySports(d);
+        return dailyDataBySports(type, d);
       case 'hr':
       case 'pace':
-        return dailyDataByZones(d);
+        return dailyDataByZones(type, d);
       default: throw Error('Unknown grouping: ' + type);
       }
     });
@@ -792,21 +788,25 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('d', monthPath);
   };
 
+  var getSizeScale = _.memoize(function(displayType) {
+    // TODO(koper) This is inefficient; we should just cache sizeScale for a given display type.
+    var fullData = computeWorkoutData(DataProvider.getAllWorkouts(), displayType);
+    return d3.scale.sqrt()
+      .domain([0, d3.max(fullData, function(d) { return d.value; })])
+      .rangeRound([0, cellSize - 1]);
+  });
+
   var drawWorkouts = function(fullRedraw, data) {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
-    // TODO(koper) This is inefficient; we should just cache sizeScale for a given display type.
-    var fullData = computeWorkoutData(DataProvider.getAllWorkouts());
     var xScale = d3.scale.linear()
           .domain([0, 52])
           .rangeRound([0, cellSize * 52]);
     var yScale = d3.scale.linear()
           .domain([0, 6])
           .rangeRound([0, cellSize * 6]);
-    var sizeScale = d3.scale.sqrt()
-          .domain([0, d3.max(fullData, function(d) { return d.value; })])
-          .rangeRound([0, cellSize - 1]);
+    var sizeScale = getSizeScale($scope.displayType.id);
 
     var workouts = gridContainer()
           .selectAll('.workoutsContainer')
@@ -1021,7 +1021,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
     // Prepare the data.
     var data = filterData();
-    var workoutData = computeWorkoutData(data);
+    var workoutData = computeWorkoutData(data, $scope.displayType.id);
 
     // Draw workouts.
     drawWorkouts(fullRedraw, workoutData);
