@@ -1210,13 +1210,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // --- Handling redrawing on data model change
   // --------------------------------------------
 
-  var handleRedraw = function(nv, ov) {
+  var handleRedraw = function(nv, ov, fullRedraw) {
     if (nv !== ov) {
-      redraw();
+      redraw(fullRedraw);
     }
   };
 
-  $scope.$watch('time.year', handleRedraw);
+  $scope.$watch('time.year', function(nv, ov) { handleRedraw(nv, ov, true); });
   $scope.$watch('sportFilter', handleRedraw);
   $scope.$watch('displayType', handleRedraw);
   $scope.$watch('sportSummaryType', handleRedraw);
