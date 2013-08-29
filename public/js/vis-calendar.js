@@ -806,7 +806,19 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('d', monthPath);
   };
 
-  var drawWorkouts = function(fullRedraw, data, sizeScale) {
+  var getMaxDataValue = function() {
+    var fullData = computeWorkoutData(DataProvider.getAllWorkouts());
+    return d3.max(fullData, function(d) { return d.value; });
+  };
+
+  var getSizeScale = function() {
+    // TODO(koper) This is inefficient; we should just cache sizeScale for a given display type.
+    return d3.scale.sqrt()
+      .domain([0, getMaxDataValue()])
+      .rangeRound([0, cellSize - 1]);
+  };
+
+  var drawWorkouts = function(fullRedraw, data) {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
@@ -1020,44 +1032,30 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     container
       .attr('width', cellSize * data.length + 1)
       .attr('height', cellSize + 1);
-    var boxes = container
-      .selectAll('.box')
-      .data(data);
-    boxes.enter()
-      .append('rect')
-      .attr('class', 'box');
-    boxes
-      .transition(TRANSITIONS_DURATION)
-      .attr('x', function(d, i) { return cellSize * i; })
-      .attr('y', 0)
-      .attr('width', cellSize)
-      .attr('height', cellSize);
-    boxes.exit()
-      .remove();
 
+    // Draw boxes and marks in them
     // TODO(koper) Somewhat share the positioning logic with drawing workout boxes. Perhaps use a layout? Or auxiliary functions.
-    var marks = container
-      .selectAll('.mark')
-      .data(data);
-    marks.enter()
-      .append('rect')
-      .attr('class', 'mark');
-    marks
-      .transition(TRANSITIONS_DURATION)
-      .attr('width', function(d) { return sizeScale(d); })
-      .attr('height', function(d) { return sizeScale(d); })
-      .attr('x', function(d, i) { return cellSize * (i + 0.5) - sizeScale(d)/2; })
-      .attr('y', function(d, i) { return (cellSize - sizeScale(d)) / 2; });
-    marks.exit()
-      .remove();
-  };
-
-  var getSizeScale = function() {
-    // TODO(koper) This is inefficient; we should just cache sizeScale for a given display type.
-    var fullData = computeWorkoutData(DataProvider.getAllWorkouts());
-    return d3.scale.sqrt()
-      .domain([0, d3.max(fullData, function(d) { return d.value; })])
-      .rangeRound([0, cellSize - 1]);
+    var sizeScale = getSizeScale();
+    _.each([false, true], function(mark) {
+      var items = container
+         .selectAll(mark ? '.mark' : '.box')
+         .data(data);
+      items.enter()
+        .append('rect')
+        .attr('class', mark ? 'mark' : 'box');
+      items
+        .transition(TRANSITIONS_DURATION)
+        .attr('x', function(d, i) {
+          return mark ? cellSize * (i + 0.5) - sizeScale(d)/2 : cellSize * i;
+        })
+        .attr('y', function(d, i) {
+          return mark ? (cellSize - sizeScale(d)) / 2 : 0;
+        })
+        .attr('width', function(d) { return mark ? sizeScale(d) : cellSize; })
+        .attr('height', function(d) { return mark ? sizeScale(d) : cellSize; });
+      items.exit()
+        .remove();
+    });
   };
 
   var redraw = function(fullRedraw) {
@@ -1071,17 +1069,16 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     // Prepare the data.
     var data = filterData();
     var workoutData = computeWorkoutData(data, $scope.displayType.id);
-    var sizeScale = getSizeScale();
 
     // Draw workouts.
-    drawWorkouts(fullRedraw, workoutData, sizeScale);
+    drawWorkouts(fullRedraw, workoutData);
 
     // Draw sport summaries.
     var totals = computeTotals(data);
     drawSportIcons(fullRedraw, totals);
 
     // Draw legends
-    drawSizeLegend(sizeScale);
+    drawSizeLegend();
   };
 
   redraw(true);
