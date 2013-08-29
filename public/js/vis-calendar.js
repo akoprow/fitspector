@@ -4,7 +4,7 @@
 // --------------------------------------------------------------------------------------------------------
 
 // Constants
-var TRANSITIONS_DURATION = 3 * 400;
+var TRANSITIONS_DURATION = 400;
 var TOP_MARGIN = 15;
 
 var LEGEND_LABEL_SIZE = 10;
