@@ -431,6 +431,52 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // --- Help text
   // --------------
 
+  $scope.help = function() {
+    var tour = {
+      id: "tour",
+      steps: [
+        {
+          title: 'Analysis type',
+          content: 'Start by choosing the metric that you want to analyze. The calendar will show boxes corresponding to workouts, with their size and color determined as follows:<ul>' +
+            '<li><strong>Time</strong>: colors correspond to sports and box size corresponds to time.' +
+            '<li><strong>Distance</strong>: colors correspond to sports and box size corresponds to distance.' +
+            '<li><strong>HR zones</strong>: colors correspond to HR zones and box size corresponds to time.' +
+            '<li><strong>Pace zones</strong>: colors correspond to pace zones and box size corresponds to distance.' +
+            '<li><strong>Climb categories</strong>: colors correspond to climb categories and box size corresponds to distance.' +
+            '</ul>',
+          target: '.analysis-type-selection .btn',
+          width: 500,
+          placement: 'bottom'
+        },
+        {
+          title: 'Year',
+          content: 'Select the year to analyze',
+          target: '.year-selection .btn',
+          placement: 'bottom'
+        },
+        {
+          title: 'Workout visualization',
+          content: 'This is the calendar view of the given year.<br/>Every cell corresponds to one day.<br/>Click any of the cells to see all workouts for the given day.',
+          target: '#vis-calendar',
+          placement: 'top'
+        },
+        {
+          title: 'Sport summaries',
+          content: 'Here you can see all sports with annual totals.<br/>Click on any sport to restrict analysis only to this workout type.',
+          target: '#sport-summary',
+          placement: 'bottom'
+        },
+        {
+          title: 'Legend',
+          content: 'Here you can see what the box colors and sizes correspond to.',
+          target: '#legend .legend-entry',
+          placement: 'left'
+        }
+      ]
+    };
+    hopscotch.startTour(tour);
+  };
+
   $scope.getSizeLegendLabel = function() {
     switch ($scope.displayType.id) {
     case 'time':
@@ -459,53 +505,6 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     default:
       throw new Error('Unknown displayType: ' + $scope.displayType.id);
     }
-  };
-  $scope.getExplanations = function() {
-    var getGeneralText = function() {
-      switch ($scope.displayType.id) {
-      case 'time':
-        return 'You are visualizing workout time, grouped by different sports.';
-      case 'distance':
-        return 'You are visualizing workout distance, grouped by different sports.';
-      case 'hr':
-        return 'You are visualizing workout time, grouped by HR zones.';
-      case 'pace':
-        return 'You are visualizing workout distance, grouped by pace zones.';
-      case 'elevation':
-        return 'You are visualizing workout elevation change, grouped by climb categories.';
-      default:
-        throw new Error('Unknown displayType: ' + $scope.displayType.id);
-      }
-    };
-    var getSizeText = function() {
-      switch ($scope.displayType.id) {
-      case 'hr':
-      case 'time':
-        return 'Box sizees correspond to workout time (see legend on the right)';
-      case 'pace':
-      case 'distance':
-      case 'elevation':
-        return 'Box sizes correspond to workout distance (see legend on the right)';
-      default:
-        throw new Error('Unknown displayType: ' + $scope.displayType.id);
-      }
-    };
-    var getColorText = function() {
-      switch ($scope.displayType.id) {
-      case 'time':
-      case 'distance':
-        return 'Box colors correspond to workout types (see sports list on the left)';
-      case 'hr':
-        return 'Box colors correspond to HR zones (see legend on the right)';
-      case 'pace':
-        return 'Box colors correspond to pace zones (see legend on the right)';
-      case 'elevation':
-        return 'Box colors correspond to climb categories (see legend on the right)';
-      default:
-        throw new Error('Unknown displayType: ' + $scope.displayType.id);
-      }
-    };
-    return [getGeneralText(), getSizeText(), getColorText()];
   };
 
   // -----------------------------------------

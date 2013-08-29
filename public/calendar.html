@@ -8,6 +8,8 @@
           href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css"
           href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/hopscotch-0.1.1.min.css"></link>
+
     <style type="text/css">
       svg {
         shape-rendering: crispEdges;
@@ -211,28 +213,17 @@
     <script type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js">
     </script>
+    <script type="text/javascript"
+            src="js/hopscotch-0.1.1.min.js">
+    </script>
   </head>
   <body ng-app="fitspector" ng-controller="VisCalendar">
-    <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Visuzalization explained</h3>
-      </div>
-      <div class="modal-body">
-        <p>Few words about what you currently see:</p>
-        <ul ng-repeat="info in getExplanations()">
-          <li ng-bind-html-unsafe="info">
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
-      </div>
-    </div>
     <div class="container">
       <div class="row-fluid centered">
         <div class="well">
           <div class="btn-group analysis-type-selection">
             <button type="button"
+                    id="btn-mode"
                     class="btn btn-primary"
                     rel="{{{true: 'tooltip', false: ''}[type.id == 'climbs']}}"
                     data-toggle="tooltip"
@@ -254,7 +245,7 @@
               <i class="icon-white icon-chevron-right"></i>
             </button>
           </div>
-          <button class="btn btn-mini btn-info help" data-toggle="modal" data-target="#help-modal">
+          <button class="btn btn-mini btn-info help" ng-click="help()">
             <i class="icon-white icon-question-sign"></i> Help
           </button>
         </div>
@@ -324,7 +315,7 @@
       </div>
    </div>
 
-    <script type="text/javascript" src="/js/workouts.js"></script>
-    <script type="text/javascript" src="/js/vis-calendar.js"></script>
+    <script type="text/javascript" src="js/workouts.js"></script>
+    <script type="text/javascript" src="js/vis-calendar.js"></script>
   </body>
 </html>
