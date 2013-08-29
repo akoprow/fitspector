@@ -28,6 +28,7 @@
       #vis-calendar .year text {
         text-anchor: start
       }
+      #legend-size .box,
       #vis-calendar .day {
         fill: #fff;
         stroke: #ccc;
@@ -217,6 +218,8 @@
           </button>
         </div>
       </div>
+    </div>
+    <div class="container-fluid">
       <div class="row-fluid">
         <div class="span6">
           <table id="sport-summary">
@@ -251,11 +254,9 @@
           </table>
         </div>
         <div class="span6">
-          <div id="legend-size"></div>
+          <svg id="legend-size" class="pull-right"></svg>
         </div>
       </div>
-    </div>
-    <div class="container-fluid">
       <div class="row-fluid">
         <div id="vis-calendar"></div>
       </div>

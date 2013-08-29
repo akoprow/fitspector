@@ -658,12 +658,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     // Main container
     var container = svgContainer().data([$scope.time.year]);
     var gridY = 0.5 * cellSize + topMargin;
-    var enter = container.enter()
-      .append('svg')
-        .attr('class', 'year')
-      .append('g')
-        .attr('class', 'grid')
-        .attr('transform', 'translate(1,' + gridY + ')');
+    var enter = container
+      .enter()
+        .append('svg')
+          .attr('class', 'year')
+        .append('g')
+          .attr('class', 'grid')
+          .attr('transform', 'translate(1,' + gridY + ')');
     // update container size
     container.transition(TRANSITIONS_DURATION)
         .attr('width', width)
@@ -841,7 +842,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   var drawSportIcons = function(fullRedraw, data) {
     var sportIconWidth = 55;  // img width + border + padding
     var millisecPerDay = 24 * 60 * 60 * 1000;
-    var numDays = (now.getFullYear() == $scope.year) ?
+    var numDays = (now.getFullYear() == $scope.time.year) ?
           (now - new Date($scope.time.year, 0, 1)) / millisecPerDay : 365;
     var numWeeks = numDays / 7;
 
@@ -985,13 +986,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
   var drawSizeLegend = function() {
     // TODO(koper) Make those dependent on data.
-    var getData = function() {
+    var legendData = function() {
       switch ($scope.displayType.id) {
       case 'time':
       case 'hr':
         // 1h, 2h, ... 9h
         var h = 1000;
-        return _.range(h, h, 10 * h);
+        return _.range(h, 10 * h, h);
       case 'distance':
       case 'pace':
         // 10km, 20km, ... 70km
@@ -1002,13 +1003,21 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       };
     };
 
-    var container = d3
-      .selectAll('#legend-size g.box')
-      .data(getData());
-    var enter = container
+    var data = legendData();
+    var container = d3.select('#legend-size');
+    container
+      .attr('width', cellSize * data.length)
+      .attr('height', cellSize);
+    container
+      .selectAll('.box')
+      .data(data)
       .enter()
-        .append('g')
-        .attr('class', 'box');
+        .append('rect')
+          .attr('class', 'box')
+          .attr('x', function(d, i) { return cellSize * i; })
+          .attr('y', 0)
+          .attr('width', cellSize)
+          .attr('height', cellSize);
   };
 
   var redraw = function(fullRedraw) {
@@ -1029,6 +1038,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     // Draw sport summaries.
     var totals = computeTotals(data);
     drawSportIcons(fullRedraw, totals);
+
+    // Draw legends
+    drawSizeLegend();
   };
 
   redraw(true);
