@@ -6,6 +6,7 @@
 // Constants
 var TRANSITIONS_DURATION = 400;
 var TOP_MARGIN = 15;
+var LEGEND_LABEL_SIZE = 10;
 
 // --------------------------------------------------------------------------------------------------------
 // -------------------------------------- Global page modifications ---------------------------------------
@@ -1025,34 +1026,58 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     };
 
     // Text size for the description
-    d3.select('#legend-size .desc').style('line-height', cellSize + 'px');
+    var height = cellSize + 1 + LEGEND_LABEL_SIZE;
+    d3.select('#legend-size .desc').style('line-height', height + 'px');
 
     var data = legendData();
     var container = d3.select('#legend-size svg');
     container
       .attr('width', cellSize * data.length + 1)
-      .attr('height', cellSize + 1);
+      .attr('height', height);
 
-    // Draw boxes and marks in them
+    // Draw boxes, marks in them and labels on top
     // TODO(koper) Somewhat share the positioning logic with drawing workout boxes. Perhaps use a layout? Or auxiliary functions.
     var sizeScale = getSizeScale();
-    _.each([false, true], function(mark) {
+    _.each(['box', 'mark', 'desc'], function(type) {
+      var boxSize = function(d) {
+        switch (type) {
+        case 'mark': return sizeScale(d);
+        case 'box': return cellSize;
+        case 'desc': return cellSize;
+        default: throw new Error('Unknown element: ' + type);
+        }
+      };
       var items = container
-         .selectAll(mark ? '.mark' : '.box')
+         .selectAll('.' + type)
          .data(data);
       items.enter()
-        .append('rect')
-        .attr('class', mark ? 'mark' : 'box');
+        .append(type == 'desc' ? 'text' : 'rect')
+        .attr('class', type);
       items
         .transition(TRANSITIONS_DURATION)
         .attr('x', function(d, i) {
-          return mark ? cellSize * (i + 0.5) - sizeScale(d)/2 : cellSize * i;
+          switch (type) {
+            case 'mark': return cellSize * (i + 0.5) - sizeScale(d)/2;
+            case 'box': return cellSize * i;
+            case 'desc': return cellSize * (i + 0.5);
+            default: throw new Error('Unknown element: ' + type);
+          }
         })
         .attr('y', function(d, i) {
-          return mark ? (cellSize - sizeScale(d)) / 2 : 0;
-        })
-        .attr('width', function(d) { return mark ? sizeScale(d) : cellSize; })
-        .attr('height', function(d) { return mark ? sizeScale(d) : cellSize; });
+          switch (type) {
+            case 'mark': return LEGEND_LABEL_SIZE + (cellSize - sizeScale(d)) / 2;
+            case 'box': return LEGEND_LABEL_SIZE;
+            case 'desc': return LEGEND_LABEL_SIZE;
+            default: throw new Error('Unknown element: ' + type);
+          }
+        });
+      if (type == 'desc') {
+        items.text('1h');
+      } else {
+        items
+          .attr('width', boxSize)
+          .attr('height', boxSize);
+      }
       items.exit()
         .remove();
     });

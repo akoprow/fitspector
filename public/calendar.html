@@ -9,6 +9,10 @@
       svg {
         shape-rendering: crispEdges;
       }
+      .container {
+        min-width: 950px;
+        overflow: auto;
+      }
       .sport-icon {
         width: 48px;
         height: 48px;
@@ -28,10 +32,17 @@
         font: 16px sans-serif;
       }
       #vis-calendar .year text {
-        text-anchor: start
+        text-anchor: middle;
       }
       #legend-size .mark {
         fill: #ccc;
+      }
+      #legend-size svg {
+        overflow: visible;
+      }
+      #legend-size .desc {
+        text-anchor: middle;
+        font-size: 8pt;
       }
       #legend-size .box,
       #vis-calendar .day {
@@ -74,6 +85,9 @@
         margin-left: auto;
         margin-right: auto;
         display: block;
+      }
+      #sport-summary {
+        min-width: 580px;
       }
       #sport-summary .data {
         display: block;
@@ -240,8 +254,8 @@
     </div>
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span6">
-          <table id="sport-summary">
+        <div class="span8" id="sport-summary">
+          <table>
             <tr class="icon">
               <th>
                 <div class="btn-group">
@@ -272,7 +286,7 @@
             </tr>
           </table>
         </div>
-        <div class="span6">
+        <div class="span4">
           <div id="legend-size" class="pull-right">
             <span class="desc" ng-bind="getSizeExplanation()"></span>
             <svg></svg>
