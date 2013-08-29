@@ -34,7 +34,7 @@
       #vis-calendar .year text {
         text-anchor: middle;
       }
-      #legend-size .box,
+      .legend .box,
       #vis-calendar .day {
         fill: #fff;
         stroke-width: 1px;
@@ -42,7 +42,7 @@
       #vis-calendar .day {
         stroke: #ccc;
       }
-      #legend-size .box {
+      .legend .box {
         stroke: #666;
       }
       #vis-calendar .day.selected {
@@ -172,15 +172,15 @@
       #legend-size .mark {
         fill: #ccc;
       }
-      #legend-size .desc {
+      .legend .desc {
         text-anchor: middle;
         font-size: 7pt;
       }
-      #legend-size .text {
+      .legend .text {
         vertical-align: top;
         display: inline-block;
       }
-      #legend-size .text:after {
+      .legend .text:after {
         vertical-align: top;
         content: ': ';
         margin-right: 5px;
@@ -285,9 +285,16 @@
           </table>
         </div>
         <div class="span4">
-          <div id="legend-size" class="pull-right">
-            <span class="text" ng-bind="getSizeExplanation()"></span>
-            <svg></svg>
+          <div class="pull-right">
+            <h3>Legend</h3>
+            <div id="legend-size" class="legend">
+              <span class="text" ng-bind="getSizeLegendLabel()"></span>
+              <svg></svg>
+            </div>
+            <div id="legend-color" class="legend">
+              <span class="text" ng-bind="getColorLegendLabel()"></span>
+              <svg></svg>
+            </div>
           </div>
         </div>
       </div>

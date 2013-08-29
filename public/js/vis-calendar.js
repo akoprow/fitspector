@@ -426,7 +426,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // --- Help text
   // --------------
 
-  $scope.getSizeExplanation = function() {
+  $scope.getSizeLegendLabel = function() {
     switch ($scope.displayType.id) {
     case 'time':
     case 'hr':
@@ -440,6 +440,21 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     }
   };
 
+  $scope.getColorLegendLabel = function() {
+    switch ($scope.displayType.id) {
+    case 'time':
+    case 'distance':
+      return 'Colors correspond to sports (see left)';
+    case 'hr':
+      return 'HR zones';
+    case 'pace':
+      return 'Pace zones';
+    case 'elevation':
+      return 'Elevation zones';
+    default:
+      throw new Error('Unknown displayType: ' + $scope.displayType.id);
+    }
+  };
   $scope.getExplanations = function() {
     var getGeneralText = function() {
       switch ($scope.displayType.id) {
@@ -1008,49 +1023,15 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     });
   };
 
-  var drawSizeLegend = function(sizeScale) {
-    // TODO(koper) Make ranges below dependent on data.
-    var mode;
-    var legendData = function() {
-      switch ($scope.displayType.id) {
-      case 'time':
-      case 'hr':
-        // 1h, 2h, ... 9h, 10h
-        var h = 3600;
-        mode = 'time';
-        return _.map(
-          _.range(1, 11, 1),
-          function(v) {
-            return {
-              val: 3600 * v,
-              text: v + 'h'
-            };
-          });
-      case 'distance':
-      case 'pace':
-        // 10km, 20km, ... 70km
-        var km = 1000;
-        mode = 'distance';
-        return _.map(
-          _.range(10, 80, 10),
-          function(v) {
-            return {
-              val: km * v,
-              text: v + 'km'
-            };
-          });
-      default:
-        throw new Error('Unknown mode: ' + $scope.displayType.id);
-      };
-    };
-
+  var drawLegend = function(legendId, params) {
     // Text size for the description
-    d3.select('#legend-size .text')
+    d3.select('#legend-' + legendId + ' .text')
       .style('line-height', cellSize + 'px')
       .style('margin-top', LEGEND_LABEL_SIZE + 'px');
 
-    var data = legendData();
-    var container = d3.select('#legend-size svg');
+    var data = params.data;
+    var mode = params.mode;
+    var container = d3.select('#legend-' + legendId + ' svg');
     container
       .attr('width', cellSize * data.length + 1 + LEGEND_PADDING * 2)
       .attr('height', cellSize + 1 + LEGEND_LABEL_SIZE);
@@ -1061,7 +1042,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     _.each(['box', 'mark', 'desc'], function(type) {
       var boxSize = function(d) {
         switch (type) {
-        case 'mark': return sizeScale(d.val);
+        case 'mark': return mode == 'zones' ? cellSize / 2 : sizeScale(d.val);
         case 'box': return cellSize;
         case 'desc': return cellSize;
         default: throw new Error('Unknown element: ' + type);
@@ -1077,7 +1058,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       update
         .attr('x', function(d, i) {
           switch (type) {
-            case 'mark': return LEGEND_PADDING + cellSize * (i + 0.5) - sizeScale(d.val)/2;
+            case 'mark': return LEGEND_PADDING + cellSize * (i + 0.5) - boxSize(d)/2;
             case 'box': return LEGEND_PADDING + cellSize * i;
             case 'desc': return LEGEND_PADDING + cellSize * (i + 0.5);
             default: throw new Error('Unknown element: ' + type);
@@ -1085,12 +1066,15 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         })
         .attr('y', function(d, i) {
           switch (type) {
-            case 'mark': return LEGEND_LABEL_SIZE + (cellSize - sizeScale(d.val)) / 2;
+            case 'mark': return LEGEND_LABEL_SIZE + (cellSize - boxSize(d)) / 2;
             case 'box': return LEGEND_LABEL_SIZE;
             case 'desc': return LEGEND_LABEL_SIZE - 2;
             default: throw new Error('Unknown element: ' + type);
           }
         });
+      if (type == 'mark' && mode == 'zones') {
+        update.style('fill', 'red');
+      }
       if (type == 'desc') {
         update.text(function(d, i) {
           // TODO(koper) Too much magic... basically for smaller cell sizes we only have space to show every second label in distance legend.
@@ -1103,6 +1087,85 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       }
       items.exit()
         .remove();
+    });
+  };
+
+  var drawLegends = function() {
+    // TODO(koper) Make ranges below dependent on data.
+    var legendSizeParams = function() {
+      switch ($scope.displayType.id) {
+      case 'time':
+      case 'hr':
+        // 1h, 2h, ... 9h, 10h
+        var h = 3600;
+        return {
+          mode: 'time',
+          data: _.map(
+            _.range(1, 11, 1),
+            function(v) {
+              return {
+                val: 3600 * v,
+                text: v + 'h'
+              };
+            })
+        };
+      case 'distance':
+      case 'pace':
+        // 10km, 20km, ... 70km
+        var km = 1000;
+        return {
+          mode: 'distance',
+          data: _.map(
+            _.range(10, 80, 10),
+            function(v) {
+              return {
+                val: km * v,
+                text: v + 'km'
+              };
+            })
+        };
+      default:
+        throw new Error('Unknown mode: ' + $scope.displayType.id);
+      };
+    };
+
+    var legendColorParams = function() {
+      switch ($scope.displayType.id) {
+      case 'time':
+      case 'distance':
+        return {
+          mode: 'text',
+          data: []
+        };
+      case 'hr':
+        return {
+          mode: 'zones',
+          data: [
+            { val: 0, text: 'Unknown' },
+            { val: 1, text: '<20%' },
+            { val: 2, text: '<30%' },
+            { val: 3, text: '<40%' },
+            { val: 4, text: '<50%' },
+            { val: 5, text: '<60%' },
+            { val: 6, text: '<70%' }
+          ]
+        };
+      case 'pace':
+        return {
+          mode: 'zones',
+          data: [0, 1, 2, 3, 4, 5, 6]
+        };
+      default:
+        throw new Error('Unknown mode: ' + $scope.displayType.id);
+      };
+    };
+
+    _.each(['size', 'color'], function(legendId) {
+      var params = {
+        size: legendSizeParams,
+        color: legendColorParams
+      }[legendId]();
+      drawLegend(legendId, params);
     });
   };
 
@@ -1126,7 +1189,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     drawSportIcons(fullRedraw, totals);
 
     // Draw legends
-    drawSizeLegend();
+    drawLegends();
   };
 
   redraw(true);
