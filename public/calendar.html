@@ -34,7 +34,7 @@
       #vis-calendar .year text {
         text-anchor: middle;
       }
-      .legend .box,
+      .legend-entry .box,
       #vis-calendar .day {
         fill: #fff;
         stroke-width: 1px;
@@ -42,7 +42,7 @@
       #vis-calendar .day {
         stroke: #ccc;
       }
-      .legend .box {
+      .legend-entry .box {
         stroke: #666;
       }
       #vis-calendar .day.selected {
@@ -77,6 +77,9 @@
         display: block;
       }
       #sport-summary {
+        min-width: 580px;
+      }
+      #legend {
         min-width: 580px;
       }
       #sport-summary .data {
@@ -172,17 +175,13 @@
       #legend-size .mark {
         fill: #ccc;
       }
-      .legend .desc {
+      .legend-entry .desc {
         text-anchor: middle;
         font-size: 7pt;
       }
-      .legend .text {
+      .legend-entry .text {
         vertical-align: top;
         display: inline-block;
-      }
-      .legend .text:after {
-        vertical-align: top;
-        content: ': ';
         margin-right: 5px;
       }
     </style>
@@ -225,12 +224,12 @@
           <div class="btn-group analysis-type-selection">
             <button type="button"
                     class="btn btn-primary"
-                    rel="{{{true: 'tooltip', false: ''}[type.id == 'elevationZones']}}"
+                    rel="{{{true: 'tooltip', false: ''}[type.id == 'climbs']}}"
                     data-toggle="tooltip"
                     data-title="Coming soon!"
                     data-placement="bottom"
                     ng-repeat="type in allDisplayTypes"
-                    ng-class="{disabled: type.id == 'elevationZones', active: displayType.id == type.id}"
+                    ng-class="{disabled: type.id == 'climbs', active: displayType.id == type.id}"
                     ng-click="setDisplayType(type)">
               <icon type="{{type.id}}" variant="white"></icon> <span class="hidden-phone" ng-bind="type.name"></span>
             </button>
@@ -252,7 +251,7 @@
     </div>
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span8" id="sport-summary">
+        <div class="span6" id="sport-summary">
           <table>
             <tr class="icon">
               <th>
@@ -284,14 +283,14 @@
             </tr>
           </table>
         </div>
-        <div class="span4">
+        <div class="span6" id="legend">
           <div class="pull-right">
             <h3>Legend</h3>
-            <div id="legend-size" class="legend">
+            <div id="legend-size" class="legend-entry">
               <span class="text" ng-bind="getSizeLegendLabel()"></span>
               <svg></svg>
             </div>
-            <div id="legend-color" class="legend">
+            <div id="legend-color" class="legend-entry">
               <span class="text" ng-bind="getColorLegendLabel()"></span>
               <svg></svg>
             </div>

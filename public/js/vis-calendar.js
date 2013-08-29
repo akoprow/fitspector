@@ -9,6 +9,7 @@ var TOP_MARGIN = 15;
 
 var LEGEND_LABEL_SIZE = 10;
 var LEGEND_PADDING = 3;
+var LEGEND_MIN_CELL_SIZE = 35;
 
 // --------------------------------------------------------------------------------------------------------
 // -------------------------------------- Global page modifications ---------------------------------------
@@ -119,7 +120,7 @@ directives.directive('icon', function() {
       hr: 'heart',
       pace: 'fast-forward',
       elevation: 'chevron-up',
-      elevationZones: 'signal',
+      climbs: 'signal',
       sessions: 'ok'
     };
     return icons[type];
@@ -369,8 +370,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       name: 'Pace zones'
     },
     {
-      id: 'elevationZones',
-      name: 'Elevation zones'
+      id: 'climbs',
+      name: 'Climb categories'
     }
 
   ];
@@ -378,7 +379,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   $scope.displayType = $scope.allDisplayTypes[0];
 
   $scope.setDisplayType = function(type) {
-    if (type.id != 'elevationZones') {
+    if (type.id != 'climbs') {
       $scope.displayType = type;
     }
   };
@@ -430,11 +431,11 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     switch ($scope.displayType.id) {
     case 'time':
     case 'hr':
-      return 'Workout time';
+      return 'Workout time (hours):';
     case 'distance':
     case 'pace':
     case 'elevation':
-      return 'Workout distance';
+      return 'Workout distance (km):';
     default:
       throw new Error('Unknown displayType: ' + $scope.displayType.id);
     }
@@ -446,11 +447,11 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     case 'distance':
       return 'Colors correspond to sports (see left)';
     case 'hr':
-      return 'HR zones';
+      return 'HR zones (% HR max):';
     case 'pace':
-      return 'Pace zones';
+      return 'Pace zones (min/km):';
     case 'elevation':
-      return 'Elevation zones';
+      return 'Elevation zones (grade %):';
     default:
       throw new Error('Unknown displayType: ' + $scope.displayType.id);
     }
@@ -1024,17 +1025,20 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   };
 
   var drawLegend = function(legendId, params) {
+    // We enforce minimal cell size for the legend.
+    var legendCellSize = Math.max(cellSize, LEGEND_MIN_CELL_SIZE);
+
     // Text size for the description
     d3.select('#legend-' + legendId + ' .text')
-      .style('line-height', cellSize + 'px')
+      .style('line-height', legendCellSize + 'px')
       .style('margin-top', LEGEND_LABEL_SIZE + 'px');
 
     var data = params.data;
     var mode = params.mode;
     var container = d3.select('#legend-' + legendId + ' svg');
     container
-      .attr('width', cellSize * data.length + 1 + LEGEND_PADDING * 2)
-      .attr('height', cellSize + 1 + LEGEND_LABEL_SIZE);
+      .attr('width', legendCellSize * data.length + 1 + LEGEND_PADDING * 2)
+      .attr('height', legendCellSize + 1 + LEGEND_LABEL_SIZE);
 
     // Draw boxes, marks in them and labels on top
     // TODO(koper) Somewhat share the positioning logic with drawing workout boxes. Perhaps use a layout? Or auxiliary functions.
@@ -1042,9 +1046,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     _.each(['box', 'mark', 'desc'], function(type) {
       var boxSize = function(d) {
         switch (type) {
-        case 'mark': return mode == 'zones' ? cellSize / 2 : sizeScale(d.val);
-        case 'box': return cellSize;
-        case 'desc': return cellSize;
+        case 'mark': return mode == 'zones' ? legendCellSize / 2 : sizeScale(d.val);
+        case 'box': return legendCellSize;
+        case 'desc': return legendCellSize;
         default: throw new Error('Unknown element: ' + type);
         }
       };
@@ -1058,15 +1062,15 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       update
         .attr('x', function(d, i) {
           switch (type) {
-            case 'mark': return LEGEND_PADDING + cellSize * (i + 0.5) - boxSize(d)/2;
-            case 'box': return LEGEND_PADDING + cellSize * i;
-            case 'desc': return LEGEND_PADDING + cellSize * (i + 0.5);
+            case 'mark': return LEGEND_PADDING + legendCellSize * (i + 0.5) - boxSize(d)/2;
+            case 'box': return LEGEND_PADDING + legendCellSize * i;
+            case 'desc': return LEGEND_PADDING + legendCellSize * (i + 0.5);
             default: throw new Error('Unknown element: ' + type);
           }
         })
         .attr('y', function(d, i) {
           switch (type) {
-            case 'mark': return LEGEND_LABEL_SIZE + (cellSize - boxSize(d)) / 2;
+            case 'mark': return LEGEND_LABEL_SIZE + (legendCellSize - boxSize(d)) / 2;
             case 'box': return LEGEND_LABEL_SIZE;
             case 'desc': return LEGEND_LABEL_SIZE - 2;
             default: throw new Error('Unknown element: ' + type);
@@ -1077,8 +1081,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       }
       if (type == 'desc') {
         update.text(function(d, i) {
-          // TODO(koper) Too much magic... basically for smaller cell sizes we only have space to show every second label in distance legend.
-          return (mode == 'distance' && i % 2 && cellSize < 28) ? '' : d.text;
+          return d.text;
         });
       } else {
         update
@@ -1120,7 +1123,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
             function(v) {
               return {
                 val: km * v,
-                text: v + 'km'
+                text: v
               };
             })
         };
@@ -1137,6 +1140,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           mode: 'text',
           data: []
         };
+      // TODO(koper) Fix those values...
       case 'hr':
         return {
           mode: 'zones',
@@ -1153,7 +1157,15 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       case 'pace':
         return {
           mode: 'zones',
-          data: [0, 1, 2, 3, 4, 5, 6]
+          data: [
+            { val: 0, text: 'Unknown' },
+            { val: 1, text: '<6:00' },
+            { val: 2, text: '<5:00' },
+            { val: 3, text: '<4:00' },
+            { val: 4, text: '<3:00' },
+            { val: 5, text: '<2:00' },
+            { val: 6, text: '<1:00' }
+          ]
         };
       default:
         throw new Error('Unknown mode: ' + $scope.displayType.id);
