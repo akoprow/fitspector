@@ -6,6 +6,9 @@
     <link rel="stylesheet" type="text/css"
           href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css">
     <style type="text/css">
+      svg {
+        shape-rendering: crispEdges;
+      }
       .sport-icon {
         width: 48px;
         height: 48px;
@@ -16,7 +19,6 @@
       #vis-calendar {
         margin-top: 2em;
         margin-bottom: 2em;
-        shape-rendering: crispEdges;
       }
       #vis-calendar .year {
         margin: auto;
@@ -28,11 +30,19 @@
       #vis-calendar .year text {
         text-anchor: start
       }
+      #legend-size .mark {
+        fill: #ccc;
+      }
       #legend-size .box,
       #vis-calendar .day {
         fill: #fff;
-        stroke: #ccc;
         stroke-width: 1px;
+      }
+      #vis-calendar .day {
+        stroke: #ccc;
+      }
+      #legend-size .box {
+        stroke: #666;
       }
       #vis-calendar .day.selected {
         stroke: #333;
@@ -154,6 +164,15 @@
       .workout .sport-icon {
         float: left;
       }
+
+      #legend-size .desc {
+        vertical-align: top;
+      }
+      #legend-size .desc:after {
+        vertical-align: top;
+        content: ': ';
+        margin-right: 5px;
+      }
     </style>
 
     <script type="text/javascript"
@@ -254,7 +273,10 @@
           </table>
         </div>
         <div class="span6">
-          <svg id="legend-size" class="pull-right"></svg>
+          <div id="legend-size" class="pull-right">
+            <span class="desc" ng-bind="getSizeExplanation()"></span>
+            <svg></svg>
+          </div>
         </div>
       </div>
       <div class="row-fluid">

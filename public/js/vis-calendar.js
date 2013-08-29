@@ -423,6 +423,20 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // --- Help text
   // --------------
 
+  $scope.getSizeExplanation = function() {
+    switch ($scope.displayType.id) {
+    case 'time':
+    case 'hr':
+      return 'Workout time';
+    case 'distance':
+    case 'pace':
+    case 'elevation':
+      return 'Workout distance';
+    default:
+      throw new Error('Unknown displayType: ' + $scope.displayType.id);
+    }
+  };
+
   $scope.getExplanations = function() {
     var getGeneralText = function() {
       switch ($scope.displayType.id) {
@@ -478,7 +492,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   var cellSize = 18;
   var topMargin = TOP_MARGIN;
 
-  var dailyDataBySports = function(type, d) {
+  var dailyDataBySports = function(d) {
+    var type = $scope.displayType.id;
     var total = 0;
     return _.map(d.exercises, function(e, idx) {
       if (!DataProvider.sports[e.exerciseType]) {
@@ -510,7 +525,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     });
   };
 
-  var dailyDataByZones = function(type, d) {
+  var dailyDataByZones = function(d) {
+    var type = $scope.displayType.id;
     var zones = [0, 0, 0, 0, 0, 0, 0];
     var colors;
     switch (type) {
@@ -584,16 +600,17 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     return data;
   };
 
-  var computeWorkoutData = function(data, type) {
+  var computeWorkoutData = function(workouts) {
+    var type = $scope.displayType.id;
     // Compute visual representation.
-    data = _.map(data, function(d) {
+    var data = _.map(workouts, function(d) {
       switch (type) {
       case 'time':
       case 'distance':
-        return dailyDataBySports(type, d);
+        return dailyDataBySports(d);
       case 'hr':
       case 'pace':
-        return dailyDataByZones(type, d);
+        return dailyDataByZones(d);
       default: throw Error('Unknown grouping: ' + type);
       }
     });
@@ -652,7 +669,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     cellSize = Math.floor((windowWidth - 2) / 53);
 
     var width = 2 + cellSize * 53;
-    var height = topMargin + cellSize * 8 + 2;
+    var height = topMargin + (cellSize + 1) * 8;
     var getWeek = d3.time.format('%U');
 
     // Main container
@@ -789,13 +806,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('d', monthPath);
   };
 
-  var getSizeScale = _.memoize(function(displayType) {
+  var getSizeScale = function() {
     // TODO(koper) This is inefficient; we should just cache sizeScale for a given display type.
-    var fullData = computeWorkoutData(DataProvider.getAllWorkouts(), displayType);
+    var fullData = computeWorkoutData(DataProvider.getAllWorkouts());
     return d3.scale.sqrt()
       .domain([0, d3.max(fullData, function(d) { return d.value; })])
       .rangeRound([0, cellSize - 1]);
-  });
+  };
 
   var drawWorkouts = function(fullRedraw, data) {
     var getWeekday = d3.time.format('%w');
@@ -807,7 +824,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     var yScale = d3.scale.linear()
           .domain([0, 6])
           .rangeRound([0, cellSize * 6]);
-    var sizeScale = getSizeScale($scope.displayType.id);
+    var sizeScale = getSizeScale();
 
     var workouts = gridContainer()
           .selectAll('.workoutsContainer')
@@ -990,9 +1007,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       switch ($scope.displayType.id) {
       case 'time':
       case 'hr':
-        // 1h, 2h, ... 9h
-        var h = 1000;
-        return _.range(h, 10 * h, h);
+        // 1h, 2h, ... 9h, 10h
+        var h = 3600;
+        return _.range(h, 11 * h, h);
       case 'distance':
       case 'pace':
         // 10km, 20km, ... 70km
@@ -1003,21 +1020,45 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       };
     };
 
+    // Text size for the description
+    d3.select('#legend-size .desc').style('line-height', cellSize + 'px');
+
     var data = legendData();
-    var container = d3.select('#legend-size');
+    var container = d3.select('#legend-size svg');
     container
-      .attr('width', cellSize * data.length)
-      .attr('height', cellSize);
-    container
+      .attr('width', cellSize * data.length + 1)
+      .attr('height', cellSize + 1);
+    var boxes = container
       .selectAll('.box')
-      .data(data)
-      .enter()
-        .append('rect')
-          .attr('class', 'box')
-          .attr('x', function(d, i) { return cellSize * i; })
-          .attr('y', 0)
-          .attr('width', cellSize)
-          .attr('height', cellSize);
+      .data(data);
+    boxes.enter()
+      .append('rect')
+      .attr('class', 'box');
+    boxes
+      .transition(TRANSITIONS_DURATION)
+      .attr('x', function(d, i) { return cellSize * i; })
+      .attr('y', 0)
+      .attr('width', cellSize)
+      .attr('height', cellSize);
+    boxes.exit()
+      .remove();
+
+    // TODO(koper) Somewhat share the positioning logic with drawing workout boxes. Perhaps use a layout? Or auxiliary functions.
+    var sizeScale = getSizeScale();
+    var marks = container
+      .selectAll('.mark')
+      .data(data);
+    marks.enter()
+      .append('rect')
+      .attr('class', 'mark');
+    marks
+      .transition(TRANSITIONS_DURATION)
+      .attr('width', function(d) { return sizeScale(d); })
+      .attr('height', function(d) { return sizeScale(d); })
+      .attr('x', function(d, i) { return cellSize * (i + 0.5) - sizeScale(d)/2; })
+      .attr('y', function(d, i) { return (cellSize - sizeScale(d)) / 2; });
+    marks.exit()
+      .remove();
   };
 
   var redraw = function(fullRedraw) {
