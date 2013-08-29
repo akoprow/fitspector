@@ -3,8 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Fitspector: your workout calendar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css"
           href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
     <style type="text/css">
       svg {
         shape-rendering: crispEdges;
@@ -233,12 +236,13 @@
                     class="btn btn-primary"
                     rel="{{{true: 'tooltip', false: ''}[type.id == 'climbs']}}"
                     data-toggle="tooltip"
-                    data-title="Coming soon!"
+                    data-title="Elevation analysis coming soon!"
                     data-placement="bottom"
                     ng-repeat="type in allDisplayTypes"
                     ng-class="{disabled: type.id == 'climbs', active: displayType.id == type.id}"
                     ng-click="setDisplayType(type)">
-              <icon type="{{type.id}}" variant="white"></icon> <span class="hidden-phone" ng-bind="type.name"></span>
+              <icon type="{{type.id}}" variant="white"></icon>
+              <span ng-class="{'hidden-phone': displayType.id != type.id}" ng-bind="type.name"></span>
             </button>
           </div>
           <div class="btn-group year-selection">
