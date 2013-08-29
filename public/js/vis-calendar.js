@@ -6,7 +6,9 @@
 // Constants
 var TRANSITIONS_DURATION = 400;
 var TOP_MARGIN = 15;
+
 var LEGEND_LABEL_SIZE = 10;
+var LEGEND_PADDING = 3;
 
 // --------------------------------------------------------------------------------------------------------
 // -------------------------------------- Global page modifications ---------------------------------------
@@ -1007,13 +1009,15 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   };
 
   var drawSizeLegend = function(sizeScale) {
-    // TODO(koper) Make those dependent on data.
+    // TODO(koper) Make ranges below dependent on data.
+    var mode;
     var legendData = function() {
       switch ($scope.displayType.id) {
       case 'time':
       case 'hr':
         // 1h, 2h, ... 9h, 10h
         var h = 3600;
+        mode = 'time';
         return _.map(
           _.range(1, 11, 1),
           function(v) {
@@ -1026,7 +1030,15 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       case 'pace':
         // 10km, 20km, ... 70km
         var km = 1000;
-        return _.range(10 * km, 80 * km, 10 * km);
+        mode = 'distance';
+        return _.map(
+          _.range(10, 80, 10),
+          function(v) {
+            return {
+              val: km * v,
+              text: v + 'km'
+            };
+          });
       default:
         throw new Error('Unknown mode: ' + $scope.displayType.id);
       };
@@ -1040,7 +1052,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     var data = legendData();
     var container = d3.select('#legend-size svg');
     container
-      .attr('width', cellSize * data.length + 1)
+      .attr('width', cellSize * data.length + 1 + LEGEND_PADDING * 2)
       .attr('height', cellSize + 1 + LEGEND_LABEL_SIZE);
 
     // Draw boxes, marks in them and labels on top
@@ -1065,9 +1077,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         .transition(TRANSITIONS_DURATION)
         .attr('x', function(d, i) {
           switch (type) {
-            case 'mark': return cellSize * (i + 0.5) - sizeScale(d.val)/2;
-            case 'box': return cellSize * i;
-            case 'desc': return cellSize * (i + 0.5);
+            case 'mark': return LEGEND_PADDING + cellSize * (i + 0.5) - sizeScale(d.val)/2;
+            case 'box': return LEGEND_PADDING + cellSize * i;
+            case 'desc': return LEGEND_PADDING + cellSize * (i + 0.5);
             default: throw new Error('Unknown element: ' + type);
           }
         })
@@ -1080,7 +1092,10 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           }
         });
       if (type == 'desc') {
-        items.text(function(d) { return d.text; });
+        items.text(function(d, i) {
+          // TODO(koper) Too much magic... basically for smaller cell sizes we only have space to show every second label in distance legend.
+          return (mode == 'distance' && i % 2 && cellSize < 28) ? '' : d.text;
+        });
       } else {
         items
           .attr('width', boxSize)
