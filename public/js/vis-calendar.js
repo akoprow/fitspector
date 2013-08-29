@@ -806,15 +806,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('d', monthPath);
   };
 
-  var getSizeScale = function() {
-    // TODO(koper) This is inefficient; we should just cache sizeScale for a given display type.
-    var fullData = computeWorkoutData(DataProvider.getAllWorkouts());
-    return d3.scale.sqrt()
-      .domain([0, d3.max(fullData, function(d) { return d.value; })])
-      .rangeRound([0, cellSize - 1]);
-  };
-
-  var drawWorkouts = function(fullRedraw, data) {
+  var drawWorkouts = function(fullRedraw, data, sizeScale) {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
@@ -1001,7 +993,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     });
   };
 
-  var drawSizeLegend = function() {
+  var drawSizeLegend = function(sizeScale) {
     // TODO(koper) Make those dependent on data.
     var legendData = function() {
       switch ($scope.displayType.id) {
@@ -1044,7 +1036,6 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .remove();
 
     // TODO(koper) Somewhat share the positioning logic with drawing workout boxes. Perhaps use a layout? Or auxiliary functions.
-    var sizeScale = getSizeScale();
     var marks = container
       .selectAll('.mark')
       .data(data);
@@ -1061,6 +1052,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .remove();
   };
 
+  var getSizeScale = function() {
+    // TODO(koper) This is inefficient; we should just cache sizeScale for a given display type.
+    var fullData = computeWorkoutData(DataProvider.getAllWorkouts());
+    return d3.scale.sqrt()
+      .domain([0, d3.max(fullData, function(d) { return d.value; })])
+      .rangeRound([0, cellSize - 1]);
+  };
+
   var redraw = function(fullRedraw) {
     // Draw the container.
     if (fullRedraw) {
@@ -1072,16 +1071,17 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     // Prepare the data.
     var data = filterData();
     var workoutData = computeWorkoutData(data, $scope.displayType.id);
+    var sizeScale = getSizeScale();
 
     // Draw workouts.
-    drawWorkouts(fullRedraw, workoutData);
+    drawWorkouts(fullRedraw, workoutData, sizeScale);
 
     // Draw sport summaries.
     var totals = computeTotals(data);
     drawSportIcons(fullRedraw, totals);
 
     // Draw legends
-    drawSizeLegend();
+    drawSizeLegend(sizeScale);
   };
 
   redraw(true);
