@@ -184,6 +184,13 @@
         display: inline-block;
         margin-right: 5px;
       }
+
+      @media (min-width: 1200px) {
+        #legend div {
+          clear: both;
+          float: right;
+        }
+      }
     </style>
 
     <script type="text/javascript"
@@ -284,16 +291,14 @@
           </table>
         </div>
         <div class="span6" id="legend">
-          <div class="pull-right">
-            <h3>Legend</h3>
-            <div id="legend-size" class="legend-entry">
-              <span class="text" ng-bind="getSizeLegendLabel()"></span>
-              <svg></svg>
-            </div>
-            <div id="legend-color" class="legend-entry">
-              <span class="text" ng-bind="getColorLegendLabel()"></span>
-              <svg></svg>
-            </div>
+          <div><h3>Legend</h3></div>
+          <div id="legend-size" class="legend-entry">
+            <span class="text" ng-bind="getSizeLegendLabel()"></span>
+            <svg></svg>
+          </div>
+          <div id="legend-color" class="legend-entry">
+            <span class="text" ng-bind="getColorLegendLabel()"></span>
+            <svg></svg>
           </div>
         </div>
       </div>

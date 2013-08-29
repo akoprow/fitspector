@@ -830,7 +830,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     return d3.max(fullData, function(d) { return d.value; });
   };
 
-  var getSizeScale = function() {
+  var getSizeScale = function(cellSize) {
     // TODO(koper) This is inefficient; we should just cache sizeScale for a given display type.
     return d3.scale.sqrt()
       .domain([0, getMaxDataValue()])
@@ -847,7 +847,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     var yScale = d3.scale.linear()
           .domain([0, 6])
           .rangeRound([0, cellSize * 6]);
-    var sizeScale = getSizeScale();
+    var sizeScale = getSizeScale(cellSize);
 
     var workouts = gridContainer()
           .selectAll('.workoutsContainer')
@@ -1042,7 +1042,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
     // Draw boxes, marks in them and labels on top
     // TODO(koper) Somewhat share the positioning logic with drawing workout boxes. Perhaps use a layout? Or auxiliary functions.
-    var sizeScale = getSizeScale();
+    var sizeScale = getSizeScale(legendCellSize);
     _.each(['box', 'mark', 'desc'], function(type) {
       var boxSize = function(d) {
         switch (type) {
