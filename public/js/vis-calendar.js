@@ -46,14 +46,17 @@ services.factory('DataProvider', function() {
   var workoutsData = computeData(workouts);
 
   return {
-    // TODO(koper) This should not be exposed; instead we should have appropriate ways to access data.
-    workoutsData: workoutsData,
     sports: sports,
     allSports: _.map(_.keys(sports), function(sport) {
       return _.extend(sports[sport], { id: sport });
     }),
+    // TODO(koper) This is messy; I think the format returned by the two functions is different... improve the API
     getDayWorkouts: function(day) {
       return workoutsData[day];
+    },
+    getAllWorkouts: function() {
+      var workouts = _.pairs(workoutsData);
+      return _.map(workouts, function(d) { return { day: d[1][0].day, exercises: d[1] }; });
     }
   };
 });
@@ -563,9 +566,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   var filterData = function() {
     var year = $scope.time.year;
     var sport = $scope.sportFilter.id;
-
-    var workouts = _.pairs(DataProvider.workoutsData);
-    workouts = _.map(workouts, function(d) { return { day: d[1][0].day, exercises: d[1] }; });
+    var workouts = DataProvider.getAllWorkouts();
 
     // Filter by year.
     var data = _.filter(workouts, function(d) {
@@ -795,6 +796,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
+    // TODO(koper) This is inefficient; we should just cache sizeScale for a given display type.
+    var fullData = computeWorkoutData(DataProvider.getAllWorkouts());
     var xScale = d3.scale.linear()
           .domain([0, 52])
           .rangeRound([0, cellSize * 52]);
@@ -802,7 +805,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           .domain([0, 6])
           .rangeRound([0, cellSize * 6]);
     var sizeScale = d3.scale.sqrt()
-          .domain([0, d3.max(data, function(d) { return d.value; })])
+          .domain([0, d3.max(fullData, function(d) { return d.value; })])
           .rangeRound([0, cellSize - 1]);
 
     var workouts = gridContainer()
@@ -980,6 +983,34 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     });
   };
 
+  var drawSizeLegend = function() {
+    // TODO(koper) Make those dependent on data.
+    var getData = function() {
+      switch ($scope.displayType.id) {
+      case 'time':
+      case 'hr':
+        // 1h, 2h, ... 9h
+        var h = 1000;
+        return _.range(h, h, 10 * h);
+      case 'distance':
+      case 'pace':
+        // 10km, 20km, ... 70km
+        var km = 1000;
+        return _.range(10 * km, 80 * km, 10 * km);
+      default:
+        throw new Error('Unknown mode: ' + $scope.displayType.id);
+      };
+    };
+
+    var container = d3
+      .selectAll('#legend-size g.box')
+      .data(getData());
+    var enter = container
+      .enter()
+        .append('g')
+        .attr('class', 'box');
+  };
+
   var redraw = function(fullRedraw) {
     // Draw the container.
     if (fullRedraw) {
@@ -990,9 +1021,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
     // Prepare the data.
     var data = filterData();
-
-    // Draw workouts data.
     var workoutData = computeWorkoutData(data);
+
+    // Draw workouts.
     drawWorkouts(fullRedraw, workoutData);
 
     // Draw sport summaries.
