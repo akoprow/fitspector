@@ -324,9 +324,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // TODO(koper) This should be changed to now in the final product (+ possibly remove property)
   var now = new Date(2013, 7, 25);
 
-  var timeZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
+  var hrZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
+  // TODO(koper) Fix those desc
+  var hrZoneDesc = ['Unknown', '<20%', '<30%', '<40%', '<50%', '<60%', '<70%'];
 
   var paceZoneColors = ['#ccc', "#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"];
+  // TODO(koper) Fix those desc
+  var paceZoneDesc = ['Unknown', '<6:00', '<5:00', '<4:00', '<3:00', '<2:00', '<1:00'];
 
   // ---------------------------------------------
   // --- Handling visualization parameter changes
@@ -550,7 +554,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     var colors;
     switch (type) {
     case 'hr':
-      colors = timeZoneColors;
+      colors = hrZoneColors;
       break;
     case 'pace':
       colors = paceZoneColors;
@@ -1046,7 +1050,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     _.each(['box', 'mark', 'desc'], function(type) {
       var boxSize = function(d) {
         switch (type) {
-        case 'mark': return mode == 'zones' ? legendCellSize / 2 : sizeScale(d.val);
+        case 'mark': return mode == 'zones' ? legendCellSize - 1 : sizeScale(d.val);
         case 'box': return legendCellSize;
         case 'desc': return legendCellSize;
         default: throw new Error('Unknown element: ' + type);
@@ -1077,7 +1081,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           }
         });
       if (type == 'mark' && mode == 'zones') {
-        update.style('fill', 'red');
+        update.style('fill', function(d) { return d.color; });
       }
       if (type == 'desc') {
         update.text(function(d, i) {
@@ -1093,92 +1097,87 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     });
   };
 
+  // TODO(koper) Make ranges in this function dependent on data.
+  var getLegendSizeParams = function() {
+    switch ($scope.displayType.id) {
+    case 'time':
+    case 'hr':
+      // 1h, 2h, ... 9h, 10h
+      var h = 3600;
+      return {
+        mode: 'time',
+        data: _.map(
+          _.range(1, 11, 1),
+          function(v) {
+            return {
+              val: 3600 * v,
+              text: v + 'h'
+            };
+          })
+      };
+    case 'distance':
+    case 'pace':
+      // 10km, 20km, ... 70km
+      var km = 1000;
+      return {
+        mode: 'distance',
+        data: _.map(
+          _.range(10, 80, 10),
+          function(v) {
+            return {
+              val: km * v,
+              text: v
+            };
+          })
+      };
+    default:
+      throw new Error('Unknown mode: ' + $scope.displayType.id);
+    };
+  };
+
+  // TODO(koper) Make ranges in this function dependent on data.
+  var getLegendColorParams = function() {
+    switch ($scope.displayType.id) {
+    case 'time':
+    case 'distance':
+      return {
+        mode: 'text',
+        data: []
+      };
+    case 'hr':
+      return {
+        mode: 'zones',
+        data: _.map(
+          _.range(0, 7),
+          function(v) {
+            return {
+              val: v,
+              text: hrZoneDesc[v],
+              color: hrZoneColors[v]
+            };
+          })
+      };
+    case 'pace':
+      return {
+        mode: 'zones',
+        data: _.map(
+          _.range(0, 7),
+          function(v) {
+            return {
+              val: v,
+              text: paceZoneDesc[v],
+              color: paceZoneColors[v]
+            };
+          })
+      };
+    default:
+      throw new Error('Unknown mode: ' + $scope.displayType.id);
+    };
+  };
+
   var drawLegends = function() {
-    // TODO(koper) Make ranges below dependent on data.
-    var legendSizeParams = function() {
-      switch ($scope.displayType.id) {
-      case 'time':
-      case 'hr':
-        // 1h, 2h, ... 9h, 10h
-        var h = 3600;
-        return {
-          mode: 'time',
-          data: _.map(
-            _.range(1, 11, 1),
-            function(v) {
-              return {
-                val: 3600 * v,
-                text: v + 'h'
-              };
-            })
-        };
-      case 'distance':
-      case 'pace':
-        // 10km, 20km, ... 70km
-        var km = 1000;
-        return {
-          mode: 'distance',
-          data: _.map(
-            _.range(10, 80, 10),
-            function(v) {
-              return {
-                val: km * v,
-                text: v
-              };
-            })
-        };
-      default:
-        throw new Error('Unknown mode: ' + $scope.displayType.id);
-      };
-    };
-
-    var legendColorParams = function() {
-      switch ($scope.displayType.id) {
-      case 'time':
-      case 'distance':
-        return {
-          mode: 'text',
-          data: []
-        };
-      // TODO(koper) Fix those values...
-      case 'hr':
-        return {
-          mode: 'zones',
-          data: [
-            { val: 0, text: 'Unknown' },
-            { val: 1, text: '<20%' },
-            { val: 2, text: '<30%' },
-            { val: 3, text: '<40%' },
-            { val: 4, text: '<50%' },
-            { val: 5, text: '<60%' },
-            { val: 6, text: '<70%' }
-          ]
-        };
-      case 'pace':
-        return {
-          mode: 'zones',
-          data: [
-            { val: 0, text: 'Unknown' },
-            { val: 1, text: '<6:00' },
-            { val: 2, text: '<5:00' },
-            { val: 3, text: '<4:00' },
-            { val: 4, text: '<3:00' },
-            { val: 5, text: '<2:00' },
-            { val: 6, text: '<1:00' }
-          ]
-        };
-      default:
-        throw new Error('Unknown mode: ' + $scope.displayType.id);
-      };
-    };
-
-    _.each(['size', 'color'], function(legendId) {
-      var params = {
-        size: legendSizeParams,
-        color: legendColorParams
-      }[legendId]();
-      drawLegend(legendId, params);
-    });
+    drawLegend('size', getLegendSizeParams());
+    drawLegend('color', getLegendColorParams());
   };
 
   var redraw = function(fullRedraw) {
