@@ -4,6 +4,7 @@
 // --------------------------------------------------------------------------------------------------------
 
 // Constants
+var MAX_DISTINCT_SPORTS = 4;
 var TRANSITIONS_DURATION = 400;
 var TOP_MARGIN = 15;
 
@@ -517,7 +518,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   var cellSize = 18;
   var topMargin = TOP_MARGIN;
 
-  var dailyDataBySports = function(d) {
+  var dailyDataBySports = function(d, activeSports) {
     var type = $scope.displayType.id;
     var total = 0;
     return _.map(d.exercises, function(e, idx) {
@@ -538,7 +539,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         day: d.day,
         key: d.day + idx,
         value: total,
-        color: DataProvider.sports[e.exerciseType].color
+        color: _.contains(activeSports, e.exerciseType) ? DataProvider.sports[e.exerciseType].color : '#ccc'
       };
     });
   };
@@ -625,14 +626,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     return data;
   };
 
-  var computeWorkoutData = function(workouts) {
+  var computeWorkoutData = function(workouts, activeSports) {
     var type = $scope.displayType.id;
     // Compute visual representation.
     var data = _.map(workouts, function(d) {
       switch (type) {
       case 'time':
       case 'distance':
-        return dailyDataBySports(d);
+        return dailyDataBySports(d, activeSports);
       case 'hr':
       case 'pace':
         return dailyDataByZones(d);
@@ -678,7 +679,12 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     default: throw Error('Unknown type: ' + type);
     }
     data = _.sortBy(data, sortBy);
-    return data.reverse();
+    data = data.reverse();
+
+    return {
+      data: data,
+      activeSports: _.map(_.first(data, MAX_DISTINCT_SPORTS), function(d) { return d.id; })
+    };
   };
 
   var svgContainer = function() {
@@ -846,7 +852,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .rangeRound([0, cellSize - 1]);
   };
 
-  var drawWorkouts = function(fullRedraw, data) {
+  var drawWorkouts = function(fullRedraw, data, activeSports) {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
@@ -888,7 +894,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .style('fill', function(d) { return d.color; });
   };
 
-  var drawSportIcons = function(fullRedraw, data) {
+  var drawSportIcons = function(fullRedraw, data, activeSports) {
     var sportIconWidth = 55;  // img width + border + padding
     var millisecPerDay = 24 * 60 * 60 * 1000;
     var numDays = (now.getFullYear() == $scope.time.year) ?
@@ -930,7 +936,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           }
         };
         if (getType() == 'time' || getType() == 'distance') { // sport colors matter
-          if (hasData()) {
+          if (hasData() & _.contains(activeSports, s.id)) {
             return s.color; // sport with data
           } else {
             return '#ccc'; // inactive sport
@@ -1202,14 +1208,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
     // Prepare the data.
     var data = filterData();
-    var workoutData = computeWorkoutData(data, $scope.displayType.id);
+    var totals = computeTotals(data);
+    var workoutData = computeWorkoutData(data, totals.activeSports);
 
     // Draw workouts.
     drawWorkouts(fullRedraw, workoutData);
 
     // Draw sport summaries.
-    var totals = computeTotals(data);
-    drawSportIcons(fullRedraw, totals);
+    drawSportIcons(fullRedraw, totals.data, totals.activeSports);
 
     // Draw legends
     drawLegends();
