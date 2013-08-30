@@ -102,9 +102,6 @@
         font-size: 10pt;
         padding: 3px;
       }
-      .metric {
-        margin-left: 10px;
-      }
       .unit,
       #sport-summary .data .value:after {
         font-size: 80%;
@@ -160,14 +157,14 @@
       }
 
       .selected-day-workouts {
-        height: 180px;
-      }
-      .selected-day-workouts .alert {
-        max-height: 170px;
+        height: 210px;
+        max-height: 210px;
         overflow: hidden;
       }
       .workout {
         clear: both;
+        height: 50px;
+        overflow: hidden;
       }
       .workout .sport-icon {
         opacity: .8;
@@ -175,6 +172,13 @@
       }
       .workout .sport-icon {
         float: left;
+        margin-right: 8px;
+      }
+      .workout .metric {
+        margin-right: 10px;
+      }
+      .workout .metric-label {
+        font-variant: small-caps;
       }
 
       #legend-size .mark {
@@ -305,7 +309,7 @@
       <div class="row-fluid">
         <div class="span8 offset2">
           <div class="selected-day-workouts">
-            <div class="alert alert-info" ng-show="selectedDay">
+            <div class="well" ng-show="selectedDay">
               <button type="button" class="close" ng-click="selectedDay = null">&times;</button>
               <strong>{{selectedDayText()}}</strong>
               <workouts day="selectedDay"></workouts>

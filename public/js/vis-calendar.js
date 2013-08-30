@@ -450,25 +450,25 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         },
         {
           title: 'Year',
-          content: 'Select the year to analyze',
+          content: 'Select a year to analyze',
           target: '.year-selection .btn',
           placement: 'bottom'
         },
         {
           title: 'Workout visualization',
-          content: 'This is the calendar view of the given year.<br/>Every cell corresponds to one day.<br/>Click any of the cells to see all workouts for the given day.',
+          content: '<p>This is the calendar view of the given year.</p><p>Every cell corresponds to one day.</p><p>Click any of the cells to see all workouts for the given day.</p>',
           target: '#vis-calendar',
           placement: 'top'
         },
         {
           title: 'Sport summaries',
-          content: 'Here you can see all sports with annual totals.<br/>Click on any sport to restrict analysis only to this workout type.',
+          content: '<p>Here you can see all sports with annual totals.</p><p>Click on any sport to restrict analysis only to this workout type.</p>',
           target: '#sport-summary',
           placement: 'bottom'
         },
         {
           title: 'Legend',
-          content: 'Here you can see what the box colors and sizes correspond to.',
+          content: 'In the legend you can see what the box colors and sizes in the visualization correspond to.',
           target: '#legend .legend-entry',
           placement: 'left'
         }
