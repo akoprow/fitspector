@@ -506,7 +506,7 @@ svg {
     margin-top: 10px;
 }
 
-.selected-day-workouts {
+#selected-day-workouts {
     height: 210px;
     max-height: 210px;
     overflow: hidden;

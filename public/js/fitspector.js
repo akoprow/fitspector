@@ -531,7 +531,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         {
           title: 'Workout details',
           content: 'Click on any day in the calendar and the details of the workouts for that day will appear here.',
-          target: '.selected-day-workouts',
+          target: '#selected-day-workouts',
           placement: 'top'
         }
       ]
@@ -850,6 +850,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         var elt = this;
         $scope.$apply(function() {
           $scope.selectedDay = d;
+          $('html, body').animate({
+            scrollTop: $('#selected-day-workouts').offset().top - 60
+          });
           redrawSelectedDay(d);
         });
       })
