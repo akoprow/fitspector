@@ -353,10 +353,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
   // --- sportFilter ---
 
-  $scope.sportFilter = { id: 'all' };
-  $scope.setSportFilter = function(sport) {
-    $scope.sportFilter = sport;
-  };
+  $scope.sportFilter = 'all';
 
   // --- displayType ---
 
@@ -605,7 +602,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
   var filterData = function() {
     var year = $scope.time.year;
-    var sport = $scope.sportFilter.id;
+    var sport = $scope.sportFilter;
     var workouts = DataProvider.getAllWorkouts();
 
     // Filter by year.
@@ -973,6 +970,15 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           .classed('sport-icon', true)
           .attr('data-toggle', 'tooltip')
           .attr('data-title', function(s) { return s.name; })
+          .on('click', function(s) {
+            $scope.$apply(function() {
+              if ($scope.sportFilter == 'all') {
+                $scope.sportFilter = s.id;
+              } else {
+                $scope.sportFilter = 'all';
+              }
+            });
+          })
           .on('mouseover', function(s) {
             setMetricBackgroundColor(s.id, sportBackgroundColor(s));
           })

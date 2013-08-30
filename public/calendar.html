@@ -25,6 +25,9 @@
         border: 1px solid #333;
         border-radius: 10px;
       }
+      #sport-summary .sport-icon {
+        cursor: pointer;
+      }
       #vis-calendar {
         margin-top: 2em;
         margin-bottom: 2em;
@@ -98,6 +101,11 @@
         top: 0;
         font-size: 10pt;
         padding: 3px;
+      }
+      #sport-summary #unfilter {
+        margin-top: 15px;
+        margin-left: 60px;
+        display: inline-block;
       }
       .unit,
       #sport-summary .data .value:after {
@@ -266,7 +274,9 @@
                   </button>
                 </div>
               </th>
-              <td class="data"></td>
+              <td class="data">
+                <div id="unfilter" ng-show="sportFilter != 'all'">(Click again to clear the filter)</div>
+              </td>
             </tr>
             <tr class="data-row sessions">
               <th><span class="text">Sessions <icon type="sessions"></icon></th>
