@@ -14,6 +14,8 @@
         href="https://fonts.googleapis.com/css?family=Indie+Flower">
   <link rel="stylesheet" type="text/css"
         href="/css/fitspector.css">
+  <link rel="stylesheet" type="text/css"
+        href="css/hopscotch-0.1.1.min.css">
 
   <script type="text/javascript"
           src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js">
@@ -21,11 +23,8 @@
   <script type="text/javascript"
           src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js">
   </script>
-  <script type="text/javascript"
-          src="/js/fitspector.js">
-  </script>
 </head>
-<body data-spy="scroll" data-target=".navbar">
+<body ng-app="fitspector" ng-controller="VisCalendar" data-spy="scroll" data-target=".navbar">
   <!-- AddThis Smart Layers BEGIN -->
   <!-- Go to http://www.addthis.com/get/smart-layers to customize -->
   <!-- ----------------------------------------- AddThis smart layers  ----------------------------------------- -->
@@ -212,8 +211,133 @@ and that's just the beginning!
         </p>
       </div>
     </div>
+    <div class="row-fluid" ng-hide="true">
+      <div class="span12">
+        <p class="alert alert-info centered">
+          Loading, please wait...
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="container" ng-cloak>
+    <div class="row-fluid centered">
+      <div class="well">
+        <div class="btn-group analysis-type-selection">
+          <button type="button"
+                  id="btn-mode"
+                  class="btn btn-primary"
+                  rel="{{{true: 'tooltip', false: ''}[type.id == 'climbs']}}"
+                  data-toggle="tooltip"
+                  data-title="Elevation analysis coming soon!"
+                  data-placement="bottom"
+                  ng-repeat="type in allDisplayTypes"
+                  ng-class="{disabled: type.id == 'climbs', active: displayType.id == type.id}"
+                  ng-click="setDisplayType(type)">
+            <icon type="{{type.id}}" variant="white"></icon>
+            <span ng-class="{'hidden-phone': displayType.id != type.id}" ng-bind="type.name"></span>
+          </button>
+        </div>
+        <div class="btn-group year-selection">
+          <button class="btn btn-primary" ng-class="{disabled:  disablePrevYear()}" ng-click="prevYear()">
+            <i class="icon-white icon-chevron-left"></i>
+          </button>
+          <button class="btn btn-primary" ng-click="currentYear()" ng-bind="time.year"></button>
+          <button class="btn btn-primary" ng-class="{disabled:  disableNextYear()}" ng-click="nextYear()">
+            <i class="icon-white icon-chevron-right"></i>
+          </button>
+        </div>
+        <button class="btn btn-mini btn-info help" ng-click="help()">
+          <i class="icon-white icon-question-sign"></i> Help
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid" ng-cloak>
+    <div class="row-fluid">
+      <div class="span7" id="sport-summary">
+        <table>
+          <tr class="icon">
+            <th>
+              <div class="btn-group">
+                <button type="button" class="btn btn-mini btn-primary" ng-repeat="type in allSportSummaryTypes"
+                        ng-class="{active: sportSummaryType.id == type.id}"
+                        ng-click="setSportSummaryType(type)"
+                        ng-bind="type.name">
+                </button>
+              </div>
+            </th>
+            <td class="data">
+              <div id="unfilter" ng-show="sportFilter != 'all'">(Click again to clear the filter)</div>
+            </td>
+          </tr>
+          <tr class="data-row sessions">
+            <th><span class="text">Sessions <icon type="sessions"></icon></th>
+            <td class="data"></td>
+          </tr>
+          <tr class="data-row time" ng-class="sportSummaryType.id">
+            <th><span class="text">Time <icon type="time"></icon></th>
+            <td class="data"></td>
+          </tr>
+          <tr class="data-row distance">
+            <th><span class="text">Distance <icon type="distance"></icon></th>
+            <td class="data"></td>
+          </tr>
+          <tr class="data-row elevation">
+            <th><span class="text">Elevation gain <icon type="elevation"><icon></th>
+            <td class="data"></td>
+          </tr>
+        </table>
+      </div>
+      <div class="span5" id="legend">
+        <div><h3>Legend</h3></div>
+        <div id="legend-size" class="legend-entry">
+          <span class="text" ng-bind="getSizeLegendLabel()"></span>
+          <svg></svg>
+        </div>
+        <div id="legend-color" class="legend-entry">
+          <span class="text" ng-bind="getColorLegendLabel()"></span>
+          <svg></svg>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div id="vis-calendar"></div>
+    </div>
+  </div>
+  <div class="container" ng-cloak>
+    <div class="row-fluid">
+      <div class="span8 offset2">
+        <div class="selected-day-workouts">
+          <div class="well" ng-show="selectedDay">
+            <button type="button" class="close" ng-click="selectedDay = null">&times;</button>
+            <strong>{{selectedDayText()}}</strong>
+            <workouts day="selectedDay"></workouts>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript"
+          src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js">
+  </script>
+  <script type="text/javascript"
+          src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js">
+  </script>
+  <script type="text/javascript"
+          src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js">
+  </script>
+  <script type="text/javascript"
+          src="js/hopscotch-0.1.1.min.js">
+  </script>
+  <script type="text/javascript"
+          src="js/workouts.js">
+  </script>
+  <script type="text/javascript"
+          src="js/fitspector.js">
+  </script>
 
-    <!-- ------------------------------------------------ Preorder  ------------------------------------------------ -->
+  <!-- ------------------------------------------------ Preorder  ------------------------------------------------ -->
+  <div class="container">
     <div id="preorder" class="row-fluid">
       <h3>Preorder</h3>
     </div>
