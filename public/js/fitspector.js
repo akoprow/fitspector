@@ -850,9 +850,12 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         var elt = this;
         $scope.$apply(function() {
           $scope.selectedDay = d;
-          $('html, body').animate({
-            scrollTop: $('#selected-day-workouts').offset().top - 60
-          });
+          var bottom = $('#selected-day-workouts').offset().top + 210; // TODO(koper) Magic number
+          if ($(window).scrollTop() + $(window).height() < bottom) {
+            $('html, body').animate({
+              scrollTop: bottom - $(window).height()
+            });
+          }
           redrawSelectedDay(d);
         });
       })
