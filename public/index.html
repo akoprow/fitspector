@@ -200,9 +200,13 @@ and that's just the beginning!
             <i class="icon-white icon-eye-open"></i> The tour
           </button>
         </p>
+        <p class="alert alert-error centered hidden-desktop">
+          <i class="icon-white icon-warning-sign"></i> Demo is not yet optimized to smaller screen sizes.
+          You may have a suboptimal viewing experience. We are working on improving that.
+        </p>
       </div>
       <div class="span6">
-        <p class="alert alert-error centered">
+        <p class="alert alert-success centered">
           Enjoying the demo? Now you can play a data detective and win prizes too!
           Three lifetime Fitspector pro account subscriptions up for grabs.<br/>
           <a class="btn btn-large btn-info" href="https://docs.google.com/a/fitspector.com/forms/d/1ynjLFB6-BWL14tg1MtB_VrYA_SyccYssrT9ljoPdDz0/viewform" target="_blank">
@@ -254,7 +258,7 @@ and that's just the beginning!
   </div>
   <div class="container-fluid" ng-cloak>
     <div class="row-fluid">
-      <div class="span7" id="sport-summary">
+      <div id="sport-summary">
         <table>
           <tr class="icon">
             <th>
@@ -288,7 +292,7 @@ and that's just the beginning!
           </tr>
         </table>
       </div>
-      <div class="span5" id="legend">
+      <div id="legend">
         <div><h3>Legend</h3></div>
         <div id="legend-size" class="legend-entry">
           <span class="text" ng-bind="getSizeLegendLabel()"></span>

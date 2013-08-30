@@ -58,10 +58,10 @@ var TRANSITIONS_DURATION = 400;
 var TOP_MARGIN = 15;
 
 var LEGEND_LABEL_SIZE = 10;
-var LEGEND_PADDING = 10;
+var LEGEND_PADDING = 14;
 var LEGEND_MIN_CELL_SIZE = 35;
 
-var SPORT_ICON_WIDTH = 45;  // img width + border + padding
+var SPORT_ICON_WIDTH = 46;  // img width + border + padding
 
 // --------------------------------------------------------------------------------------------------------
 // -------------------------------------- Global page modifications ---------------------------------------
@@ -507,7 +507,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           placement: 'bottom'
         },
         {
-          title: 'Workout visualization',
+          title: 'Workouts\' data visualization',
           content: '<p>This is the calendar view of the given year.</p><p>Every cell corresponds to one day.</p><p>Click any of the cells to see all workouts for the given day.</p>',
           target: '#vis-calendar',
           placement: 'top'
@@ -522,7 +522,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           title: 'Legend',
           content: 'In the legend you can see what the box colors and sizes in the visualization correspond to.',
           target: '#legend .legend-entry',
-          placement: 'bottom'
+          placement: 'top'
+        },
+        {
+          title: 'Workout details',
+          content: 'Click on any day in the calendar and the details of the workouts for that day will appear here.',
+          target: '.selected-day-workouts',
+          placement: 'top'
         }
       ]
     };
