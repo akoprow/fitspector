@@ -109,7 +109,7 @@
       #sport-summary .sessions .data .value.hasData:after {
         content: 'x';
       }
-      #sport-summary .time .data .value.hasData:after {
+      #sport-summary .time.total .data .value.hasData:after {
         content: 'h';
       }
       #sport-summary .distance .data .value.hasData:after {
@@ -275,7 +275,7 @@
               <th><span class="text">Sessions <icon type="sessions"></icon></th>
               <td class="data"></td>
             </tr>
-            <tr class="data-row time">
+            <tr class="data-row time" ng-class="sportSummaryType.id">
               <th><span class="text">Time <icon type="time"></icon></th>
               <td class="data"></td>
             </tr>

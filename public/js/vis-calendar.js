@@ -149,13 +149,16 @@ directives.directive('icon', function() {
 // ---------------------------------------------- time filter --------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
+// TODO(koper) Check if this can be hidden inside the filter, which should be used instead of this function.
+var timeFilter = function(sec) {
+  // TODO(koper) There must be a better way to do this conversion...
+  var h = Math.floor(sec / 3600);
+  var m = Math.floor((sec - h*3600) / 60);
+  return h + ':' + (m < 10 ? '0' : '') + m;
+};
+
 filters.filter('time', function() {
-  return function(sec) {
-    // TODO(koper) There must be a better way to do this conversion...
-    var h = Math.floor(sec / 3600);
-    var m = Math.floor((sec - h*3600) / 60);
-    return h + ':' + (m < 10 ? '0' : '') + m;
-  };
+  return timeFilter;
 });
 
 // --------------------------------------------------------------------------------------------------------
@@ -1000,11 +1003,10 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         break;
       case 'time':
         dataUpdate.text(function(s) {
-          var h = s.time / 3600;
           if (showAvg) {
-            return (h / numWeeks).toFixed(1);
+            return timeFilter(s.time / numWeeks);
           } else {
-            return h.toFixed(0);
+            return (s.time / 3600).toFixed(0);
           }
         });
         break;
