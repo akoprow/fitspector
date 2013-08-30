@@ -473,7 +473,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           title: 'Legend',
           content: 'In the legend you can see what the box colors and sizes in the visualization correspond to.',
           target: '#legend .legend-entry',
-          placement: 'left'
+          placement: 'bottom'
         }
       ]
     };
@@ -748,6 +748,10 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       });
   };
 
+  var redrawSelectedDay = function(d) {
+    // ...
+  };
+
   var drawDayCells = function() {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
@@ -781,9 +785,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .on('click', function(d) {
         var elt = this;
         $scope.$apply(function() {
-          grid.selectAll('.day').classed('selected', false);
           $scope.selectedDay = d;
-          d3.select(elt).classed('selected', true);
+          redrawSelectedDay(d);
         });
       })
       .transition()
@@ -1030,30 +1033,30 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   };
 
   var drawLegend = function(legendId, params) {
-    // We enforce minimal cell size for the legend.
-    var legendCellSize = Math.max(cellSize, LEGEND_MIN_CELL_SIZE);
-
-    // Text size for the description
-    d3.select('#legend-' + legendId + ' .text')
-      .style('line-height', legendCellSize + 'px')
-      .style('margin-top', LEGEND_LABEL_SIZE + 'px');
-
     var data = params.data;
     var mode = params.mode;
+    var cramped = mode == 'zones' && cellSize < LEGEND_MIN_CELL_SIZE;
+
+    var marginTop = LEGEND_LABEL_SIZE * (cramped ? 2 : 1);
+    // Text size for the description
+    d3.select('#legend-' + legendId + ' .text')
+      .style('line-height', cellSize + 'px')
+      .style('margin-top', marginTop + 'px');
+
     var container = d3.select('#legend-' + legendId + ' svg');
     container
-      .attr('width', legendCellSize * data.length + 1 + LEGEND_PADDING * 2)
-      .attr('height', legendCellSize + 1 + LEGEND_LABEL_SIZE);
+      .attr('width', cellSize * data.length + 1 + LEGEND_PADDING * 2)
+      .attr('height', cellSize + 1 + marginTop);
 
     // Draw boxes, marks in them and labels on top
     // TODO(koper) Somewhat share the positioning logic with drawing workout boxes. Perhaps use a layout? Or auxiliary functions.
-    var sizeScale = getSizeScale(legendCellSize);
+    var sizeScale = getSizeScale(cellSize);
     _.each(['box', 'mark', 'desc'], function(type) {
       var boxSize = function(d) {
         switch (type) {
-        case 'mark': return mode == 'zones' ? legendCellSize - 1 : sizeScale(d.val);
-        case 'box': return legendCellSize;
-        case 'desc': return legendCellSize;
+        case 'mark': return mode == 'zones' ? cellSize - 1 : sizeScale(d.val);
+        case 'box': return cellSize;
+        case 'desc': return cellSize;
         default: throw new Error('Unknown element: ' + type);
         }
       };
@@ -1067,17 +1070,23 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       update
         .attr('x', function(d, i) {
           switch (type) {
-            case 'mark': return LEGEND_PADDING + legendCellSize * (i + 0.5) - boxSize(d)/2;
-            case 'box': return LEGEND_PADDING + legendCellSize * i;
-            case 'desc': return LEGEND_PADDING + legendCellSize * (i + 0.5);
+            case 'mark': return LEGEND_PADDING + cellSize * (i + 0.5) - boxSize(d)/2;
+            case 'box': return LEGEND_PADDING + cellSize * i;
+            case 'desc': return LEGEND_PADDING + cellSize * (i + 0.5);
             default: throw new Error('Unknown element: ' + type);
           }
         })
         .attr('y', function(d, i) {
           switch (type) {
-            case 'mark': return LEGEND_LABEL_SIZE + (legendCellSize - boxSize(d)) / 2;
-            case 'box': return LEGEND_LABEL_SIZE;
-            case 'desc': return LEGEND_LABEL_SIZE - 2;
+            case 'mark': return marginTop + (cellSize - boxSize(d)) / 2;
+            case 'box': return marginTop;
+            case 'desc':
+              // if not much space for labels we need to put them in two rows.
+              if (cramped && i % 2 == 0) {
+                return marginTop - LEGEND_LABEL_SIZE - 2;
+              } else {
+                return marginTop - 2;
+              }
             default: throw new Error('Unknown element: ' + type);
           }
         });
@@ -1127,7 +1136,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           function(v) {
             return {
               val: km * v,
-              text: v
+              text: v,
+              fullText: v + ' km'
             };
           })
       };
@@ -1167,6 +1177,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
             return {
               val: v,
               text: paceZoneDesc[v],
+              fullText: paceZoneDesc[v] + ' min/km',
               color: paceZoneColors[v]
             };
           })
