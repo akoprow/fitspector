@@ -8,7 +8,7 @@ var TRANSITIONS_DURATION = 400;
 var TOP_MARGIN = 15;
 
 var LEGEND_LABEL_SIZE = 10;
-var LEGEND_PADDING = 3;
+var LEGEND_PADDING = 10;
 var LEGEND_MIN_CELL_SIZE = 35;
 
 // --------------------------------------------------------------------------------------------------------
@@ -329,11 +329,11 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
   var hrZoneColors = ['#ccc', "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"];
   // TODO(koper) Fix those desc
-  var hrZoneDesc = ['Unknown', '<20%', '<30%', '<40%', '<50%', '<60%', '<70%'];
+  var hrZoneDesc = ['Unknown', '<60%', '>60%', '>70%', '>75%', '>80%', '>90%'];
 
   var paceZoneColors = ['#ccc', "#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"];
   // TODO(koper) Fix those desc
-  var paceZoneDesc = ['Unknown', '<6:00', '<5:00', '<4:00', '<3:00', '<2:00', '<1:00'];
+  var paceZoneDesc = ['Unknown', '>6:05', '>5:45', '>5:15', '>4:45', '>4:15', '<4:15'];
 
   // ---------------------------------------------
   // --- Handling visualization parameter changes
