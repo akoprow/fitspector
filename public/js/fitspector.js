@@ -466,16 +466,20 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   $scope.currentYear = function() {
     $scope.time.year = 2013;
   };
+  var modifiedYear = function() {
+    $scope.selectedDay = null;
+    $scope.sportFilter = 'all';
+  };
   $scope.nextYear = function() {
     if (!$scope.disableNextYear()) {
-      $scope.selectedDay = null;
       $scope.time.year++;
+      modifiedYear();
     }
   };
   $scope.prevYear = function() {
     if (!$scope.disablePrevYear()) {
-      $scope.selectedDay = null;
       $scope.time.year--;
+      modifiedYear();
     }
   };
 
