@@ -502,6 +502,7 @@ svg {
     display: block;
 }
 .well .year-selection,
+.well .zoom-ctrls,
 .well .help {
     margin-top: 10px;
 }
