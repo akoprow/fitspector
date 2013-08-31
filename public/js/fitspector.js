@@ -520,12 +520,12 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       steps: [
         {
           title: 'Analysis type',
-          content: 'Start by choosing the metric that you want to analyze. The calendar will show boxes corresponding to workouts, with their size and color determined as follows:<ul>' +
-            '<li><strong>Time</strong>: colors correspond to sports and box size corresponds to time.' +
-            '<li><strong>Distance</strong>: colors correspond to sports and box size corresponds to distance.' +
-            '<li><strong>HR zones</strong>: colors correspond to HR zones and box size corresponds to time.' +
-            '<li><strong>Pace zones</strong>: colors correspond to pace zones and box size corresponds to distance.' +
-            '<li><strong>Climb categories</strong>: colors correspond to climb categories and box size corresponds to distance.' +
+          content: 'Start by choosing the metric that you want to analyze. Below you can see a calendar: each cell corresponds to one day and each colorful box corresponds to a workout, with their sizes and colors determined as follows:<ul>' +
+            '<li><strong>Time</strong>: colors &#8594; sports, box size &#8594;  workout time.' +
+            '<li><strong>Distance</strong>: colors &#8594; sports, box size &#8594; workout distance.' +
+            '<li><strong>HR zones</strong>: colors &#8594; HR zones, box size &#8594; workout time.' +
+            '<li><strong>Pace zones</strong>: colors &#8594; pace zones, box size &#8594; workout distance.' +
+            '<li><strong>Climb categories</strong>: colors &#8594; climb categories, box size &#8594; workout distance (coming soon).' +
             '</ul>',
           target: '.analysis-type-selection .btn',
           width: 500,
