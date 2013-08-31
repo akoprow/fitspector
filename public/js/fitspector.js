@@ -1194,12 +1194,10 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     switch ($scope.displayType.id) {
     case 'time':
     case 'hr':
-      // 1h, 2h, ... 9h, 10h
       var h = 3600;
       return {
         mode: 'time',
-        data: _.map(
-          _.range(1, 11, 1),
+        data: _.map([1, 2, 3, 4, 5],
           function(v) {
             return {
               val: 3600 * v,
