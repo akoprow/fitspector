@@ -538,6 +538,12 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           placement: 'bottom'
         },
         {
+          title: 'Zoom',
+          content: 'Depending on your screen size and depending on whether you want a bird\'s-eye view or a better understanding of a particular time period, you may want to adjust the zoom level.',
+          target: '.zoom-ctrls .btn',
+          placement: 'bottom'
+        },
+        {
           title: 'Workouts\' data visualization',
           content: '<p>This is the calendar view of the given year.</p><p>Every cell corresponds to one day.</p><p>Click any of the cells to see all workouts for the given day.</p>',
           target: '#vis-calendar',
@@ -997,6 +1003,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     selectedDay.exit()
       .remove();
     selectedDay.transition()
+      .duration(redrawType.zoom ? 0 : TRANSITIONS_DURATION)
       .attr('width', $scope.cellSize)
       .attr('height', $scope.cellSize)
       .attr('x', posX)
