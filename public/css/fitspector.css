@@ -382,6 +382,12 @@ svg {
 #vis-calendar .year text {
     text-anchor: middle;
 }
+#vis-calendar .selectedDay {
+    fill-opacity: .1;
+    fill: yellow;
+    stroke: #000;
+    stroke-width: 2px;
+}
 .legend-entry .box,
 #vis-calendar .day {
     fill: #fff;

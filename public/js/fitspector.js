@@ -836,10 +836,6 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       });
   };
 
-  var redrawSelectedDay = function(d) {
-    // ...
-  };
-
   var drawDayCells = function(redrawType) {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
@@ -880,7 +876,6 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
               scrollTop: bottom - $(window).height()
             });
           }
-          redrawSelectedDay(d);
         });
       })
       .transition()
@@ -944,6 +939,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
+    // TODO(koper) This is copied from drawDayCells, highlighting selected day should be moved there or coded shared.
+    var posX = function(d) {
+      return $scope.cellSize * getWeek(d);
+    };
+    var posY = function(d) {
+      return $scope.cellSize * getWeekday(d);
+    };
+
     var xScale = d3.scale.linear()
           .domain([0, 52])
           .rangeRound([0, $scope.cellSize * 52]);
@@ -952,8 +955,9 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           .rangeRound([0, $scope.cellSize * 6]);
     var sizeScale = getSizeScale();
 
-    var workouts = gridContainer()
-          .selectAll('.workoutsContainer')
+    var workoutsContainer = gridContainer()
+          .selectAll('.workoutsContainer');
+    var workouts = workoutsContainer
           .selectAll('.workout')
           .data(data, function(d) { return d.key; });
 
@@ -965,7 +969,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); })
       .remove();
 
-    workouts.enter().append('rect')
+    workouts.enter()
+      .append('rect')
       .attr('class', 'workout')
       .attr('width', 0)
       .attr('height', 0)
@@ -980,6 +985,22 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5) - sizeScale(d.value)/2; })
       .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5) - sizeScale(d.value)/2; })
       .style('fill', function(d) { return d.color; });
+
+    var selectedDay = workoutsContainer
+          .selectAll('.selectedDay')
+          .data($scope.selectedDay ? [$scope.selectedDay] : []);
+    selectedDay.enter()
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('class', 'selectedDay');
+    selectedDay.exit()
+      .remove();
+    selectedDay.transition()
+      .attr('width', $scope.cellSize)
+      .attr('height', $scope.cellSize)
+      .attr('x', posX)
+      .attr('y', posY);
   };
 
   var drawSportIcons = function(redrawType, data, activeSports) {
@@ -1335,6 +1356,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   $scope.$watch('sportFilter', handleRedraw({}));
   $scope.$watch('displayType', handleRedraw({}));
   $scope.$watch('sportSummaryType', handleRedraw({}));
+  $scope.$watch('selectedDay', handleRedraw({}));
 
 }]);
 
