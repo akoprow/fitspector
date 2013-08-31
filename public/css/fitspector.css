@@ -370,6 +370,7 @@ svg {
 #vis-calendar {
     margin-top: 2em;
     margin-bottom: 2em;
+    overflow: auto;
 }
 #vis-calendar .year {
     margin: auto;
