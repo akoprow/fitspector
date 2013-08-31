@@ -12,7 +12,7 @@ function selectPledge(num) {
 
 $(document).ready(function() {
   var now = new Date();
-  var end = Date.parse('September 8, 2013');
+  var end = Date.parse('September 15, 2013');
   var daysleft = Math.floor((end - now) / 1000 / 60 / 60 / 24);
   $('#daysleft').text(daysleft);
 });
