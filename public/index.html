@@ -308,14 +308,14 @@ and that's just the beginning!
       <div id="vis-calendar"></div>
     </div>
     <div class="row-fluid">
-      <div class="span8 offset2">
+      <div class="span12">
         <div id="selected-day-workouts">
           <div class="well" ng-show="selectedDay">
             <button type="button" class="close" ng-click="selectedDay = null">&times;</button>
             <strong>{{selectedDayText()}}</strong>
             <workouts day="selectedDay"></workouts>
           </div>
-          <div class="well" ng-hide="selectedDay">
+          <div class="well centered" ng-hide="selectedDay">
             Click any day in the calendar to see all workouts for that day.
           </div>
         </div>

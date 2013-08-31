@@ -352,7 +352,6 @@ svg {
     shape-rendering: crispEdges;
 }
 .container {
-    min-width: 950px;
     overflow: auto;
 }
 .sport-icon {
