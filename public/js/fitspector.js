@@ -566,7 +566,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
           content: 'Click on any day in the calendar and the details of the workouts for that day will appear here.',
           target: '#selected-day-workouts',
           placement: 'top'
-        }
+        },
+	{
+	    title: 'Feedback welcome',
+	    content: '<p>We are aware that there are still few quirks and imperfections in this demo. We are working on improving them, but we simply could not wait to share it with you!</p><p>We are very interested to hear what you think. Do you like it? Have some ideas for improvements? Please do let us know at <a href="mailto:feedback@fitspector.com">feedback@fitspector.com</a>.</p>',
+	    target: '.cal-ctrls',
+	    placement: 'bottom'
+	}
       ]
     };
     hopscotch.startTour(tour);
