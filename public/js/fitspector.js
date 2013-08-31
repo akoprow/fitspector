@@ -73,14 +73,6 @@ var SPORT_ICON_WIDTH = 46;  // img width + border + padding
 $('body').tooltip({
   selector: '[rel=tooltip]'
 });
-(function($) {
-  $(window).load(function(){
-    $('#vis-calendar').mCustomScrollbar({
-      horizontalScroll: true,
-      theme: 'dark-thick'
-    });
-  });
-})(jQuery);
 
 // --------------------------------------------------------------------------------------------------------
 // ------------------------------------------- Angular modules --------------------------------------------
@@ -397,9 +389,34 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // TODO(koper) Fix those desc
   var paceZoneDesc = ['Unknown', '>6:05', '>5:45', '>5:15', '>4:45', '>4:15', '<4:15'];
 
+
+
   // ---------------------------------------------
   // --- Handling visualization parameter changes
   // ---------------------------------------------
+
+  // --- zoom ---
+  $scope.cellSize = MIN_AUTO_CELL_SIZE;
+  $scope.zoomIn = function() {
+    $scope.cellSize++;
+  };
+
+  $scope.zoomOut = function() {
+    $scope.cellSize--;
+  };
+
+  var zoomReset = function() {
+    var windowWidth = $(window).width() - 30;
+    $scope.cellSize = Math.floor((windowWidth - 2) / 53) - 1;
+    $scope.cellSize = Math.max($scope.cellSize, MIN_AUTO_CELL_SIZE);
+  };
+
+  $(window).resize(function() {
+    $scope.$apply(function() {
+      zoomReset();
+    });
+  });
+  zoomReset();
 
   // --- selectedDay ---
 
@@ -583,7 +600,6 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // --- Drawing functions
   // -----------------------------------------
 
-  var cellSize = MIN_AUTO_CELL_SIZE;
   var topMargin = TOP_MARGIN;
 
   var dailyDataBySports = function(d, activeSports) {
@@ -763,18 +779,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     return svgContainer().selectAll('g.grid');
   };
 
-  var drawCalendar = function() {
-    var windowWidth = $(window).width() - 30;
-    cellSize = Math.floor((windowWidth - 2) / 53) - 1;
-    cellSize = Math.max(cellSize, MIN_AUTO_CELL_SIZE);
-
-    var width = 2 + (cellSize + 1) * 52;
-    var height = topMargin + (cellSize + 1) * 8;
+  var drawCalendar = function(redrawType) {
+    var width = 2 + ($scope.cellSize + 1) * 52;
+    var height = topMargin + ($scope.cellSize + 1) * 8;
     var getWeek = d3.time.format('%U');
 
     // Main container
     var container = svgContainer().data([$scope.time.year]);
-    var gridY = 0.5 * cellSize + topMargin;
+    var gridY = 0.5 * $scope.cellSize + topMargin;
     var enter = container
       .enter()
         .append('svg')
@@ -812,15 +824,15 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .text(d3.time.format('%b'));
 
     labels.transition()
-      .delay(TRANSITIONS_DURATION)
-      .duration(TRANSITIONS_DURATION)
+      .delay(redrawType.zoom ? 0 : TRANSITIONS_DURATION)
+      .duration(redrawType.zoom ? 0 : TRANSITIONS_DURATION)
       .attr('x', function(d1) {
         var dateOffset = function(d) {
           var week = +getWeek(d);
-          return week * cellSize;
+          return week * $scope.cellSize;
         };
         var d2 = new Date(d1.getFullYear(), d1.getMonth() + 1, 0);
-        return (dateOffset(d1) + dateOffset(d2) + cellSize) / 2;
+        return (dateOffset(d1) + dateOffset(d2) + $scope.cellSize) / 2;
       });
   };
 
@@ -828,14 +840,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     // ...
   };
 
-  var drawDayCells = function() {
+  var drawDayCells = function(redrawType) {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
     var posX = function(d) {
-      return cellSize * getWeek(d);
+      return $scope.cellSize * getWeek(d);
     };
     var posY = function(d) {
-      return cellSize * getWeekday(d);
+      return $scope.cellSize * getWeekday(d);
     };
 
     var grid = gridContainer().selectAll('.dayCellsContainer');
@@ -872,16 +884,16 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         });
       })
       .transition()
-        .duration(TRANSITIONS_DURATION)
-        .delay(TRANSITIONS_DURATION)
+        .delay(redrawType.zoom ? 0 : TRANSITIONS_DURATION)
+        .duration(redrawType.zoom ? 0 : TRANSITIONS_DURATION)
         .attr('x', posX)
         .attr('y', posY)
-        .attr('width', cellSize)
-        .attr('height', cellSize)
+        .attr('width', $scope.cellSize)
+        .attr('height', $scope.cellSize)
         .style('fill', function(d) { return d > now ? '#f5f5f5' : '#fff'; });
   };
 
-  var drawMonthBorders = function() {
+  var drawMonthBorders = function(redrawType) {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
@@ -891,7 +903,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       var w0 = +getWeek(t0);
       var d1 = +getWeekday(t1);
       var w1 = +getWeek(t1);
-      var c = cellSize;
+      var c = $scope.cellSize;
       return 'M' + (w0 + 1) * c + ',' + d0 * c +
         'H' + w0 * c + 'V' + 7 * c +
         'H' + w1 * c + 'V' + (d1 + 1) * c +
@@ -911,8 +923,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('class', 'month');
 
     borders.transition()
-      .duration(TRANSITIONS_DURATION)
-      .delay(TRANSITIONS_DURATION)
+      .delay(redrawType.zoom ? 0 : TRANSITIONS_DURATION)
+      .duration(redrawType.zoom ? 0 : TRANSITIONS_DURATION)
       .attr('d', monthPath);
   };
 
@@ -921,24 +933,24 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     return d3.max(fullData, function(d) { return d.value; });
   };
 
-  var getSizeScale = function(cellSize) {
+  var getSizeScale = function() {
     // TODO(koper) This is inefficient; we should just cache sizeScale for a given display type.
     return d3.scale.sqrt()
       .domain([0, getMaxDataValue()])
-      .rangeRound([0, cellSize - 1]);
+      .rangeRound([0, $scope.cellSize - 1]);
   };
 
-  var drawWorkouts = function(fullRedraw, data, activeSports) {
+  var drawWorkouts = function(redrawType, data, activeSports) {
     var getWeekday = d3.time.format('%w');
     var getWeek = d3.time.format('%U');
 
     var xScale = d3.scale.linear()
           .domain([0, 52])
-          .rangeRound([0, cellSize * 52]);
+          .rangeRound([0, $scope.cellSize * 52]);
     var yScale = d3.scale.linear()
           .domain([0, 6])
-          .rangeRound([0, cellSize * 6]);
-    var sizeScale = getSizeScale(cellSize);
+          .rangeRound([0, $scope.cellSize * 6]);
+    var sizeScale = getSizeScale();
 
     var workouts = gridContainer()
           .selectAll('.workoutsContainer')
@@ -961,8 +973,8 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .attr('y', function(d) { return yScale(+getWeekday(d.day) + 0.5); });
 
     workouts.transition()
-      .delay(TRANSITIONS_DURATION * (fullRedraw ? 2 : (workouts.exit().empty() ? 0 : 1)))
-      .duration(TRANSITIONS_DURATION)
+      .duration(redrawType.zoom ? 0 : TRANSITIONS_DURATION)
+      .delay(TRANSITIONS_DURATION * (redrawType.full ? 2 : (workouts.exit().empty() ? 0 : 1)))
       .attr('width', function(d) { return sizeScale(d.value); })
       .attr('height', function(d) { return sizeScale(d.value); })
       .attr('x', function(d) { return xScale(+getWeek(d.day) + 0.5) - sizeScale(d.value)/2; })
@@ -970,7 +982,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .style('fill', function(d) { return d.color; });
   };
 
-  var drawSportIcons = function(fullRedraw, data, activeSports) {
+  var drawSportIcons = function(redrawType, data, activeSports) {
     var millisecPerDay = 24 * 60 * 60 * 1000;
     var numDays = (now.getFullYear() == $scope.time.year) ?
           (now - new Date($scope.time.year, 0, 1)) / millisecPerDay : 365;
@@ -1067,14 +1079,14 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
 
       // exit
       entries.exit().transition()
-        .delay(fullRedraw ? TRANSITIONS_DURATION : 0)
+        .delay(redrawType.full ? TRANSITIONS_DURATION : 0)
         .duration(TRANSITIONS_DURATION)
         .style('opacity', 0)
         .remove();
 
       // update
       var update = entries.transition()
-            .duration(TRANSITIONS_DURATION * (fullRedraw ? 3 : 1))
+            .duration(TRANSITIONS_DURATION * (redrawType.full ? 3 : 1))
             .style('left', leftPosition)
             .style('opacity', metric == 'icon' ? 0.8 : 1.0)
             .text(' ');
@@ -1125,28 +1137,28 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   var drawLegend = function(legendId, params) {
     var data = params.data;
     var mode = params.mode;
-    var cramped = mode == 'zones' && cellSize < LEGEND_MIN_CELL_SIZE;
+    var cramped = mode == 'zones' && $scope.cellSize < LEGEND_MIN_CELL_SIZE;
 
     var marginTop = LEGEND_LABEL_SIZE * (cramped ? 2 : 1);
     // Text size for the description
     d3.select('#legend-' + legendId + ' .text')
-      .style('line-height', cellSize + 'px')
+      .style('line-height', $scope.cellSize + 'px')
       .style('margin-top', marginTop + 'px');
 
     var container = d3.select('#legend-' + legendId + ' svg');
     container
-      .attr('width', cellSize * data.length + 1 + LEGEND_PADDING * 2)
-      .attr('height', cellSize + 1 + marginTop);
+      .attr('width', $scope.cellSize * data.length + 1 + LEGEND_PADDING * 2)
+      .attr('height', $scope.cellSize + 1 + marginTop);
 
     // Draw boxes, marks in them and labels on top
     // TODO(koper) Somewhat share the positioning logic with drawing workout boxes. Perhaps use a layout? Or auxiliary functions.
-    var sizeScale = getSizeScale(cellSize);
+    var sizeScale = getSizeScale();
     _.each(['box', 'mark', 'desc'], function(type) {
       var boxSize = function(d) {
         switch (type) {
-        case 'mark': return mode == 'zones' ? cellSize - 1 : sizeScale(d.val);
-        case 'box': return cellSize;
-        case 'desc': return cellSize;
+        case 'mark': return mode == 'zones' ? $scope.cellSize - 1 : sizeScale(d.val);
+        case 'box': return $scope.cellSize;
+        case 'desc': return $scope.cellSize;
         default: throw new Error('Unknown element: ' + type);
         }
       };
@@ -1160,15 +1172,15 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       update
         .attr('x', function(d, i) {
           switch (type) {
-            case 'mark': return LEGEND_PADDING + cellSize * (i + 0.5) - boxSize(d)/2;
-            case 'box': return LEGEND_PADDING + cellSize * i;
-            case 'desc': return LEGEND_PADDING + cellSize * (i + 0.5);
+            case 'mark': return LEGEND_PADDING + $scope.cellSize * (i + 0.5) - boxSize(d)/2;
+            case 'box': return LEGEND_PADDING + $scope.cellSize * i;
+            case 'desc': return LEGEND_PADDING + $scope.cellSize * (i + 0.5);
             default: throw new Error('Unknown element: ' + type);
           }
         })
         .attr('y', function(d, i) {
           switch (type) {
-            case 'mark': return marginTop + (cellSize - boxSize(d)) / 2;
+            case 'mark': return marginTop + ($scope.cellSize - boxSize(d)) / 2;
             case 'box': return marginTop;
             case 'desc':
               // if not much space for labels we need to put them in two rows.
@@ -1280,12 +1292,13 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     drawLegend('color', getLegendColorParams());
   };
 
-  var redraw = function(fullRedraw) {
+  var redraw = function(redrawType) {
     // Draw the container.
-    if (fullRedraw) {
-      drawCalendar();
-      drawDayCells();
-      drawMonthBorders();
+    console.log('Redraw full: ' + redrawType.full + ', zoom: ' + redrawType.zoom);
+    if (redrawType.full || redrawType.zoom) {
+      drawCalendar(redrawType);
+      drawDayCells(redrawType);
+      drawMonthBorders(redrawType);
     };
 
     // Prepare the data.
@@ -1294,34 +1307,34 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
     var workoutData = computeWorkoutData(data, totals.activeSports);
 
     // Draw workouts.
-    drawWorkouts(fullRedraw, workoutData);
+    drawWorkouts(redrawType, workoutData);
 
     // Draw sport summaries.
-    drawSportIcons(fullRedraw, totals.data, totals.activeSports);
+    drawSportIcons(redrawType, totals.data, totals.activeSports);
 
     // Draw legends
     drawLegends();
   };
 
-  redraw(true);
+  redraw({full: true});
 
   // --------------------------------------------
   // --- Handling redrawing on data model change
   // --------------------------------------------
 
-  var handleRedraw = function(nv, ov, fullRedraw) {
-    if (nv !== ov) {
-      redraw(fullRedraw);
-    }
+  var handleRedraw = function(redrawType) {
+    return function(nv, ov) {
+      if (nv !== ov) {
+        redraw(redrawType);
+      }
+    };
   };
 
-  $scope.$watch('time.year', function(nv, ov) { handleRedraw(nv, ov, true); });
-  $scope.$watch('sportFilter', handleRedraw);
-  $scope.$watch('displayType', handleRedraw);
-  $scope.$watch('sportSummaryType', handleRedraw);
-  $(window).resize(function() {
-    redraw(true);
-  });
+  $scope.$watch('time.year', handleRedraw({full: true}));
+  $scope.$watch('cellSize', handleRedraw({zoom: true}));
+  $scope.$watch('sportFilter', handleRedraw({}));
+  $scope.$watch('displayType', handleRedraw({}));
+  $scope.$watch('sportSummaryType', handleRedraw({}));
 
 }]);
 
