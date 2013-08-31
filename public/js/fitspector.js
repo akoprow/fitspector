@@ -53,7 +53,7 @@ ga('send', 'pageview');
 // --------------------------------------------------------------------------------------------------------
 
 // Constants
-var MIN_AUTO_CELL_SIZE = 35;
+var MIN_AUTO_CELL_SIZE = 30;
 
 var MAX_DISTINCT_SPORTS = 4;
 var TRANSITIONS_DURATION = 400;
