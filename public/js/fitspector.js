@@ -569,7 +569,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
         },
 	{
 	    title: 'Feedback welcome',
-	    content: '<p>We are aware that there are still few quirks and imperfections in this demo. We are working on improving them, but we simply could not wait to share it with you!</p><p>We are very interested to hear what you think. Do you like it? Have some ideas for improvements? Please do let us know at <a href="mailto:feedback@fitspector.com">feedback@fitspector.com</a>.</p>',
+	    content: '<p>We are aware that there are still few quirks and imperfections in this demo. We are working on improving them, but we simply could not wait to share it with you!</p><p>We are very interested to hear what you think. Do you like it? Have some ideas for improvements? Please do let us know at <a href="mailto:feedback@fitspector.com">feedback@fitspector.com</a> or on any social media.</p>',
 	    target: '.cal-ctrls',
 	    placement: 'bottom'
 	}
