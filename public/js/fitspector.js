@@ -53,6 +53,8 @@ ga('send', 'pageview');
 // --------------------------------------------------------------------------------------------------------
 
 // Constants
+var MIN_AUTO_CELL_SIZE = 35;
+
 var MAX_DISTINCT_SPORTS = 4;
 var TRANSITIONS_DURATION = 400;
 var TOP_MARGIN = 15;
@@ -75,7 +77,7 @@ $('body').tooltip({
   $(window).load(function(){
     $('#vis-calendar').mCustomScrollbar({
       horizontalScroll: true,
-      theme: 'light'
+      theme: 'dark-thick'
     });
   });
 })(jQuery);
@@ -581,7 +583,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // --- Drawing functions
   // -----------------------------------------
 
-  var cellSize = 18;
+  var cellSize = MIN_AUTO_CELL_SIZE;
   var topMargin = TOP_MARGIN;
 
   var dailyDataBySports = function(d, activeSports) {
@@ -762,10 +764,11 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   };
 
   var drawCalendar = function() {
-    var windowWidth = $('#vis-calendar').width();
-    cellSize = Math.floor((windowWidth - 2) / 53) * 2;
+    var windowWidth = $(window).width() - 30;
+    cellSize = Math.floor((windowWidth - 2) / 53) - 1;
+    cellSize = Math.max(cellSize, MIN_AUTO_CELL_SIZE);
 
-    var width = 2 + cellSize * 53;
+    var width = 2 + (cellSize + 1) * 52;
     var height = topMargin + (cellSize + 1) * 8;
     var getWeek = d3.time.format('%U');
 
@@ -776,6 +779,7 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
       .enter()
         .append('svg')
           .attr('class', 'year')
+          .attr('width', width)
         .append('g')
           .attr('class', 'grid')
           .attr('transform', 'translate(1,' + gridY + ')');
