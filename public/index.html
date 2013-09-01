@@ -256,11 +256,14 @@ and that's just the beginning!
           </button>
         </div>
         <div class="btn-group zoom-ctrls">
-          <button class="btn btn-primary" ng-click="zoomOut()">
-            <i class="icon-white icon-zoom-out"></i>
+          <button class="btn btn-primary" ng-class="{active: zoomLevel == 'year'}" ng-click="zoom('year')">
+            <i class="icon-white icon-calendar"></i> Full year
           </button>
-          <button class="btn btn-primary" ng-click="zoomIn()">
-            <i class="icon-white icon-zoom-in"></i>
+          <button class="btn btn-primary" ng-class="{active: zoomLevel == 'medium'}" ng-click="zoom('medium')">
+            <i class="icon-white icon-th"></i> Normal
+          </button>
+          <button class="btn btn-primary" ng-class="{active: zoomLevel == 'large'}" ng-click="zoom('large')">
+            <i class="icon-white icon-th-large"></i> Large
           </button>
         </div>
         <button class="btn btn-mini btn-info help" ng-click="help()">

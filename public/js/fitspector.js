@@ -53,7 +53,8 @@ ga('send', 'pageview');
 // --------------------------------------------------------------------------------------------------------
 
 // Constants
-var MIN_AUTO_CELL_SIZE = 30;
+var MEDIUM_CELL_SIZE = 30;
+var LARGE_CELL_SIZE = 45;
 
 var MAX_DISTINCT_SPORTS = 4;
 var TRANSITIONS_DURATION = 400;
@@ -396,27 +397,25 @@ app.controller('VisCalendar', ['$scope', 'DataProvider', function($scope, DataPr
   // ---------------------------------------------
 
   // --- zoom ---
-  $scope.cellSize = MIN_AUTO_CELL_SIZE;
-  $scope.zoomIn = function() {
-    $scope.cellSize++;
-  };
-
-  $scope.zoomOut = function() {
-    $scope.cellSize--;
-  };
-
-  var zoomReset = function() {
+  $scope.zoom = function(level) {
     var windowWidth = $(window).width() - 30;
-    $scope.cellSize = Math.floor((windowWidth - 2) / 53) - 1;
-    $scope.cellSize = Math.max($scope.cellSize, MIN_AUTO_CELL_SIZE);
+    var fullCellSize = Math.floor((windowWidth - 2) / 53) - 1;
+    switch (level) {
+    case 'year':
+      $scope.cellSize = fullCellSize;
+      $scope.zoomLevel = 'year';
+      break;
+    case 'medium':
+      $scope.cellSize = Math.max(fullCellSize, MEDIUM_CELL_SIZE);
+      $scope.zoomLevel = 'medium';
+      break;
+    case 'large':
+      $scope.cellSize = Math.max(fullCellSize, LARGE_CELL_SIZE);
+      $scope.zoomLevel = 'large';
+      break;
+    };
   };
-
-  $(window).resize(function() {
-    $scope.$apply(function() {
-      zoomReset();
-    });
-  });
-  zoomReset();
+  $scope.zoom('medium');
 
   // --- selectedDay ---
 
