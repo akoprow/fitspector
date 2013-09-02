@@ -1,15 +1,29 @@
 var express = require('express');
-var fs = require('fs');
+var server = express.createServer();
 
-var app = express.createServer(express.logger());
+server.use(express.compress());
 
-var index = fs.readFileSync('index.html').toString('utf-8');
-
-app.get('/', function(request, response) {
-  response.send(index);
+server.configure('production', function () {
+  server.use(function (req, res, next) {
+    var schema = (req.headers['x-forwarded-proto'] || '').toLowerCase();
+    if (schema === 'https') {
+      next();
+    } else {
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
 });
 
-var port = process.env.PORT || 5000;
-app.listen(port, function() {
-  console.log("Listening on " + port);
+server.configure(function() {
+  server.use(function(req, res, next) {
+    if (req.url.indexOf('/img/') === 0) {
+      res.setHeader("Cache-Control", "max-age = 31556926"); // cache for a year
+    }
+    return next();
+  });
+
+  server.use(express.static(__dirname + '/public'));
 });
+
+var port = process.env.PORT || 8080;
+server.listen(port);
