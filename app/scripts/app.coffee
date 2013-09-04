@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('bitstarterApp', [])
+angular.module('fitspector', [])
   .config ['$routeProvider', ($routeProvider) ->
     $routeProvider
       .when '/',
