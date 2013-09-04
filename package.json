@@ -1,13 +1,18 @@
 {
-  "name": "node-js-sample",
+  "name": "fitspector",
   "version": "0.0.1",
-  "description": "a sample node.js app for heroku",
+  "description": "Fitspector: visualization of analysis of sport workouts",
   "main": "web.js",
   "scripts": {
+    "start": "node web.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "express": "2.5.x"
+  },
+  "devDependencie": {
+    "yo": "1.0.x",
+    "generator-webapp": "0.4.x"
   },
   "engines": {
     "node": "0.8.x",
@@ -15,13 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/node-js-sample"
+    "url": "https://github.com/akoprow/fitspector"
   },
   "keywords": [
     "node",
     "heroku"
   ],
-  "author": "Mark Pundsack",
-  "license": "BSD",
-  "gitHead": "90fd58e343c29e54fc1d4e19036595500b2bdc21"
+  "author": {
+    "name": "Adam Koprowski",
+    "email": "Adam.Koprowski@gmail.com"
+  }
 }
