@@ -3,7 +3,7 @@
 describe 'Controller: MainCtrl', () ->
 
   # load the controller's module
-  beforeEach module 'bitstarterApp'
+  beforeEach module 'fitspector'
 
   MainCtrl = {}
   scope = {}
@@ -15,5 +15,5 @@ describe 'Controller: MainCtrl', () ->
       $scope: scope
     }
 
-  it 'should attach a list of awesomeThings to the scope', () ->
-    expect(scope.awesomeThings.length).toBe 3
+  it 'does not do anything yet', () ->
+    expect(true).toBe true
