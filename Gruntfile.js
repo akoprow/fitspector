@@ -11,7 +11,12 @@ var path = require('path');
 module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
   require('time-grunt')(grunt);
+
+  grunt.loadNpmTasks('grunt-env');
   grunt.loadNpmTasks('grunt-express');
+  grunt.loadNpmTasks('grunt-preprocess');
+
+  grunt.option('env', typeof grunt.option('env') !== 'undefined' ? grunt.option('env') : 'dev');
 
   // configurable paths
   var yeomanConfig = {
@@ -24,6 +29,14 @@ module.exports = function (grunt) {
   } catch (e) {}
 
   grunt.initConfig({
+    env: {
+      dev: {
+        NODE_ENV : 'dev'
+      },
+      prod: {
+        NODE_ENV : 'prod'
+      }
+    },
     yeoman: yeomanConfig,
     express: {
       fitspector: {
@@ -212,7 +225,8 @@ module.exports = function (grunt) {
             '.htaccess',
             'bower_components/**/*',
             'images/{,*/}*.{gif,webp}',
-            'styles/fonts/*'
+            'styles/fonts/*',
+            '!*.preprocess.*'
           ]
         }, {
           expand: true,
@@ -280,6 +294,8 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('server', [
+    'env:dev',
+    'preprocess:all',
     'coffee:develop',
     'express',
     'express-keepalive'
@@ -294,7 +310,9 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'env:prod',
     'clean:dist',
+    'preprocess:all',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
