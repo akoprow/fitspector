@@ -213,6 +213,13 @@ module.exports = function (grunt) {
       }
     },
     // Put files not handled in other tasks here
+    preprocess: {
+      // TODO(koper) There should be a more generic way of doing that...
+      all: {
+        src : '<%= yeoman.app %>/views/topbar.preprocess.html',
+        dest : '<%= yeoman.app %>/views/topbar.html'
+      }
+    },
     copy: {
       dist: {
         files: [{
