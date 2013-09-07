@@ -13,7 +13,7 @@ module.exports = function (grunt) {
   require('time-grunt')(grunt);
 
   grunt.loadNpmTasks('grunt-env');
-  grunt.loadNpmTasks('grunt-express');
+  grunt.loadNpmTasks('grunt-express-server');
   grunt.loadNpmTasks('grunt-preprocess');
 
   grunt.option('env', typeof grunt.option('env') !== 'undefined' ? grunt.option('env') : 'dev');
@@ -39,13 +39,28 @@ module.exports = function (grunt) {
     },
     yeoman: yeomanConfig,
     express: {
+      options: {
+        port: 8080
+      },
       fitspector: {
         options: {
-          port: 8080,
-          server: path.resolve(__dirname, 'server.js'),
-          bases: path.resolve(__dirname, 'app'),
-          livereload: true,
-          serverreload: true
+          script: path.resolve(__dirname, 'server.js')
+        }
+      }
+    },
+    watch: {
+      options: {
+        livereload: true
+      },
+      coffee: {
+        files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
+        tasks: ['coffee:develop']
+      },
+      express: {
+        files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
+        tasks: ['express:fitspector'],
+        options: {
+          nospawn: true,
         }
       }
     },
@@ -304,8 +319,8 @@ module.exports = function (grunt) {
     'env:dev',
     'preprocess:all',
     'coffee:develop',
-    'express',
-    'express-keepalive'
+    'express:fitspector',
+    'watch'
   ]);
 
   grunt.registerTask('test', [

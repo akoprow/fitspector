@@ -25,5 +25,6 @@ app.get('*', routes.index);
 // Listen
 
 var port = process.env.PORT || 8080;
-
-module.exports = app;
+app.listen(port, function() {
+  console.log("Listening on " + port);
+});
