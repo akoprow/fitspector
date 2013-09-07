@@ -17,11 +17,15 @@
           <ul class="dropdown-menu">
             <li>
               <!-- @if NODE_ENV == 'dev' -->
-              <a href='https://runkeeper.com/apps/authorize?client_id=b459a206aced43729fc79026df108e60&redirect_uri=http%3A%2F%2Flocalhost%3A8080&response_type=code&state='><img src='http://static1.runkeeper.com/images/assets/login-blue-black-200x38.png'/></a>
+              <a href='https://runkeeper.com/apps/authorize?client_id=b459a206aced43729fc79026df108e60&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Flogin_rk&response_type=code&state='>
+                <img src='http://static1.runkeeper.com/images/assets/login-blue-black-200x38.png'/>
+              </a>
               <!-- @endif -->
 
               <!-- @if NODE_ENV == 'prod' -->
-              <a href='https://runkeeper.com/apps/authorize?client_id=b459a206aced43729fc79026df108e60&redirect_uri=https%3A%2F%2Fwww.fitspector.com%2Flogin_runkeeper.html&response_type=code&state='><img src='http://static1.runkeeper.com/images/assets/login-blue-black-200x38.png'/></a>
+              <a href='https://runkeeper.com/apps/authorize?client_id=b459a206aced43729fc79026df108e60&redirect_uri=https%3A%2F%2Fwww.fitspector.com%2Flogin_rk&response_type=code&state='>
+                <img src='http://static1.runkeeper.com/images/assets/login-blue-black-200x38.png'/>
+              </a>
               <!-- @endif -->
             </li>
           </ul>

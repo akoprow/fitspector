@@ -1,7 +1,8 @@
 'use strict'
 
 angular.module('fitspector')
-  .controller 'LoginCtrl', ['$scope', '$location', '$http', ($scope, $location, $http) ->
+  .controller 'RunKeeperLoginCtrl', ['$scope', '$location', '$http', ($scope, $location, $http) ->
+    alert 'Login'
     config = {
       params: {
         code: $location.search 'code'
