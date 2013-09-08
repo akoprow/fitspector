@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var index = require('./routes/index');
 var api = require('./routes/api');
@@ -27,5 +29,5 @@ app.get('*', index.index);
 
 var port = process.env.PORT || 8080;
 app.listen(port, function() {
-  console.log("Listening on " + port);
+  console.log('Listening on ' + port);
 });
