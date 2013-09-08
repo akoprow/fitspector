@@ -5,7 +5,8 @@
     "express": "3.3.x",
     "request": "~2.27.0",
     "assert": "~0.4.9",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "winston": "~0.7.2"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

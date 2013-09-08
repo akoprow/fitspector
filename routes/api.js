@@ -2,6 +2,14 @@
 
 var async = require('async');
 var request = require('request');
+var winston = require('winston');
+
+var logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)(),
+    new (winston.transports.File)({ filename: 'fitspector.log' })
+  ]
+});
 
 /* jshint -W069 */ // We're dealing with RunKeeper names, which are not in camelCase, so we access them with obj['field_name']
 
@@ -48,7 +56,7 @@ var runKeeper = {
 };
 
 var getToken = function(input, callback) {
-  console.log('getToken | %j', input);
+  logger.debug('getToken | %j', input);
   var params = {
     'grant_type': 'authorization_code',
     code: input.code,
@@ -68,7 +76,7 @@ var getToken = function(input, callback) {
 };
 
 var getUser = function(input, callback) {
-  console.log('getUser | %j', input);
+  logger.debug('getUser | %j', input);
   var cb = function(err, body) {
     callback(null, {accessToken: input.accessToken, userData: body});
   };
@@ -76,7 +84,7 @@ var getUser = function(input, callback) {
 };
 
 var getProfile = function(input, callback) {
-  console.log('getProfile | %j', input);
+  logger.debug('getProfile | %j', input);
   var cb = function(err, body) {
     callback(null, {userData: input.userData, profileData: body});
   };
@@ -84,7 +92,7 @@ var getProfile = function(input, callback) {
 };
 
 var mkUser = function(input, callback) {
-  console.log('mkUser | %j', input);
+  logger.debug('mkUser | %j', input);
   var user = {
     userID: 'RK' + input.userData.userID,
     name: input.profileData.name,
@@ -96,10 +104,10 @@ var mkUser = function(input, callback) {
 };
 
 exports.loginRK = function(req, res) {
-  console.log('RunKeeper login request');
+  logger.log('info', 'RunKeeper login request');
   var login = async.compose(mkUser, getProfile, getUser, getToken);
   login({code: req.params.code}, function(err, user) {
-    console.log('Login successful: %j', user);
+    logger.log('info', 'Login successful', user);
     res.send(user);
   });
 };
