@@ -1,24 +1,24 @@
 // TODO(koper) Do we need both request & restify? The problem is that /token requires application/x-www-form-urlencoded requests (now handled by request), while all other calls operate on JSON (restify used).
 var request = require('request');
 
-var API_URL = 'https://api.runkeeper.com/';
-
-var api = {
-  access_token: {
-    uri: 'https://runkeeper.com/apps/token'
-  },
-  user_info: {
-    path: 'user',
-    accept: 'application/vnd.com.runkeeper.User+json'
-  }
-};
-
-var secret = process.env.RUNKEEPER_SECRET;
+var RUNKEEPER_API_URL = 'https://api.runkeeper.com/';
 
 var runKeeper = {
+  api: {
+    access_token: {
+      uri: 'https://runkeeper.com/apps/token'
+    },
+    user_info: {
+      path: 'user',
+      accept: 'application/vnd.com.runkeeper.User+json'
+    }
+  },
+
+  secret: process.env.RUNKEEPER_SECRET,
+
   get: function(access_token, config, callback) {
     var opts = {
-      url: API_URL + config.path,
+      url: RUNKEEPER_API_URL + config.path,
       json: {},
       headers: {
         'Authorization': 'Bearer ' + access_token,
@@ -31,7 +31,7 @@ var runKeeper = {
 };
 
 var getUser = function(access_token) {
-  runKeeper.get(access_token, api.user_info, function(err, res, body) {
+  runKeeper.get(access_token, runKeeper.api.user_info, function(err, res, body) {
     console.log('getUser: status code: ' + res.statusCode);
     console.log('Body: %j', body);
   });
@@ -46,12 +46,12 @@ exports.loginRK = function(req, res) {
     grant_type: "authorization_code",
     code: req.params.code,
     client_id: 'b459a206aced43729fc79026df108e60',
-    client_secret: secret,
+    client_secret: runKeeper.secret,
     redirect_uri: 'http://localhost:8080/login_rk'
   };
 
   request.post({
-    uri: api.access_token.uri,
+    uri: runKeeper.api.access_token.uri,
     form: params
   }, function(err, res, body) {
     if (res.statusCode == 200) {
