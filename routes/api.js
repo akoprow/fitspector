@@ -1,11 +1,19 @@
 'use strict';
 
-/* jshint -W069 */ // We're dealing with RunKeeper names, which are not in camelCase, so we access them with obj['field_name']
-
-// TODO(koper) Do we need both request & restify? The problem is that /token requires application/x-www-form-urlencoded requests (now handled by request), while all other calls operate on JSON (restify used).
+var async = require('async');
 var request = require('request');
 
+/* jshint -W069 */ // We're dealing with RunKeeper names, which are not in camelCase, so we access them with obj['field_name']
+
 var RUNKEEPER_API_URL = 'https://api.runkeeper.com/';
+
+var requestCallback = function(cb) {
+  return function(err, res, body) {
+    if (!err && res.statusCode === 200) {
+      cb(null, body);
+    }
+  };
+};
 
 var runKeeper = {
   api: {
@@ -26,7 +34,7 @@ var runKeeper = {
 
   secret: process.env.RUNKEEPER_SECRET,
 
-  get: function(accessToken, config, callback) {
+  get: function(accessToken, config, cb) {
     var opts = {
       url: RUNKEEPER_API_URL + config.path,
       json: {},
@@ -35,61 +43,63 @@ var runKeeper = {
         'Accept': config.accept
       }
     };
-    request.get(opts, callback);
+    request.get(opts, requestCallback(cb));
   }
 };
 
-var getUser = function(accessToken, callback) {
-  runKeeper.get(accessToken, runKeeper.api.userInfo, callback);
-};
-
-var getProfile = function(accessToken, userData, callback) {
-  runKeeper.get(accessToken, runKeeper.api.profile(userData), callback);
-};
-
-var mkUser = function(userData, profileData) {
-  return {
-    userID: 'RK' + userData.userID,
-    isMale: profileData.gender === 'M',
-    birthday: new Date(profileData.birthday),
-    smallImg: profileData['medium_picture']
-  };
-};
-
-exports.loginRK = function(req, res) {
-  var errorResponse = function() {
-    // TODO(koper) ...
-  };
-  console.log('RunKeeper login request');
-
+var getToken = function(input, callback) {
+  console.log('getToken | %j', input);
   var params = {
     'grant_type': 'authorization_code',
-    code: req.params.code,
+    code: input.code,
     'client_id': 'b459a206aced43729fc79026df108e60',
     'client_secret': runKeeper.secret,
     'redirect_uri': 'http://localhost:8080/login_rk'
   };
-
-  request.post({
+  var postOptions = {
     uri: runKeeper.api.accessToken.uri,
     form: params
-  }, function(err, res1, body) {
-    if (res1.statusCode === 200) {
-      try {
-        var accessToken = JSON.parse(body)['access_token'];
-        getUser(accessToken, function(err, _, userData) {
-          getProfile(accessToken, userData, function(err, _, profileData) {
-            var userData = mkUser(userData, profileData);
-            console.log('Login successful: %j', userData);
-            res.send(userData);
-          });
-        });
-      }
-      catch (err) {
-        errorResponse();
-      }
-    } else {
-      errorResponse();
-    }
+  };
+  var cb = requestCallback(function(err, body) {
+    var accessToken = JSON.parse(body)['access_token'];
+    callback(null, {accessToken: accessToken});
+  });
+  request.post(postOptions, cb);
+};
+
+var getUser = function(input, callback) {
+  console.log('getUser | %j', input);
+  var cb = function(err, body) {
+    callback(null, {accessToken: input.accessToken, userData: body});
+  };
+  runKeeper.get(input.accessToken, runKeeper.api.userInfo, cb);
+};
+
+var getProfile = function(input, callback) {
+  console.log('getProfile | %j', input);
+  var cb = function(err, body) {
+    callback(null, {userData: input.userData, profileData: body});
+  };
+  runKeeper.get(input.accessToken, runKeeper.api.profile(input.userData), cb);
+};
+
+var mkUser = function(input, callback) {
+  console.log('mkUser | %j', input);
+  var user = {
+    userID: 'RK' + input.userData.userID,
+    name: input.profileData.name,
+    isMale: input.profileData.gender === 'M',
+    birthday: new Date(input.profileData.birthday),
+    smallImg: input.profileData['medium_picture']
+  };
+  callback(null, user);
+};
+
+exports.loginRK = function(req, res) {
+  console.log('RunKeeper login request');
+  var login = async.compose(mkUser, getProfile, getUser, getToken);
+  login({code: req.params.code}, function(err, user) {
+    console.log('Login successful: %j', user);
+    res.send(user);
   });
 };

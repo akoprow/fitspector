@@ -4,7 +4,8 @@
   "dependencies": {
     "express": "3.3.x",
     "request": "~2.27.0",
-    "assert": "~0.4.9"
+    "assert": "~0.4.9",
+    "async": "~0.2.9"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
