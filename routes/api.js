@@ -1,7 +1,5 @@
 // TODO(koper) Do we need both request & restify? The problem is that /token requires application/x-www-form-urlencoded requests (now handled by request), while all other calls operate on JSON (restify used).
 var request = require('request');
-var restify = require('restify');
-var assert = require('assert');
 
 var API_URL = 'https://api.runkeeper.com/';
 
@@ -19,21 +17,23 @@ var secret = process.env.RUNKEEPER_SECRET;
 
 var runKeeper = {
   get: function(access_token, config, callback) {
-    var client = restify.createJsonClient({
-      url: API_URL,
-      accept: config.accept,
+    var opts = {
+      url: API_URL + config.path,
+      json: {},
       headers: {
-        'Authorization': 'Bearer ' + access_token
+        'Authorization': 'Bearer ' + access_token,
+        'Accept': config.accept
       }
-    });
-    client.get(config.path, callback);
+    };
+    console.log('get params: %j', opts);
+    request.get(opts, callback);
   }
 };
 
-var getUser = function(access_token, err, success) {
-  runKeeper.get(access_token, api.user_info, function(err, req, res, obj) {
-    assert.ifError(err);
-    console.log('getUser response: %j', obj);
+var getUser = function(access_token) {
+  runKeeper.get(access_token, api.user_info, function(err, res, body) {
+    console.log('getUser: status code: ' + res.statusCode);
+    console.log('Body: %j', body);
   });
 };
 
@@ -50,7 +50,7 @@ exports.loginRK = function(req, res) {
     redirect_uri: 'http://localhost:8080/login_rk'
   };
 
-  var r = request.post({
+  request.post({
     uri: api.access_token.uri,
     form: params
   }, function(err, res, body) {
@@ -58,7 +58,7 @@ exports.loginRK = function(req, res) {
       try {
         var access_token = JSON.parse(body).access_token;
         console.log('Access token: ' + access_token);
-        var user = getUser(access_token);
+        getUser(access_token);
         // TODO(koper) ...
       }
       catch (err) {
