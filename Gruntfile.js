@@ -60,7 +60,14 @@ module.exports = function (grunt) {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
         tasks: ['express:fitspector'],
         options: {
-          nospawn: true,
+          nospawn: true
+        }
+      },
+      server: {
+        files: ['routes/{,*/}*.js'],
+        tasks: ['express:fitspector'],
+        options: {
+          nospawn: true
         }
       }
     },

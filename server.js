@@ -1,5 +1,6 @@
 var express = require('express');
-var routes = require('./routes');
+var index = require('./routes/index');
+var api = require('./routes/api');
 
 // Configure
 var app = express();
@@ -13,14 +14,14 @@ app.configure(function() {
 });
 
 // Routes
-app.get('/', routes.index);
-app.get('/partials/:name', routes.partials);
+app.get('/', index.index);
+app.get('/views/:name', index.partials);
 
 // JSON API
-// ...
+app.get('/api/login_rk/:code', api.loginRK);
 
 // redirect all other requests to the index (HTML5 history)
-app.get('*', routes.index);
+app.get('*', index.index);
 
 // Listen
 
