@@ -1,4 +1,6 @@
 'use strict'
 
-angular.module('fitspector')
-  .controller 'MainCtrl', ->
+class MainCtrl
+  constructor: ->
+
+angular.module('fitspector').controller 'MainCtrl', [MainCtrl]

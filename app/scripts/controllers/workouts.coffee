@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('fitspector')
-  .controller 'WorkoutsCtrl', ['DataService', ->
+class WorkoutsCtrl
+  constructor: (DataService) ->
 
-  ]
+angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', WorkoutsCtrl]
