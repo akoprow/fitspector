@@ -3,6 +3,8 @@
 var async = require('async');
 var request = require('request');
 var winston = require('winston');
+var User = require('../app/scripts/models/user').User;
+
 
 var logger = new (winston.Logger)({
   transports: [
@@ -93,13 +95,19 @@ var getProfile = function(input, callback) {
 
 var mkUser = function(input, callback) {
   logger.debug('mkUser | %j', input);
-  var user = {
-    userID: 'RK' + input.userData.userID,
+  var user = new User({
+    id: 'RK' + input.userData.userID,
     name: input.profileData.name,
     isMale: input.profileData.gender === 'M',
     birthday: new Date(input.profileData.birthday),
-    smallImg: input.profileData['medium_picture']
-  };
+    smallImgUrl: input.profileData['medium_picture']
+  });
+  user.save(function(err) {
+    if (err) {
+      logger.error('Could not persist user %j in DB', user);
+    }
+  });
+
   callback(null, user);
 };
 

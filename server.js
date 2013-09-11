@@ -3,6 +3,10 @@
 var express = require('express');
 var index = require('./routes/index');
 var api = require('./routes/api');
+var mongoose = require('mongoose');
+
+// DB
+mongoose.connect('mongodb://localhost/test');
 
 // Configure
 var app = express();
