@@ -6,7 +6,7 @@ class DataService
     .success (data) =>
       @data = data
 
-  getData: ->
+  getAllWorkouts: ->
     @data
 
 angular.module('fitspector').service 'DataService', ['$http', DataService]

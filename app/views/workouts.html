@@ -1,3 +1,39 @@
 <div class="workouts" controller="WorkoutsCtrl as workouts">
-  Your workout data: {{data() | json}}
+  <div class="panel panel-default">
+    <div class="panel-heading">Your workout log</div>
+    <div class="panel-body">
+      <p>...</p>
+    </div>
+
+    <table class="table table-hover">
+      <tr>
+        <th>Sport</th>
+        <th>Notes</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Distance</th>
+        <th>Elevation</th>
+      </tr>
+      <tr ng-repeat="workout in allWorkouts() | orderBy: 'startedAt'">
+        <td>
+          <div ng-bind="workout.exerciseType"></div>
+        </td>
+        <td>
+          <div ng-bind="workout.startedAt"></div>
+        </td>
+        <td>
+          <div ng-bind="workout.note"></div>
+        </td>
+        <td>
+          <div ng-bind="workout.time"></div>
+        </td>
+        <td>
+          <div ng-bind="workout.pace"></div>
+        </td>
+        <td>
+          <div ng-bind="workout.elevation"></div>
+        </td>
+      </tr>
+    </table>
+  </div>
 </div>

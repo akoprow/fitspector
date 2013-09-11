@@ -2,6 +2,6 @@
 
 class WorkoutsCtrl
   constructor: (DataService, $scope) ->
-    $scope.data = -> DataService.getData()
+    $scope.allWorkouts = -> DataService.getAllWorkouts()
 
 angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', '$scope', WorkoutsCtrl]
