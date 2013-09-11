@@ -1,6 +1,7 @@
 'use strict'
 
 class WorkoutsCtrl
-  constructor: (DataService) ->
+  constructor: (DataService, $scope) ->
+    $scope.data = -> DataService.getData()
 
-angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', WorkoutsCtrl]
+angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', '$scope', WorkoutsCtrl]
