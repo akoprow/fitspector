@@ -7,19 +7,19 @@
 
     <table class="table table-hover">
       <tr>
+        <th>Date</th>
         <th>Sport</th>
         <th>Notes</th>
-        <th>Date</th>
         <th>Time</th>
         <th>Distance</th>
         <th>Elevation</th>
       </tr>
       <tr ng-repeat="workout in allWorkouts() | orderBy: 'startedAt'">
         <td>
-          <div ng-bind="workout.exerciseType"></div>
+          <div ng-bind="workout.startedAt | fdate"></div>
         </td>
         <td>
-          <div ng-bind="workout.startedAt"></div>
+          <div ng-bind="workout.exerciseType"></div>
         </td>
         <td>
           <div ng-bind="workout.note"></div>
