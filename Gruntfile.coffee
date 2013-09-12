@@ -13,8 +13,11 @@ module.exports = (grunt) ->
   grunt.option 'env', (grunt.option 'env' || 'dev')
 
   yeomanConfig =
-    app: 'app',
+    app: 'app'
     dist: 'dist'
+    tmp: '.tmp'
+    routes: 'routes'
+    bower_components: '.bower_components'
 
   try
     yeomanConfig.app = require('./bower.json').appPath || yeomanConfig.app
@@ -34,33 +37,31 @@ module.exports = (grunt) ->
         port: 8080
       fitspector:
         options:
-          script: path.resolve __dirname, 'server.js'
+          script: '<%= yeoman.tmp %>/server.js'
 
     watch:
       options:
         livereload: true
       coffee:
         files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee']
-        tasks: ['coffee:develop']
+        tasks: ['coffee:scripts']
       express:
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js']
-        tasks: ['express:fitspector']
-        options:
-          nospawn: true
-      server:
-        files: ['routes/{,*/}*.js']
+        files: [
+          'server.js'
+          '<%= yeoman.tmp %>/routes/{,*/}*.js'
+        ]
         tasks: ['express:fitspector']
         options:
           nospawn: true
 
     autoprefixer:
-      options: ['last 1 version'],
+      options: ['last 1 version']
       dist:
         files: [
           expand: true
-          cwd: '.tmp/styles/'
+          cwd: '<%= yeoman.tmp %>/styles/'
           src: '{,*/}*.css'
-          dest: '.tmp/styles/'
+          dest: '<%= yeoman.tmp %>/styles/'
         ]
 
     open:
@@ -71,20 +72,18 @@ module.exports = (grunt) ->
       develop:
         files: [
           src: [
-            '<%= yeoman.app %>/scripts/{,*/}*.js',
-            '<%= yeoman.app %>/scripts/{,*/}*.js.map'
+            '<%= yeoman.tmp %>'
           ]
         ]
       dist:
         files: [
           dot: true
           src: [
-            '.tmp'
-            '<%= yeoman.dist %>/*'
+            '<%= yeoman.tmp %>'
+            '<%= yeoman.dist %>'
             '!<%= yeoman.dist %>/.git*'
           ]
         ]
-      server: '.tmp'
 
     jshint:
       options:
@@ -92,35 +91,26 @@ module.exports = (grunt) ->
       all: [
         'Gruntfile.js'
         'server.js'
-        'routes/{,*/}*.js'
+        '<%= yeoman.routes %>/{,*/}*.js'
       ]
 
     coffee:
-      options:
-        sourceMap: true,
-        sourceRoot: ''
-      develop:
+      app:
         files: [
           expand: true,
-          cwd: '<%= yeoman.app %>/scripts',
-          src: '{,*/}*.coffee',
-          dest: '<%= yeoman.app %>/scripts',
+          cwd: '<%= yeoman.tmp %>',
+          src: '**/*.coffee',
+          dest: '<%= yeoman.tmp %>',
           ext: '.js'
-        ]
-      dist:
-        files: [
-          expand: true
-          cwd: '<%= yeoman.app %>/scripts'
-          src: '{,*/}*.coffee'
-          dest: '.tmp/scripts'
-          ext: '.js'
+          options:
+            sourceMap: true
         ]
       test:
         files: [
           expand: true
           cwd: 'test/spec'
           src: '{,*/}*.coffee'
-          dest: '.tmp/spec'
+          dest: '<%= yeoman.tmp %>/spec'
           ext: '.js'
         ]
 
@@ -174,54 +164,42 @@ module.exports = (grunt) ->
 
     preprocess:
       all:
-        src : '<%= yeoman.app %>/views/topbar.preprocess.html'
-        dest : '<%= yeoman.app %>/views/topbar.html'
+        src : [ '<%= yeoman.tmp %>/views/topbar.html' ]
+        options:
+          inline: true,
+          context:
+            DEBUG: false
 
     copy:
-      dist:
+      app:
         files: [
-          expand: true
-          dot: true
           cwd: '<%= yeoman.app %>'
-          dest: '<%= yeoman.dist %>'
-          src: [
-            '*.{ico,png,txt}'
-            '.htaccess'
-            'bower_components/**/*'
-            'images/{,*/}*.{gif,webp}'
-            'styles/fonts/*'
-            '!*.preprocess.*'
-          ]
-        ,
+          src: '**'
+          dest: '<%= yeoman.tmp %>/<%= yeoman.app %>'
           expand: true
-          cwd: '.tmp/images'
-          dest: '<%= yeoman.dist %>/images'
+        ,
+          cwd: '<%= yeoman.routes %>'
+          src: '**'
+          dest: '<%= yeoman.tmp %>/<%= yeoman.routes %>'
+          expand: true
+        ,
+          cwd: '<%= yeoman.bower_components %>/'
           src: [
-            'generated/*'
-          ]
-        ]
-      styles:
-        expand: true
-        cwd: '<%= yeoman.app %>/styles'
-        dest: '.tmp/styles/'
-        src: '{,*/}*.css'
+            'jquery/jquery.js'
+            'angular/angular.js'
+            'angular-route/angular-route.js'
+            'angular-resource/angular-resource.js'
+            'bootstrap/js/dropdown.js'
+            'bootstrap/js/tooltip.js'
+            'd3/d3.js'
 
-    concurrent:
-      server: [
-        'coffee:dist',
-        'copy:styles'
-      ]
-      test: [
-        'coffee',
-        'copy:styles'
-      ]
-      dist: [
-        'coffee',
-        'copy:styles',
-        'imagemin',
-        'svgmin',
-        'htmlmin'
-      ]
+            'bootstrap/dist/css/bootstrap.css'
+          ]
+          dest: '<%= yeoman.tmp %>/libs/'
+          expand: true
+        ,
+          '<%= yeoman.tmp %>/server.js': 'server.js'
+        ]
 
     karma:
       unit:
@@ -248,13 +226,42 @@ module.exports = (grunt) ->
             '<%= yeoman.dist %>/scripts/scripts.js'
           ]
 
+    concurrent:
+      test: [
+        'coffee',
+      ]
+      dist: [
+        'coffee:app',
+        'imagemin',
+        'svgmin',
+        'htmlmin'
+      ]
+
   grunt.registerTask 'server', [
     'env:dev',
+    'copy:app',
     'preprocess:all',
-    'coffee:develop',
+    'coffee:app',
     'jshint',
     'express:fitspector',
     'watch'
+  ];
+
+  grunt.registerTask 'build', [
+    'env:prod',
+    'clean:dist',
+    'copy:app',
+    'preprocess:all',
+    'useminPrepare',
+    'concurrent:dist',
+    'autoprefixer',
+    'concat',
+    'cdnify',
+    'ngmin',
+    'cssmin',
+    'uglify',
+    'rev',
+    'usemin'
   ];
 
   grunt.registerTask 'test', [
@@ -263,23 +270,6 @@ module.exports = (grunt) ->
     'autoprefixer',
     'connect:test',
     'karma'
-  ];
-
-  grunt.registerTask 'build', [
-    'env:prod',
-    'clean:dist',
-    'preprocess:all',
-    'useminPrepare',
-    'concurrent:dist',
-    'autoprefixer',
-    'concat',
-    'copy:dist',
-    'cdnify',
-    'ngmin',
-    'cssmin',
-    'uglify',
-    'rev',
-    'usemin'
   ];
 
   grunt.registerTask 'default', [

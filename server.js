@@ -16,6 +16,7 @@ app.configure(function() {
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.static(__dirname + '/app'));
+  app.use(express.static(__dirname + '/libs'));
   app.use(app.router);
 });
 
