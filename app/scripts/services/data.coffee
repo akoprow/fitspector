@@ -64,6 +64,10 @@ class DataService
 
     @workoutType = allWorkoutTypes
 
+  getSportName: (sportId) ->
+    sportType = allWorkoutTypes[sportId]
+    sportType.name if sportType
+
   getAllWorkouts: ->
     @data
 

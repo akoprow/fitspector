@@ -1,14 +1,16 @@
 'use strict'
 
 class SportIconDirective
-  constructor: ->
+  constructor: (DataService) ->
     return {
       replace: true
       restrict: 'E'
       templateUrl: 'views/directives/sport-icon.html'
       scope:
-        sport: '@'
+        sportId: '='
+      link: ($scope) ->
+        $scope.sportName = DataService.getSportName($scope.sportId)
     }
 
-angular.module('fitspector').directive 'sportIcon', [SportIconDirective]
+angular.module('fitspector').directive 'sportIcon', ['DataService', SportIconDirective]
         
