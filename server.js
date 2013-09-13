@@ -3,10 +3,10 @@
 var express = require('express');
 var index = require('./routes/index');
 var api = require('./routes/api');
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 
 // DB
-mongoose.connect('mongodb://localhost/test');
+//mongoose.connect('mongodb://localhost/test');
 
 // Configure
 var app = express();
@@ -16,7 +16,6 @@ app.configure(function() {
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.static(__dirname + '/app'));
-  app.use(express.static(__dirname + '/libs'));
   app.use(app.router);
 });
 
