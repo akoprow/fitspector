@@ -46,13 +46,13 @@ module.exports = (grunt) ->
         livereload: true
       less:
         files: '<%= yeoman.app %>/styles/*.less'
-        tasks: [
-          'copy:less'
-          'less'
-        ]
+        tasks: ['copy:less', 'less']
       coffee:
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee']
-        tasks: ['coffee:scripts']
+        files: '<%= yeoman.app %>/scripts/{,*/}*.coffee'
+        tasks: 'coffee:app'
+      html:
+        files: '<%= yeoman.app %>/**/*.html'
+        tasks: ['copy:html', 'preprocess']
       express:
         files: [
           'server.js'
@@ -198,6 +198,11 @@ module.exports = (grunt) ->
         src: '*.less'
         dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/styles'
         expand: true
+      html:
+        cwd: '<%= yeoman.app %>'
+        src: '**/*.html'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>'
+        expand: true
       app:
         files: [
           cwd: '<%= yeoman.app %>'
@@ -273,7 +278,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'server', [
     'env:dev'
-    'copy:app'
+    'copy'
     'concurrent:dev'
     'jshint'
     'express:fitspector'
@@ -283,7 +288,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'build', [
     'env:prod'
     'clean:dist'
-    'copy:app'
+    'copy'
     'preprocess:all'
     'useminPrepare'
     'concurrent'
