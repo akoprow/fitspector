@@ -49,7 +49,7 @@ module.exports = (grunt) ->
         tasks: ['copy:less', 'less']
       coffee:
         files: '<%= yeoman.app %>/scripts/{,*/}*.coffee'
-        tasks: 'coffee:app'
+        tasks: ['copy:coffee', 'coffee:app']
       html:
         files: '<%= yeoman.app %>/**/*.html'
         tasks: ['copy:html', 'preprocess']
@@ -201,6 +201,11 @@ module.exports = (grunt) ->
       html:
         cwd: '<%= yeoman.app %>'
         src: '**/*.html'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>'
+        expand: true
+      coffee:
+        cwd: '<%= yeoman.app %>'
+        src: '**/*.coffee'
         dest: '<%= yeoman.tmp %>/<%= yeoman.app %>'
         expand: true
       app:
