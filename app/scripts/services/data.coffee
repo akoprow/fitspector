@@ -9,7 +9,6 @@ allWorkoutTypes =
     name: 'Biathlon'
   bik:
     name: 'Cycling'
-    color: '#fa573c'
   bob:
     name: 'Bobsled'
   cur:
@@ -24,43 +23,33 @@ allWorkoutTypes =
     name: 'Ice-skating'
   row:
     name: 'Rowing'
-    color: '#d06b64'
   run:
     name: 'Running'
-    color: '#b3dc6c'
   sai:
     name: 'Sailing'
   ski:
     name: 'Skiing'
   sqs:
     name: 'Squash'
-    color: '#b99aff'
   swi:
     name: 'Swimming'
-    color: '#ffad46'
   ten:
     name: 'Tennis'
-    color: '#9fe1e7'
   tkd:
     name: 'Taekwondo'
   xcs:
     name: 'Cross-country skiing'
-    color: '#cca6ac'
   vlb:
     name: 'Volleyball'
-    color: '#f691b2'
   wtr:
     name: 'Weight training'
-    color: '#9fc6e7'
   wre:
     name: 'Wrestling'
 
-  yoga:
+  yog:
     name: 'Yoga'
-    color: '#fad165'
   hik:
     name: 'Hiking'
-    color: '#ac725e'
 
 
 
