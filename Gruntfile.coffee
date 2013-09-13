@@ -6,6 +6,7 @@ module.exports = (grunt) ->
   require('load-grunt-tasks')(grunt)
   require('time-grunt')(grunt)
 
+  grunt.loadNpmTasks 'grunt-contrib-less'
   grunt.loadNpmTasks 'grunt-env'
   grunt.loadNpmTasks 'grunt-express-server'
   grunt.loadNpmTasks 'grunt-preprocess'
@@ -113,6 +114,11 @@ module.exports = (grunt) ->
           dest: '<%= yeoman.tmp %>/spec'
           ext: '.js'
         ]
+
+    less:
+      app:
+        files:
+          '<%= yeoman.tmp %>/<%= yeoman.app %>/styles/main.css': '<%= yeoman.tmp %>/<%= yeoman.app %>/styles/main.less'
 
     rev:
       dist:
@@ -222,59 +228,59 @@ module.exports = (grunt) ->
     uglify:
       dist:
         files:
-          '<%= yeoman.dist %>/scripts/scripts.js': [
-            '<%= yeoman.dist %>/scripts/scripts.js'
-          ]
+          '<%= yeoman.dist %>/scripts/scripts.js': '<%= yeoman.dist %>/scripts/scripts.js'
 
     concurrent:
       test: [
-        'coffee',
+        'coffee'
       ]
       dist: [
-        'coffee:app',
-        'imagemin',
-        'svgmin',
+        'coffee:app'
+        'imagemin'
+        'svgmin'
         'htmlmin'
+        'less'
       ]
 
   grunt.registerTask 'server', [
-    'env:dev',
-    'copy:app',
-    'preprocess:all',
-    'coffee:app',
-    'jshint',
-    'express:fitspector',
+    'env:dev'
+    'copy:app'
+    'less'
+    'preprocess:all'
+    'coffee:app'
+    'jshint'
+    'express:fitspector'
     'watch'
   ];
 
   grunt.registerTask 'build', [
-    'env:prod',
-    'clean:dist',
-    'copy:app',
-    'preprocess:all',
-    'useminPrepare',
-    'concurrent:dist',
-    'autoprefixer',
-    'concat',
-    'cdnify',
-    'ngmin',
-    'cssmin',
-    'uglify',
-    'rev',
+    'env:prod'
+    'clean:dist'
+    'copy:app'
+    'preprocess:all'
+    'useminPrepare'
+    'concurrent:dist'
+    'autoprefixer'
+    'concat'
+    'cdnify'
+    'ngmin'
+    'cssmin'
+    'uglify'
+    'rev'
     'usemin'
   ];
 
   grunt.registerTask 'test', [
-    'clean:server',
-    'concurrent:test',
-    'autoprefixer',
-    'connect:test',
+    'clean:server'
+    'concurrent:test'
+    'autoprefixer'
+    'connect:test'
     'karma'
   ];
 
   grunt.registerTask 'default', [
-    'jshint',
-    'test',
+    'jshint'
+    'test'
     'build'
   ];
 
