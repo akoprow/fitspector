@@ -19,7 +19,7 @@
           <div ng-bind="workout.startedAt | fdate"></div>
         </td>
         <td>
-          <div ng-bind="workout.exerciseType"></div>
+          <sport-icon sport="{{workout.exerciseType}}"></sport-icon>
         </td>
         <td>
           <div ng-bind="workout.note"></div>

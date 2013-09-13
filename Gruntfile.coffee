@@ -44,6 +44,12 @@ module.exports = (grunt) ->
     watch:
       options:
         livereload: true
+      less:
+        files: '<%= yeoman.app %>/styles/*.less'
+        tasks: [
+          'copy:less'
+          'less'
+        ]
       coffee:
         files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee']
         tasks: ['coffee:scripts']
@@ -183,8 +189,15 @@ module.exports = (grunt) ->
         destImg: '<%= yeoman.tmp %>/<%= yeoman.app %>/images/sport-icons.png'
         destCSS: '<%= yeoman.tmp %>/<%= yeoman.app %>/styles/sport-icons.css'
         algorithm: 'binary-tree'
+        cssOpts:
+          cssClass: (item) -> '.sport-' + item.name
 
     copy:
+      less:
+        cwd: '<%= yeoman.app %>/styles'
+        src: '*.less'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/styles'
+        expand: true
       app:
         files: [
           cwd: '<%= yeoman.app %>'
