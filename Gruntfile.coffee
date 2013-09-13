@@ -10,6 +10,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-env'
   grunt.loadNpmTasks 'grunt-express-server'
   grunt.loadNpmTasks 'grunt-preprocess'
+  grunt.loadNpmTasks 'grunt-spritesmith'
 
   grunt.option 'env', (grunt.option 'env' || 'dev')
 
@@ -176,11 +177,21 @@ module.exports = (grunt) ->
           context:
             DEBUG: false
 
+    sprite:
+      sportIcons:
+        src: '<%= yeoman.app %>/images/sport-icons/*'
+        destImg: '<%= yeoman.tmp %>/<%= yeoman.app %>/images/sport-icons.png'
+        destCSS: '<%= yeoman.tmp %>/<%= yeoman.app %>/styles/sport-icons.css'
+        algorithm: 'binary-tree'
+
     copy:
       app:
         files: [
           cwd: '<%= yeoman.app %>'
-          src: '**'
+          src: [
+            '**'
+            '!images/sport-icons/**'
+          ]
           dest: '<%= yeoman.tmp %>/<%= yeoman.app %>'
           expand: true
         ,
@@ -231,11 +242,16 @@ module.exports = (grunt) ->
           '<%= yeoman.dist %>/scripts/scripts.js': '<%= yeoman.dist %>/scripts/scripts.js'
 
     concurrent:
+      dev: [
+        'less'
+        'preprocess:all'
+        'coffee:app'
+        'sprite'
+      ]
       test: [
         'coffee'
       ]
       dist: [
-        'coffee:app'
         'imagemin'
         'svgmin'
         'htmlmin'
@@ -245,9 +261,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'server', [
     'env:dev'
     'copy:app'
-    'less'
-    'preprocess:all'
-    'coffee:app'
+    'concurrent:dev'
     'jshint'
     'express:fitspector'
     'watch'
@@ -259,7 +273,7 @@ module.exports = (grunt) ->
     'copy:app'
     'preprocess:all'
     'useminPrepare'
-    'concurrent:dist'
+    'concurrent'
     'autoprefixer'
     'concat'
     'cdnify'
