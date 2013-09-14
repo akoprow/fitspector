@@ -5,4 +5,4 @@ class DateFilter
     format = d3.time.format('%Y-%m-%d')
     return (date) -> format(new Date(date))
 
-angular.module('fitspector').filter 'fdate', [DateFilter]
+angular.module('fitspector').filter 'date', [DateFilter]

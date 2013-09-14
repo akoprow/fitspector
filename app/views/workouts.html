@@ -14,9 +14,9 @@
         <th>Distance</th>
         <th>Elevation</th>
       </tr>
-      <tr ng-repeat="workout in allWorkouts() | orderBy: 'startedAt'">
+      <tr ng-repeat="workout in allWorkouts() | orderBy: '-startedAt'">
         <td>
-          <div ng-bind="workout.startedAt | fdate"></div>
+          <div ng-bind="workout.startedAt | date"></div>
         </td>
         <td>
           <sport-icon sport-id="workout.exerciseType"></sport-icon>

@@ -1,8 +1,12 @@
 'use strict'
 
 allWorkoutTypes =
+  arc:
+    name: 'Archery'
   bbl:
     name: 'Baseball'
+  bdm:
+    name: 'Badminton'
   bkb:
     name: 'Basketball'
   bth:
@@ -11,14 +15,24 @@ allWorkoutTypes =
     name: 'Cycling'
   bob:
     name: 'Bobsled'
+  box:
+    name: 'Boxing'
   cur:
     name: 'Curling'
   fen:
     name: 'Fencing'
   fbl:
     name: 'Football'
+  fho:
+    name: 'Field hockey'
+  gym:
+    name: 'Gymnastics'
+  hbl:
+    name: 'Handball'
   hoc:
     name: 'Hockey'
+  hrd:
+    name: 'Horseback riding'
   isk:
     name: 'Ice-skating'
   row:
@@ -27,6 +41,8 @@ allWorkoutTypes =
     name: 'Running'
   sai:
     name: 'Sailing'
+  sho:
+    name: 'Shooting'
   ski:
     name: 'Skiing'
   sqs:
