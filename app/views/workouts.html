@@ -12,7 +12,7 @@
         <th>Notes</th>
         <th>Time</th>
         <th>Distance</th>
-        <th>Elevation</th>
+        <!-- TODO(koper) Add elevation -->
       </tr>
       <tr ng-repeat="workout in allWorkouts() | orderBy: '-startedAt'">
         <td>
@@ -25,13 +25,10 @@
           <div ng-bind="workout.note"></div>
         </td>
         <td>
-          <div ng-bind="workout.time"></div>
+          <workout-time time="workout.time"></workout-time>
         </td>
         <td>
-          <div ng-bind="workout.pace"></div>
-        </td>
-        <td>
-          <div ng-bind="workout.elevation"></div>
+          <workout-distance distance="workout.pace"></workout-distance>
         </td>
       </tr>
     </table>
