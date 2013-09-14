@@ -198,6 +198,11 @@ module.exports = (grunt) ->
         src: '*.less'
         dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/styles'
         expand: true
+      fonts:
+        cwd: '<%= yeoman.app %>/fonts'
+        src: '*'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/fonts'
+        expand: true
       html:
         cwd: '<%= yeoman.app %>'
         src: '**/*.html'
@@ -233,7 +238,9 @@ module.exports = (grunt) ->
             'bootstrap/js/tooltip.js'
             'd3/d3.js'
 
+            'bootstrap/dist/fonts/*'
             'bootstrap/dist/css/bootstrap.css'
+            'bootstrap/dist/css/bootstrap-theme.css'
           ]
           dest: '<%= yeoman.tmp %>/libs/'
           expand: true
