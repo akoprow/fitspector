@@ -17,18 +17,26 @@ allWorkoutTypes =
     name: 'Bobsled'
   box:
     name: 'Boxing'
+  cli:
+    name: 'Climbing'
   cur:
     name: 'Curling'
+  div:
+    name: 'Scuba diving'
   fen:
     name: 'Fencing'
   fbl:
     name: 'Football'
   fho:
     name: 'Field hockey'
+  glf:
+    name: 'Golf'
   gym:
     name: 'Gymnastics'
   hbl:
     name: 'Handball'
+  hik:
+    name: 'Hiking'
   hoc:
     name: 'Hockey'
   hrd:
@@ -37,6 +45,8 @@ allWorkoutTypes =
     name: 'Ice-skating'
   row:
     name: 'Rowing'
+  rsk:
+    name: 'Roller skating'
   run:
     name: 'Running'
   sai:
@@ -47,8 +57,12 @@ allWorkoutTypes =
     name: 'Skiing'
   sqs:
     name: 'Squash'
+  srk:
+    name: 'Snorkeling'
   swi:
     name: 'Swimming'
+  tbt:
+    name: 'Table tennis'
   ten:
     name: 'Tennis'
   tkd:
@@ -57,15 +71,14 @@ allWorkoutTypes =
     name: 'Cross-country skiing'
   vlb:
     name: 'Volleyball'
+  wsr:
+    name: 'Wind surfing'
   wtr:
     name: 'Weight training'
   wre:
     name: 'Wrestling'
-
   yog:
     name: 'Yoga'
-  hik:
-    name: 'Hiking'
 
 
 
