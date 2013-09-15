@@ -1,4 +1,4 @@
-<div class="workouts" controller="WorkoutsCtrl as workouts">
+<div class="workouts" ng-controller="WorkoutsCtrl">
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Your workouts</h3>
@@ -34,15 +34,27 @@
 
     <table class="table table-hover">
       <tr>
-        <th>Date</th>
-        <th>Sport</th>
+        <th>
+          <span class="sortHandler" ng-click="orderBy('startedAt')">Date</span>
+          <sorting-ctrl this="startedAt" selected="{{order}}"></sorting-ctrl>
+        </th>
+        <th>
+          <span class="sortHandler" ng-click="orderBy('exerciseType')">Sport</span>
+          <sorting-ctrl this="exerciseType" selected="{{order}}"></sorting-ctrl>
+        </th>
         <th>Notes</th>
-        <th>Time</th>
-        <th>Distance</th>
+        <th>
+          <span class="sortHandler" ng-click="orderBy('totalTime')">Time</span>
+          <sorting-ctrl this="totalTime" selected="{{order}}"></sorting-ctrl>
+        </th>
+        <th>
+          <span class="sortHandler" ng-click="orderBy('totalDistance')">Distance</span>
+          <sorting-ctrl this="totalDistance" selected="{{order}}"></sorting-ctrl>
+        </th>
         <th></th>
         <!-- TODO(koper) Add elevation -->
       </tr>
-      <tr ng-repeat="workout in allWorkouts() | orderBy: '-startedAt'">
+      <tr ng-repeat="workout in allWorkouts() | orderBy: order">
         <td>
           <div ng-bind="workout.startedAt | date"></div>
         </td>
