@@ -12,7 +12,6 @@ class Routes
         controller: 'WorkoutsCtrl'
       .when '/',
         templateUrl: 'views/main.html'
-        controller: 'MainCtrl'
       .otherwise
         redirectTo: '/'
 

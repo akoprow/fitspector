@@ -13,4 +13,3 @@ class SportIconDirective
     }
 
 angular.module('fitspector').directive 'sportIcon', ['DataService', SportIconDirective]
-        
