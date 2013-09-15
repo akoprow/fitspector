@@ -34,20 +34,20 @@
 
     <table class="table table-hover">
       <tr>
-        <th>
+        <th class="date">
           <span class="sortHandler" ng-click="orderBy('startedAt')">Date</span>
           <sorting-ctrl this="startedAt" selected="{{order}}"></sorting-ctrl>
         </th>
-        <th>
+        <th class="sport">
           <span class="sortHandler" ng-click="orderBy('exerciseType')">Sport</span>
           <sorting-ctrl this="exerciseType" selected="{{order}}"></sorting-ctrl>
         </th>
-        <th>Notes</th>
-        <th>
+        <th class="note">Notes</th>
+        <th class="time">
           <span class="sortHandler" ng-click="orderBy('totalTime')">Time</span>
           <sorting-ctrl this="totalTime" selected="{{order}}"></sorting-ctrl>
         </th>
-        <th>
+        <th class="distance">
           <span class="sortHandler" ng-click="orderBy('totalDistance')">Distance</span>
           <sorting-ctrl this="totalDistance" selected="{{order}}"></sorting-ctrl>
         </th>
@@ -55,19 +55,19 @@
         <!-- TODO(koper) Add elevation -->
       </tr>
       <tr ng-repeat="workout in allWorkouts() | orderBy: order">
-        <td>
-          <div ng-bind="workout.startedAt | date"></div>
+        <td class="date">
+          <span ng-bind="workout.startedAt | date"></span>
         </td>
-        <td>
+        <td class="sport">
           <sport-icon sport-id="workout.exerciseType"></sport-icon>
         </td>
-        <td>
-          <div ng-bind="workout.note"></div>
+        <td class="note">
+          <span ng-bind="workout.note"></span>
         </td>
-        <td>
+        <td class="time">
           <workout-time time="workout.time"></workout-time>
         </td>
-        <td>
+        <td class="distance">
           <workout-distance distance="workout.pace"></workout-distance>
         </td>
         <td class="details">

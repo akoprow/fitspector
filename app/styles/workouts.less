@@ -5,10 +5,23 @@
     }
   }
 
-  td.details > * {
+  td.note {
+    width: 200px;
+    max-width: 200px;
+    font-size: 90%;
+
+    & > span {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  td.details > .btn {
     visibility: hidden;
   }
-  tr:hover td.details > * {
+  tr:hover td.details > .btn {
     visibility: visible;
   }
 }
