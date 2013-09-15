@@ -51,7 +51,13 @@
           <span class="sortHandler" ng-click="orderBy('totalDistance')">Distance</span>
           <sorting-ctrl this="totalDistance" selected="{{order}}"></sorting-ctrl>
         </th>
-        <th></th>
+        <th class="elevation">
+          Elevation
+        </th>
+        <th class="icons hide">
+        </th>
+        <th class="details">
+        </th>
         <!-- TODO(koper) Add elevation -->
       </tr>
       <tr ng-repeat="workout in allWorkouts() | orderBy: order">
@@ -70,8 +76,14 @@
         <td class="distance">
           <workout-distance distance="workout.pace"></workout-distance>
         </td>
+        <td class="elevation">
+        </td>
+        <td class="icons hide">
+          <span class="glyphicon glyphicon-thumbs-up"></span> 3
+          <span class="glyphicon glyphicon-comment"></span> 10
+        </td>
         <td class="details">
-          <a class="btn btn-primary" href="/"><span class="glyphicon glyphicon-zoom-in"></span> details</a>
+          <a class="btn btn-primary btn-sm" href="/"><span class="glyphicon glyphicon-zoom-in"></span> details</a>
         </td>
       </tr>
     </table>
