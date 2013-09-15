@@ -9,7 +9,9 @@ class SportIconDirective
       scope:
         sportId: '='
       link: ($scope) ->
-        $scope.sportName = DataService.getSportName($scope.sportId)
+        setName = ->
+          $scope.sportName = DataService.getSportName $scope.sportId
+        $scope.$watch 'sportId', setName
     }
 
 angular.module('fitspector').directive 'sportIcon', ['DataService', SportIconDirective]
