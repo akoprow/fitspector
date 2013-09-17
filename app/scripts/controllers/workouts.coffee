@@ -6,6 +6,10 @@ class WorkoutsCtrl
 
     $scope.order = '-startedAt'
 
+    $scope.timeRange = 'year'
+    $scope.setTimeRange = (newRange) ->
+      $scope.timeRange = newRange
+
     $scope.orderBy = (newOrder) ->
       $scope.order = if $scope.order == newOrder then "-#{newOrder}" else newOrder
 

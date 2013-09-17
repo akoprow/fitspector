@@ -16,16 +16,19 @@
           </button>
         </div>
         <div class="btn-group">
-          <button class="btn btn-primary active">
-            All
-          </button>
-          <button class="btn btn-primary">
+          <button class="btn btn-primary"
+                  ng-class="{active: timeRange == 'year'}"
+                  ng-click="setTimeRange('year')">
             Year
           </button>
-          <button class="btn btn-primary">
+          <button class="btn btn-primary"
+                  ng-class="{active: timeRange == 'month'}"
+                  ng-click="setTimeRange('month')">
             Month
           </button>
-          <button class="btn btn-primary">
+          <button class="btn btn-primary"
+                  ng-class="{active: timeRange == 'week'}"
+                  ng-click="setTimeRange('week')">
             Week
           </button>
         </div>
