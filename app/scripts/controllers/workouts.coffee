@@ -7,16 +7,31 @@ class WorkoutsCtrl
     $scope.order = '-startedAt'
 
     # TODO(koper) Extract this into a time-selection service/controller?
-    $scope.timeStart = moment()
+    updateTime = ->
+      switch $scope.mode
+        when 'year' then $scope.modeDesc = $scope.timeStart.format('YYYY')
+        when 'month' then $scope.modeDesc = $scope.timeStart.format('MMM YYYY')
+        when 'week' then $scope.modeDesc = $scope.timeStart.format('W / gggg')
 
-    $scope.setTimeRange = (newRange) ->
-      $scope.timeRange = newRange
-      switch newRange
-        when 'year' then $scope.timeRangeDesc = $scope.timeStart.format('YYYY')
-        when 'month' then $scope.timeRangeDesc = $scope.timeStart.format('MMM YYYY')
-        when 'week' then $scope.timeRangeDesc = $scope.timeStart.format('W / YYYY')
+    timeMove = (delta) ->
+      switch $scope.mode
+        when 'year' then $scope.timeStart.year ($scope.timeStart.year() + delta)
+        when 'month' then $scope.timeStart.month ($scope.timeStart.month() + delta)
+        when 'week' then $scope.timeStart.week ($scope.timeStart.week() + delta)
+      updateTime()
 
-    $scope.setTimeRange 'year'
+    $scope.setMode = (newMode) ->
+      $scope.mode = newMode
+      updateTime()
+
+    $scope.next = -> timeMove 1
+    $scope.prev = -> timeMove -1
+    $scope.goNow = ->
+      $scope.timeStart = moment()
+      updateTime()
+
+    $scope.goNow()
+    $scope.setMode 'year'
 
     $scope.orderBy = (newOrder) ->
       $scope.order = if $scope.order == newOrder then "-#{newOrder}" else newOrder

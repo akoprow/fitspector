@@ -17,18 +17,18 @@
         </div>
         <div class="btn-group">
           <button class="btn btn-primary"
-                  ng-class="{active: timeRange == 'year'}"
-                  ng-click="setTimeRange('year')">
+                  ng-class="{active: mode == 'year'}"
+                  ng-click="setMode('year')">
             Year
           </button>
           <button class="btn btn-primary"
-                  ng-class="{active: timeRange == 'month'}"
-                  ng-click="setTimeRange('month')">
+                  ng-class="{active: mode == 'month'}"
+                  ng-click="setMode('month')">
             Month
           </button>
           <button class="btn btn-primary"
-                  ng-class="{active: timeRange == 'week'}"
-                  ng-click="setTimeRange('week')">
+                  ng-class="{active: mode == 'week'}"
+                  ng-click="setMode('week')">
             Week
           </button>
         </div>
@@ -37,13 +37,19 @@
 
     <div class="text-center">
       <div class="btn-group">
-        <button type="button" class="btn btn-primary">
+        <button type="button"
+                class="btn btn-primary"
+                ng-click="prev()">
           <span class="glyphicon glyphicon-chevron-left">
         </button>
-        <button type="button" class="btn btn-primary">
-          {{timeRangeDesc}}
+        <button type="button"
+                class="btn btn-primary"
+                ng-click="goNow()">
+          {{modeDesc}}
         </button>
-        <button type="button" class="btn btn-primary">
+        <button type="button"
+                class="btn btn-primary"
+                ng-click="next()">
           <span class="glyphicon glyphicon-chevron-right">
         </button>
       </div>
