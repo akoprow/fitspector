@@ -49,8 +49,15 @@ class WorkoutsCtrl
     $scope.goNow()
     $scope.setMode 'year'
 
-    # ----- List of workouts -----
-    $scope.allWorkouts = -> DataService.getAllWorkouts()
+    # ----- List of workouts (passing filters) -----
+    $scope.getWorkouts = ->
+      timeBeg = $scope.timeStart
+      timeEnd = $scope.timeEnd()
+
+      withinTimeRange = (workout) ->
+        (workout.startedAt.isBefore timeEnd) &&
+          ((workout.startedAt.isAfter timeBeg) || (workout.startedAt.isSame timeBeg))
+      _(DataService.getAllWorkouts()).filter withinTimeRange
 
     # ----- Sorting -----
     $scope.order = '-startedAt'

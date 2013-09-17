@@ -1,5 +1,6 @@
 'use strict'
 
+# TODO(koper) This should go somewhere else...
 allWorkoutTypes =
   arc:
     name: 'Archery'
@@ -87,7 +88,11 @@ class DataService
     $http.get('/data/workouts.json')
     .success (data) =>
       processWorkout = (workout) ->
+        # Turn starting date into a moment
+        workout.startedAt = moment workout.startedAt
+        # Normalize exerciseType id
         workout.exerciseType = workout.exerciseType.toLowerCase()
+
       @data = data
       @data.forEach processWorkout
 

@@ -87,7 +87,7 @@
         <th class="details">
         </th>
       </tr>
-      <tr ng-repeat="workout in allWorkouts() | orderBy: order">
+      <tr ng-repeat="workout in getWorkouts() | orderBy: order">
         <td class="date">
           <div ng-bind="workout.startedAt | date"></div>
           <div ng-bind="workout.startedAt | time"></div>
