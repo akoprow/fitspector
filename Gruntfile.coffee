@@ -237,6 +237,7 @@ module.exports = (grunt) ->
             'bootstrap/js/dropdown.js'
             'bootstrap/js/tooltip.js'
             'd3/d3.js'
+            'momentjs/moment.js'
 
             'bootstrap/dist/fonts/*'
             'bootstrap/dist/css/bootstrap.css'
