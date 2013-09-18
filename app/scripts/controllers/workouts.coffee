@@ -5,7 +5,7 @@ class WorkoutsCtrl
     # ----- Time navigation -----
 # 
     # TODO(koper) Extract this into a time-selection service/controller?
-    updateTime = ->
+    updateTimeDesc = ->
       switch $scope.mode
         when 'year'
           $scope.modeDesc = $scope.timeStart.format('YYYY')
@@ -14,37 +14,42 @@ class WorkoutsCtrl
         when 'week'
           $scope.modeDesc = $scope.timeStart.format('W / gggg')
 
+    adjustTime = (time) ->
+      switch $scope.mode
+        when 'year'
+          time.startOf 'year'
+        when 'month'
+          time.startOf 'month'
+        when 'week'
+          time.startOf 'week'
+
     timeMove = (delta, time) ->
       switch $scope.mode
         when 'year'
           time.year ($scope.timeStart.year() + delta)
-          time.startOf 'year'
         when 'month'
           time.month ($scope.timeStart.month() + delta)
-          time.startOf 'month'
         when 'week'
           time.week ($scope.timeStart.week() + delta)
-          time.startOf 'week'
+      adjustTime time
 
     $scope.setMode = (newMode) ->
       $scope.mode = newMode
-      updateTime()
+      updateTimeDesc()
+      adjustTime $scope.timeStart
 
     $scope.next = ->
       timeMove 1, $scope.timeStart
-      updateTime()
 
     $scope.prev = ->
       timeMove -1, $scope.timeStart
-      updateTime()
 
     $scope.goNow = ->
       $scope.timeStart = moment()
       timeMove 0, $scope.timeStart
-      updateTime()
 
     $scope.timeEnd = ->
-      timeMove 1, $scope.timeStart.clone()
+       timeMove 1, $scope.timeStart.clone()
 
     $scope.goNow()
     $scope.setMode 'year'
