@@ -13,6 +13,12 @@ class WorkoutsCtrl
           $scope.modeDesc = $scope.timeStart.format('MMM YYYY')
         when 'week'
           $scope.modeDesc = $scope.timeStart.format('W / gggg')
+      $scope.modeFullDesc =
+        if $scope.mode == 'week'
+          timeEnd = $scope.timeEnd().subtract 'days', 1
+          "#{$scope.timeStart.format('LL')} — #{timeEnd.format('LL')}"
+        else
+          ''
 
     adjustTime = (time) ->
       switch $scope.mode
@@ -26,27 +32,30 @@ class WorkoutsCtrl
     timeMove = (delta, time) ->
       switch $scope.mode
         when 'year'
-          time.year ($scope.timeStart.year() + delta)
+          time.add 'years', delta
         when 'month'
-          time.month ($scope.timeStart.month() + delta)
+          time.add 'months', delta
         when 'week'
-          time.week ($scope.timeStart.week() + delta)
+          time.add 'weeks', delta
       adjustTime time
 
     $scope.setMode = (newMode) ->
       $scope.mode = newMode
-      updateTimeDesc()
       adjustTime $scope.timeStart
+      updateTimeDesc()
 
     $scope.next = ->
       timeMove 1, $scope.timeStart
+      updateTimeDesc()
 
     $scope.prev = ->
       timeMove -1, $scope.timeStart
+      updateTimeDesc()
 
     $scope.goNow = ->
       $scope.timeStart = moment()
       timeMove 0, $scope.timeStart
+      updateTimeDesc()
 
     $scope.timeEnd = ->
        timeMove 1, $scope.timeStart.clone()

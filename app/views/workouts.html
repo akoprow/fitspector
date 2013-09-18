@@ -44,8 +44,8 @@
         </button>
         <button type="button"
                 class="btn btn-primary"
-                ng-click="goNow()">
-          {{modeDesc}}
+                ng-click="goNow()"
+                ng-bind="modeDesc">
         </button>
         <button type="button"
                 class="btn btn-primary"
@@ -53,10 +53,9 @@
           <span class="glyphicon glyphicon-chevron-right">
         </button>
       </div>
-    </div>
-
-    <div>
-      Time range: {{timeStart}} -- {{timeEnd()}}
+      <div>
+        <small ng-bind="modeFullDesc"></small>
+      </div>
     </div>
 
     <table class="table table-hover workouts-list">
