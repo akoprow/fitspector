@@ -87,14 +87,10 @@ class DataService
   constructor: ($http) ->
     $http.get('/data/workouts.json')
     .success (data) =>
-      processWorkout = (workout) ->
-        # Turn starting date into a moment
-        workout.startedAt = moment workout.startedAt
-        # Normalize exerciseType id
-        workout.exerciseType = workout.exerciseType.toLowerCase()
-
-      @data = data
-      @data.forEach processWorkout
+      @workouts = []
+      addWorkout = (json) =>
+        @workouts.push (Workout.fromJson json)
+      data.forEach addWorkout
 
     @workoutType = allWorkoutTypes
 
@@ -103,6 +99,6 @@ class DataService
     sportType.name if sportType
 
   getAllWorkouts: ->
-    @data
+    @workouts
 
 angular.module('fitspector').service 'DataService', ['$http', DataService]

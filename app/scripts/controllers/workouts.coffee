@@ -64,6 +64,7 @@ class WorkoutsCtrl
     $scope.setMode 'year'
 
     # ----- List of workouts (passing filters) -----
+    # TODO(koper) Filtering should be done in the DataService.
     $scope.getWorkouts = ->
       timeBeg = $scope.timeStart
       timeEnd = $scope.timeEnd()
