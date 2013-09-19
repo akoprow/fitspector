@@ -70,12 +70,12 @@
         </th>
         <th class="note">Notes</th>
         <th class="time">
-          <span class="sortHandler" ng-click="orderBy('totalTime')">Time</span>
-          <sorting-ctrl this="totalTime" selected="{{order}}"></sorting-ctrl>
+          <span class="sortHandler" ng-click="orderBy('totalTime.asSeconds()')">Time</span>
+          <sorting-ctrl this="totalTime.asSeconds()" selected="{{order}}"></sorting-ctrl>
         </th>
         <th class="distance">
-          <span class="sortHandler" ng-click="orderBy('totalDistance')">Distance</span>
-          <sorting-ctrl this="totalDistance" selected="{{order}}"></sorting-ctrl>
+          <span class="sortHandler" ng-click="orderBy('totalDistance.asKilometers()')">Distance</span>
+          <sorting-ctrl this="totalDistance.asKilometers()" selected="{{order}}"></sorting-ctrl>
         </th>
         <th class="elevation">
           <span class="sortHandler" ng-click="orderBy('totalElevation')">Elevation</span>

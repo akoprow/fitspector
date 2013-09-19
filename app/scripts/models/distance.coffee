@@ -18,4 +18,4 @@ class root.Distance
 
   isZero: -> @meters == 0
 
-  kilometers: -> @meters / METERS_IN_KILOMETER
+  asKilometers: -> @meters / METERS_IN_KILOMETER

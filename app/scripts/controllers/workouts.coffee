@@ -78,6 +78,7 @@ class WorkoutsCtrl
     $scope.order = '-startedAt'
 
     $scope.orderBy = (newOrder) ->
-      $scope.order = if $scope.order == newOrder then "-#{newOrder}" else newOrder
+      newOrderRev = "-#{newOrder}"
+      $scope.order = if $scope.order == newOrderRev then newOrder else newOrderRev
 
 angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', '$scope', WorkoutsCtrl]
