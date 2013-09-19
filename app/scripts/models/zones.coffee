@@ -9,5 +9,5 @@ class root.Zones
     zones = _(json).map Unit.fromJson
     new Zones(zones, Unit)
 
-  total: ->
-    _(zones).reduce @zones Unit.zero
+  getTotal: ->
+    _(@zones).reduce @Unit.plus, @Unit.zero

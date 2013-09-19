@@ -1,4 +1,4 @@
-<span>
+<span ng-hide="distance.isZero()">
   <span class="glyphicon glyphicon-road"></span>
-  Blah
+  <span ng-bind="distance | workoutDistance"></span> <span class="unit">km</span>
 </span>

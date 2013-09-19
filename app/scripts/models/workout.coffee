@@ -16,7 +16,10 @@ class root.Workout
     workout.note = json.note
     # Time by HR zones
     workout.time = Zones.fromJson json.time, Time
+    workout.totalTime = workout.time.getTotal()
+
     # Distance by pace zones
-    workout.distance = Zones.fromJson json.distance, Distance
+    workout.distance = Zones.fromJson json.pace, Distance
+    workout.totalDistance = workout.distance.getTotal()
 
     return workout
