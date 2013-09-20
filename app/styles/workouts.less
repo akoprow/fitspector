@@ -1,5 +1,16 @@
+@screen-width: 1100px;
+
+@col-date-width: 120px;
+@col-sport-icon-width: 60px;
+@col-note-width: 200px;
+@col-details-width: 90px;
+
+@fixed-cols-width:  @col-date-width + @col-sport-icon-width + @col-note-width + @col-details-width;
+
 .workouts {
   .workouts-list {
+    table-layout: fixed;
+
     th.date,
     td.date,
     th.sport,
@@ -10,14 +21,21 @@
       vertical-align: middle;
     }
 
-    td.sport {
-      width: 60px;
-      max-width: 60px;
+    th.date,
+    td.date {
+      width: @col-date-width;
     }
 
+    th.sport,
+    td.sport {
+      width: @col-sport-icon-width;
+    }
+
+    th.note,
     td.note {
-      width: 200px;
-      max-width: 200px;
+      width: @col-note-width;
+    }
+    td.note {
       font-size: 90%;
 
       & > span {
@@ -28,6 +46,19 @@
       }
     }
 
+    th.time,
+    td.time,
+    th.distance,
+    td.distance,
+    th.elevation,
+    td.elevation {
+      width: (@screen-width - @fixed-cols-width) / 3;
+    }
+
+    th.details,
+    td.details {
+      width: @col-details-width;
+    }
     td.details > .btn {
       visibility: hidden;
     }
