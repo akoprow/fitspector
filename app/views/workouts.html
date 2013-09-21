@@ -69,15 +69,18 @@
           <sorting-ctrl this="exerciseType" selected="{{order}}"></sorting-ctrl>
         </th>
         <th class="note">Notes</th>
-        <th class="time">
+        <th class="time-label"></th>
+        <th class="time-gauge">
           <span class="sortHandler" ng-click="orderBy('totalTime.asSeconds()')">Time</span>
           <sorting-ctrl this="totalTime.asSeconds()" selected="{{order}}"></sorting-ctrl>
         </th>
-        <th class="distance">
+        <th class="distance-label"></th>
+        <th class="distance-gauge">
           <span class="sortHandler" ng-click="orderBy('totalDistance.asKilometers()')">Distance</span>
           <sorting-ctrl this="totalDistance.asKilometers()" selected="{{order}}"></sorting-ctrl>
         </th>
-        <th class="elevation">
+        <th class="elevation-label">
+        <th class="elevation-gauge">
           <span class="sortHandler" ng-click="orderBy('totalElevation')">Elevation</span>
           <sorting-ctrl this="totalElevation" selected="{{order}}"></sorting-ctrl>
         </th>
@@ -99,13 +102,21 @@
         <td class="note">
           <span ng-bind="workout.note"></span>
         </td>
-        <td class="time">
+        <td class="time-label">
+          <workout-time time="workout.time"></workout-time>
+        </td>
+        <td class="time-gauge">
           <workout-time-gauge time="workout.time" max-gauge-time="maxGaugeTime"></workout-time-gauge>
         </td>
-        <td class="distance">
+        <td class="distance-label">
+          <workout-distance distance="workout.distance"></workout-distance>
+        </td>
+        <td class="distance-gauge">
           <workout-distance-gauge distance="workout.distance" max-gauge-distance="maxGaugeDistance"></workout-distance-gauge>
         </td>
-        <td class="elevation">
+        <td class="elevation-label">
+        </td>
+        <td class="elevation-gauge">
         </td>
 <!--
         <td class="icons hide">

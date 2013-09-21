@@ -4,8 +4,10 @@
 @col-sport-icon-width: 60px;
 @col-note-width: 200px;
 @col-details-width: 90px;
+@col-gauge-label-width: 70px;
 
-@fixed-cols-width:  @col-date-width + @col-sport-icon-width + @col-note-width + @col-details-width;
+@fixed-cols-width:  @col-date-width + @col-sport-icon-width + @col-note-width + @col-details-width + 3*@col-gauge-label-width;
+@gauge-cols-width: (@screen-width - @fixed-cols-width) / 3;
 
 @table-rows-sport-color-hover-fadeout: 85%;
 @table-rows-sport-color-fadeout: 97%;
@@ -26,9 +28,9 @@
     td.date,
     th.sport,
     td.sport,
-    th.time,
-    th.distance,
-    th.elevation {
+    th.time-gauge,
+    th.distance-gauge,
+    th.elevation-gauge {
       text-align: center;
     }
     td {
@@ -60,18 +62,25 @@
       }
     }
 
-    td.time .progress,
-    td.distance .progress {
+    .time-gauge .progress,
+    .distance-gauge .progress,
+    .elevation-gauge .progress {
       opacity: .75;
+      margin-bottom: 0 !important;
     }
 
-    th.time,
-    td.time,
-    th.distance,
-    td.distance,
-    th.elevation,
-    td.elevation {
-      width: (@screen-width - @fixed-cols-width) / 3;
+    .time-label,
+    .distance-label,
+    .elevation-label {
+      width: @col-gauge-label-width;
+      padding-right: 0;
+    }
+
+    .time-gauge,
+    .distance-gauge,
+    .elevation-gauge {
+      width: @gauge-cols-width;
+      padding-left: 0 !important;
     }
 
     th.details,
