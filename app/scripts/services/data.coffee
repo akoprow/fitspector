@@ -98,18 +98,7 @@ class DataService
     sportType = allWorkoutTypes[sportId]
     sportType.name if sportType
 
-  # TODO(koper) Do we want to provide this?
   getAllWorkouts: ->
     @workouts
-
-  getWorkoutsWithinTimeRange: (timeRange) ->
-    {timeBeg, timeEnd} = timeRange
-    withinTimeRange = (workout) ->
-      (workout.startedAt.isBefore timeEnd) &&
-        ((workout.startedAt.isAfter timeBeg) || (workout.startedAt.isSame timeBeg))
-    ret = _(@workouts).filter withinTimeRange
-    console.log "Workouts between #{timeBeg} and #{timeEnd} = #{ret.length}"
-    ret
-
 
 angular.module('fitspector').service 'DataService', ['$http', DataService]

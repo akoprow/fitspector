@@ -58,6 +58,67 @@
       </div>
     </div>
 
-    <workout-list workouts="workouts"></workout-list>
+    <table class="table workouts-list">
+      <tr>
+        <th class="date">
+          <span class="sortHandler" ng-click="orderBy('startedAt')">Date</span>
+          <sorting-ctrl this="startedAt" selected="{{order}}"></sorting-ctrl>
+        </th>
+        <th class="sport">
+          <span class="sortHandler" ng-click="orderBy('exerciseType')">Sport</span>
+          <sorting-ctrl this="exerciseType" selected="{{order}}"></sorting-ctrl>
+        </th>
+        <th class="note">Notes</th>
+        <th class="time">
+          <span class="sortHandler" ng-click="orderBy('totalTime.asSeconds()')">Time</span>
+          <sorting-ctrl this="totalTime.asSeconds()" selected="{{order}}"></sorting-ctrl>
+        </th>
+        <th class="distance">
+          <span class="sortHandler" ng-click="orderBy('totalDistance.asKilometers()')">Distance</span>
+          <sorting-ctrl this="totalDistance.asKilometers()" selected="{{order}}"></sorting-ctrl>
+        </th>
+        <th class="elevation">
+          <span class="sortHandler" ng-click="orderBy('totalElevation')">Elevation</span>
+          <sorting-ctrl this="totalElevation" selected="{{order}}"></sorting-ctrl>
+        </th>
+<!--
+        <th class="icons hide">
+        </th>
+-->
+        <th class="details">
+        </th>
+      </tr>
+      <tr ng-repeat="workout in getWorkouts() | orderBy: order" class="sport-{{workout.exerciseType}}">
+        <td class="date">
+          <div ng-bind="workout.startedAt | date"></div>
+          <div ng-bind="workout.startedAt | time"></div>
+        </td>
+        <td class="sport">
+          <sport-icon sport-id="workout.exerciseType"></sport-icon>
+        </td>
+        <td class="note">
+          <span ng-bind="workout.note"></span>
+        </td>
+        <td class="time">
+          <workout-time time="workout.time"></workout-time>
+          <workout-time-gauge time="workout.time"></workout-time-gauge>
+        </td>
+        <td class="distance">
+          <workout-distance distance="workout.distance"></workout-distance>
+          <workout-distance-gauge distance="workout.distance"></workout-distance-gauge>
+        </td>
+        <td class="elevation">
+        </td>
+<!--
+        <td class="icons hide">
+          <span class="glyphicon glyphicon-thumbs-up"></span> 3
+          <span class="glyphicon glyphicon-comment"></span> 10
+        </td>
+-->
+        <td class="details">
+          <a class="btn btn-primary btn-sm" href="/"><span class="glyphicon glyphicon-zoom-in"></span> details</a>
+        </td>
+      </tr>
+    </table>
   </div>
 </div>

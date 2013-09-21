@@ -3,19 +3,20 @@
 class WorkoutsCtrl
   constructor: (DataService, $scope) ->
     # ----- Time navigation -----
+# 
     # TODO(koper) Extract this into a time-selection service/controller?
     updateTimeDesc = ->
       switch $scope.mode
         when 'year'
-          $scope.modeDesc = $scope.timeBeg.format('YYYY')
+          $scope.modeDesc = $scope.timeStart.format('YYYY')
         when 'month'
-          $scope.modeDesc = $scope.timeBeg.format('MMM YYYY')
+          $scope.modeDesc = $scope.timeStart.format('MMM YYYY')
         when 'week'
-          $scope.modeDesc = $scope.timeBeg.format('W / gggg')
+          $scope.modeDesc = $scope.timeStart.format('W / gggg')
       $scope.modeFullDesc =
         if $scope.mode == 'week'
-          timeEnd = timeEnd().subtract 'days', 1
-          "#{$scope.timeBeg.format('LL')} — #{timeEnd.format('LL')}"
+          timeEnd = $scope.timeEnd().subtract 'days', 1
+          "#{$scope.timeStart.format('LL')} — #{timeEnd.format('LL')}"
         else
           ''
 
@@ -40,34 +41,44 @@ class WorkoutsCtrl
 
     $scope.setMode = (newMode) ->
       $scope.mode = newMode
-      adjustTime $scope.timeBeg
+      adjustTime $scope.timeStart
       updateTimeDesc()
 
     $scope.next = ->
-      timeMove 1, $scope.timeBeg
+      timeMove 1, $scope.timeStart
       updateTimeDesc()
 
     $scope.prev = ->
-      timeMove -1, $scope.timeBeg
+      timeMove -1, $scope.timeStart
       updateTimeDesc()
 
     $scope.goNow = ->
-      $scope.timeBeg = moment()
-      timeMove 0, $scope.timeBeg
+      $scope.timeStart = moment()
+      timeMove 0, $scope.timeStart
       updateTimeDesc()
 
-    $scope.timeEnd = =>
-       timeMove 1, $scope.timeBeg.clone()
+    $scope.timeEnd = ->
+       timeMove 1, $scope.timeStart.clone()
 
     $scope.goNow()
     $scope.setMode 'year'
 
-    # List of workouts passing the filter
-    computeWorkouts = =>
-      $scope.workouts = DataService.getWorkoutsWithinTimeRange
-        timeBeg: $scope.timeBeg
-        timeEnd: $scope.timeEnd()
-    $scope.$watch 'timeBeg.valueOf()', computeWorkouts
+    # ----- List of workouts (passing filters) -----
+    # TODO(koper) Filtering should be done in the DataService.
+    $scope.getWorkouts = ->
+      timeBeg = $scope.timeStart
+      timeEnd = $scope.timeEnd()
 
+      withinTimeRange = (workout) ->
+        (workout.startedAt.isBefore timeEnd) &&
+          ((workout.startedAt.isAfter timeBeg) || (workout.startedAt.isSame timeBeg))
+      _(DataService.getAllWorkouts()).filter withinTimeRange
+
+    # ----- Sorting -----
+    $scope.order = '-startedAt'
+
+    $scope.orderBy = (newOrder) ->
+      newOrderRev = "-#{newOrder}"
+      $scope.order = if $scope.order == newOrderRev then newOrder else newOrderRev
 
 angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', '$scope', WorkoutsCtrl]
