@@ -10,6 +10,14 @@
 @table-rows-sport-color-hover-fadeout: 85%;
 @table-rows-sport-color-fadeout: 97%;
 
+.workout-list-row(@color) {
+  background-color: fadeout(@color, @table-rows-sport-color-fadeout);
+  &:hover {
+    background-color: fadeout(@color, @table-rows-sport-color-hover-fadeout);
+  }
+}
+
+
 .workouts {
   .workouts-list {
     table-layout: fixed;
@@ -72,70 +80,37 @@
     /* TODO(koper) This is tedious, isn't there an easier way to achieve that?
                    If not it may be worth to eventually generate it programatically. */
     tr.sport-run {
-      background-color: fadeout(@sport-color-run, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-run, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-run);
     }
     tr.sport-bik {
-      background-color: fadeout(@sport-color-bik, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-bik, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-bik);
     }
     tr.sport-hik {
-      background-color: fadeout(@sport-color-hik, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-hik, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-hik);
     }
     tr.sport-row {
-      background-color: fadeout(@sport-color-row, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-row, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-row);
     }
     tr.sport-sqs {
-      background-color: fadeout(@sport-color-sqs, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-sqs, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-sqs);
     }
     tr.sport-swi {
-      background-color: fadeout(@sport-color-swi, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-swi, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-swi);
     }
     tr.sport-ten {
-      background-color: fadeout(@sport-color-ten, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-ten, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-ten);
     }
     tr.sport-vlb {
-      background-color: fadeout(@sport-color-vlb, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-vlb, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-vlb);
     }
     tr.sport-xcs {
-      background-color: fadeout(@sport-color-xcs, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-xcs, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-xcs);
     }
     tr.sport-yog {
-      background-color: fadeout(@sport-color-yog, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-yog, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-yog);
     }
     tr.sport-wtr {
-      background-color: fadeout(@sport-color-wtr, @table-rows-sport-color-fadeout);
-      &:hover {
-        background-color: fadeout(@sport-color-wtr, @table-rows-sport-color-hover-fadeout);
-      }
+      .workout-list-row(@sport-color-wtr);
     }
   }
 
