@@ -1,3 +1,3 @@
 'use strict'
 
-angular.module('fitspector', ['ngRoute', 'ngAnimate'])
+angular.module('fitspector', ['ngRoute'])
