@@ -57,6 +57,12 @@
       }
     }
 
+    td.time .workout-time,
+    td.distance .workout-distance {
+      float: left;
+      margin-right: 5px;
+    }
+
     th.time,
     td.time,
     th.distance,
@@ -80,37 +86,37 @@
     /* TODO(koper) This is tedious, isn't there an easier way to achieve that?
                    If not it may be worth to eventually generate it programatically. */
     tr.sport-run {
-      .workout-list-row(@sport-color-run);
+      .workout-list-row(@sport-run-color);
     }
     tr.sport-bik {
-      .workout-list-row(@sport-color-bik);
+      .workout-list-row(@sport-bik-color);
     }
     tr.sport-hik {
-      .workout-list-row(@sport-color-hik);
+      .workout-list-row(@sport-hik-color);
     }
     tr.sport-row {
-      .workout-list-row(@sport-color-row);
+      .workout-list-row(@sport-row-color);
     }
     tr.sport-sqs {
-      .workout-list-row(@sport-color-sqs);
+      .workout-list-row(@sport-sqs-color);
     }
     tr.sport-swi {
-      .workout-list-row(@sport-color-swi);
+      .workout-list-row(@sport-swi-color);
     }
     tr.sport-ten {
-      .workout-list-row(@sport-color-ten);
+      .workout-list-row(@sport-ten-color);
     }
     tr.sport-vlb {
-      .workout-list-row(@sport-color-vlb);
+      .workout-list-row(@sport-vlb-color);
     }
     tr.sport-xcs {
-      .workout-list-row(@sport-color-xcs);
+      .workout-list-row(@sport-xcs-color);
     }
     tr.sport-yog {
-      .workout-list-row(@sport-color-yog);
+      .workout-list-row(@sport-yog-color);
     }
     tr.sport-wtr {
-      .workout-list-row(@sport-color-wtr);
+      .workout-list-row(@sport-wtr-color);
     }
   }
 
