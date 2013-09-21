@@ -1,3 +1,2 @@
-$('body').tooltip(
+$('body').tooltip
   selector: '[rel=tooltip]'
-)

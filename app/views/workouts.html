@@ -100,28 +100,12 @@
           <span ng-bind="workout.note"></span>
         </td>
         <td class="time">
-          <workout-time time="workout.totalTime"></workout-time>
-          <div class="progress hr">
-            <div class="progress-bar progress-bar-z0" style="width: 10%"></div>
-            <div class="progress-bar progress-bar-z1" style="width: 15%"></div>
-            <div class="progress-bar progress-bar-z2" style="width: 15%"></div>
-            <div class="progress-bar progress-bar-z3" style="width: 15%"></div>
-            <div class="progress-bar progress-bar-z4" style="width: 15%"></div>
-            <div class="progress-bar progress-bar-z5" style="width: 15%"></div>
-            <div class="progress-bar progress-bar-z6" style="width: 15%"></div>
-          </div>
+          <workout-time time="workout.time"></workout-time>
+          <workout-time-gauge time="workout.time"></workout-time-gauge>
         </td>
         <td class="distance">
-          <workout-distance distance="workout.totalDistance"></workout-distance>
-          <div class="progress pace" ng-hide="workout.totalDistance.isZero()">
-            <div class="progress-bar progress-bar-z0" style="width: 10%"></div>
-            <div class="progress-bar progress-bar-z1" style="width: 15%"></div>
-            <div class="progress-bar progress-bar-z2" style="width: 15%"></div>
-            <div class="progress-bar progress-bar-z3" style="width: 15%"></div>
-            <div class="progress-bar progress-bar-z4" style="width: 15%"></div>
-            <div class="progress-bar progress-bar-z5" style="width: 15%"></div>
-            <div class="progress-bar progress-bar-z6" style="width: 15%"></div>
-          </div>
+          <workout-distance distance="workout.distance"></workout-distance>
+          <workout-distance-gauge distance="workout.distance"></workout-distance-gauge>
         </td>
         <td class="elevation">
         </td>

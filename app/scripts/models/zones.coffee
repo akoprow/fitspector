@@ -10,4 +10,5 @@ class root.Zones
     new Zones(zones, Unit)
 
   getTotal: ->
-    _(@zones).reduce @Unit.plus, @Unit.zero
+    @total = _(@zones).reduce @Unit.plus, @Unit.zero unless @total
+    @total

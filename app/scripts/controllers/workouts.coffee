@@ -24,7 +24,7 @@ class WorkoutsCtrl
       switch $scope.mode
         when 'year'
           time.startOf 'year'
-        when 'month'
+        when 'month'        
           time.startOf 'month'
         when 'week'
           time.startOf 'week'
