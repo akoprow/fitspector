@@ -58,7 +58,7 @@
       </div>
     </div>
 
-    <table class="table table-hover workouts-list">
+    <table class="table workouts-list">
       <tr>
         <th class="date">
           <span class="sortHandler" ng-click="orderBy('startedAt')">Date</span>
@@ -88,7 +88,7 @@
         <th class="details">
         </th>
       </tr>
-      <tr ng-repeat="workout in getWorkouts() | orderBy: order">
+      <tr ng-repeat="workout in getWorkouts() | orderBy: order" class="sport-{{workout.exerciseType}}">
         <td class="date">
           <div ng-bind="workout.startedAt | date"></div>
           <div ng-bind="workout.startedAt | time"></div>

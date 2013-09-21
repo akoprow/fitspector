@@ -190,7 +190,7 @@ module.exports = (grunt) ->
         destCSS: '<%= yeoman.tmp %>/<%= yeoman.app %>/styles/sport-icons.css'
         algorithm: 'binary-tree'
         cssOpts:
-          cssClass: (item) -> '.sport-' + item.name
+          cssClass: (item) -> '.sport-icon.sport-' + item.name
 
     copy:
       less:
