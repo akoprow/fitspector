@@ -8,6 +8,7 @@ class WorkoutTimeGaugeDirective
       templateUrl: 'views/directives/workout-time-gauge.html'
       scope:
         time: '='
+        maxGaugeTime: '='
     }
 
 angular.module('fitspector').directive 'workoutTimeGauge', [WorkoutTimeGaugeDirective]

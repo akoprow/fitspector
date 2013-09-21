@@ -100,12 +100,10 @@
           <span ng-bind="workout.note"></span>
         </td>
         <td class="time">
-          <workout-time time="workout.time"></workout-time>
-          <workout-time-gauge time="workout.time"></workout-time-gauge>
+          <workout-time-gauge time="workout.time" max-gauge-time="maxGaugeTime"></workout-time-gauge>
         </td>
         <td class="distance">
-          <workout-distance distance="workout.distance"></workout-distance>
-          <workout-distance-gauge distance="workout.distance"></workout-distance-gauge>
+          <workout-distance-gauge distance="workout.distance" max-gauge-distance="maxGaugeDistance"></workout-distance-gauge>
         </td>
         <td class="elevation">
         </td>

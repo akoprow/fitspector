@@ -2,6 +2,12 @@
 
 class WorkoutsCtrl
   constructor: (DataService, $scope) ->
+    # ----- Gauges -----
+    # TODO(koper) Make this dependant on user data.
+    # TODO(koper) Make better constructors {hours: 2}, {km: 20}
+    $scope.maxGaugeTime = new Time(2 * 60 * 60)
+    $scope.maxGaugeDistance = new Distance(20 * 1000)
+
     # ----- Time navigation -----
 # 
     # TODO(koper) Extract this into a time-selection service/controller?

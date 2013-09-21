@@ -8,6 +8,7 @@ class WorkoutDistanceGaugeDirective
       templateUrl: 'views/directives/workout-distance-gauge.html'
       scope:
         distance: '='
+        maxGaugeDistance: '='
     }
 
 angular.module('fitspector').directive 'workoutDistanceGauge', [WorkoutDistanceGaugeDirective]

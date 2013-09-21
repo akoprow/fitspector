@@ -1,6 +1,9 @@
-<div class="progress pace" ng-hide="distance.getTotal().isZero()">
-  <div ng-repeat="i in [0, 1, 2, 3, 4, 5, 6]"
-       class="progress-bar progress-bar-z{{i}}"
-       style="width: {{distance.zonePercent(i)}}%">
+<div>
+  <workout-distance distance="distance"></workout-distance>
+  <div class="progress pace" ng-hide="distance.getTotal().isZero()" ng-style="{width: distance.gaugePercent(maxGaugeDistance)}">
+    <div ng-repeat="i in [0, 1, 2, 3, 4, 5, 6]"
+         ng-style="{width: distance.zonePercent(i)}"
+         class="progress-bar progress-bar-z{{i}}">
+    </div>
   </div>
 </div>
