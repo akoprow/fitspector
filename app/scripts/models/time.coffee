@@ -18,6 +18,9 @@ class root.Time
   @zero:
     new Time(0)
 
+  @ratio: (t0, t1) ->
+    t0.asSeconds() / t1.asSeconds()
+
   isZero: -> @t.asSeconds() == 0
 
   hours: -> @t.hours() + HOURS_IN_A_DAY * @t.days()

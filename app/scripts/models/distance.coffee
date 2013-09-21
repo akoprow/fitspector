@@ -16,6 +16,9 @@ class root.Distance
   @zero:
     new Distance(0)
 
+  @ratio: (t0, t1) ->
+    t0.meters / t1.meters
+
   isZero: -> @meters == 0
 
   asKilometers: -> @meters / METERS_IN_KILOMETER

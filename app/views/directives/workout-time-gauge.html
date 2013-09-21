@@ -1,9 +1,6 @@
 <div class="progress hr">
-  <div class="progress-bar progress-bar-z0" style="width: 10%"></div>
-  <div class="progress-bar progress-bar-z1" style="width: 15%"></div>
-  <div class="progress-bar progress-bar-z2" style="width: 15%"></div>
-  <div class="progress-bar progress-bar-z3" style="width: 15%"></div>
-  <div class="progress-bar progress-bar-z4" style="width: 15%"></div>
-  <div class="progress-bar progress-bar-z5" style="width: 15%"></div>
-  <div class="progress-bar progress-bar-z6" style="width: 15%"></div>
+  <div ng-repeat="i in [0, 1, 2, 3, 4, 5, 6]"
+       class="progress-bar progress-bar-z{{i}}"
+       style="width: {{time.zonePercent(i)}}%">
+  </div>
 </div>
