@@ -12,7 +12,6 @@ class Routes
         controller: 'WorkoutsCtrl'
       .when '/match',
         templateUrl: 'views/match.html'
-        controller: 'MatchCtrl'
       .when '/',
         templateUrl: 'views/main.html'
       .otherwise
