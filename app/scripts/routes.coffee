@@ -10,6 +10,9 @@ class Routes
       .when '/workouts',
         templateUrl: 'views/workouts.html'
         controller: 'WorkoutsCtrl'
+      .when '/match',
+        templateUrl: 'views/match.html'
+        controller: 'MatchCtrl'
       .when '/',
         templateUrl: 'views/main.html'
       .otherwise
