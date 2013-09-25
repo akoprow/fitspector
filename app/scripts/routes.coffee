@@ -7,13 +7,18 @@ class Routes
       .when '/login_rk',
         templateUrl: 'views/login_rk.html'
         controller: 'RunKeeperLoginCtrl'
+
       .when '/workouts',
         templateUrl: 'views/workouts.html'
         controller: 'WorkoutsCtrl'
+
       .when '/leaderboard',
         templateUrl: 'views/leaderboard.html'
+        controller: 'LeaderboardCtrl'
+
       .when '/',
         templateUrl: 'views/main.html'
+        
       .otherwise
         redirectTo: '/'
 

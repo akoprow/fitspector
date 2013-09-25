@@ -1,3 +1,12 @@
 <div ng-controller="LeaderboardCtrl">
-  Blah
+  <table class="table table-hover leaderboard">
+    <tr>
+      <th>Player</th>
+    </tr>
+    <tr ng-repeat="player in players">
+      <td class="player">
+        <img class="img-thumbnail thumb" ng-src="{{player.img}}"> {{player.name}}
+      </td>
+    </tr>
+  </table>
 </div>
