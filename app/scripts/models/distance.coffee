@@ -13,6 +13,9 @@ class root.Distance
   @plus: (d0, d1) ->
     new Distance(d0.meters + d1.meters)
 
+  @subtract: (d0, d1) ->
+    new Distance(d0.meters - d1.meters)
+
   @zero:
     new Distance(0)
 

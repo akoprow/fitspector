@@ -1,11 +1,24 @@
 <div ng-controller="LeaderboardCtrl">
   <table class="table table-hover leaderboard">
     <tr>
-      <th>Player</th>
+      <th class="player">
+        Player
+      </th>
+      <th class="score">
+        Score
+        <div class="behindLeader">(behind the leader)</div>
+      </th>
     </tr>
     <tr ng-repeat="player in players">
       <td class="player">
         <img class="img-thumbnail thumb" ng-src="{{player.img}}"> {{player.name}}
+      </td>
+      <td class="score">
+        <span class="glyphicon glyphicon-road"></span>
+        <span ng-bind="player.total | workoutDistance"></span> <span class="unit">km</span>
+        <div class="behindLeader" ng-hide="$index == 0">
+          (<span ng-bind="behindLeader(player) | workoutDistance"></span> <span class="unit">km</span>)
+        </div>
       </td>
     </tr>
   </table>
