@@ -3,6 +3,7 @@
 class NavigationCtrl
   @urls:
     workouts: '/workouts'
+    leaderboard: '/leaderboard'
 
   constructor: ($location, $scope) ->
     $scope.isAt = (id) ->
