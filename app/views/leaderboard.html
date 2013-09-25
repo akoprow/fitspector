@@ -1,6 +1,9 @@
 <div ng-controller="LeaderboardCtrl">
   <table class="table table-hover leaderboard">
     <tr>
+      <th class="position">
+        #
+      </th>
       <th class="player">
         Player
       </th>
@@ -10,6 +13,9 @@
       </th>
     </tr>
     <tr ng-repeat="player in players">
+      <td class="position">
+        <span ng-bind="$index+1"></span>
+      </td>
       <td class="player">
         <img class="img-thumbnail thumb" ng-src="{{player.img}}"> {{player.name}}
       </td>
