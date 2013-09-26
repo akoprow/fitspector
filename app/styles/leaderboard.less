@@ -3,7 +3,7 @@
 @position-width: 50px;
 @player-width: 250px;
 @score-width: 150px;
-@day-width: @total-width - @position-width - @score-width - 7 * @player-width;
+@day-width: (@total-width - @position-width - @player-width - @score-width) / 7;
 
 table.leaderboard {
   table-layout: fixed;
@@ -41,5 +41,9 @@ table.leaderboard {
     vertical-align: middle;
     text-align: center;
     width: @day-width;
+
+    &.active {
+      background-color: rgba(179, 220, 108, 0.2);
+    }
   }
 }
