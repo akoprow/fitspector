@@ -177,7 +177,7 @@ module.exports = (grunt) ->
 
     preprocess:
       all:
-        src : [ '<%= yeoman.tmp %>/views/topbar.html' ]
+        src : [ '<%= yeoman.tmp %>/<%= yeoman.app %>/views/topbar.html' ]
         options:
           inline: true,
           context:
