@@ -1,12 +1,24 @@
+@total-width: 1140px;
+
+@position-width: 50px;
+@player-width: 250px;
+@score-width: 150px;
+@day-width: @total-width - @position-width - @score-width - 7 * @player-width;
+
 table.leaderboard {
+  table-layout: fixed;
+
   .position {
     vertical-align: middle;
+    text-align: center;
     font-size: 150%;
+    width: @position-width;
   }
 
   .player {
     vertical-align: middle;
     font-size: 110%;
+    width: @player-width;
 
     .thumb {
       width: 60px;
@@ -16,11 +28,18 @@ table.leaderboard {
 
   .score {
     font-size: 120%;
-    text-align: center;
     vertical-align: middle;
+    text-align: center;
+    width: @score-width;
 
     .behindLeader {
-      font-size: 85%;
+      font-size: 80%;
     }
+  }
+
+  .day {
+    vertical-align: middle;
+    text-align: center;
+    width: @day-width;
   }
 }

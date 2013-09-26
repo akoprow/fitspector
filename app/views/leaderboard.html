@@ -7,6 +7,7 @@
       <th class="player">
         Player
       </th>
+      <th class="day" ng-repeat="day in dayNames" ng-bind="day"></th>
       <th class="score">
         Score
         <div class="behindLeader">(behind the leader)</div>
@@ -18,6 +19,12 @@
       </td>
       <td class="player">
         <img class="img-thumbnail thumb" ng-src="{{player.img}}"> {{player.name}}
+      </td>
+      <td class="day" ng-repeat="dailyDistance in player.days track by $index">
+        <span ng-hide="dailyDistance.isZero()">
+          <span ng-bind="dailyDistance | workoutDistance"></span> <span class="unit">km</span>
+        </span>
+        <span ng-show="dailyDistance.isZero()">—</span>
       </td>
       <td class="score">
         <span class="glyphicon glyphicon-road"></span>
