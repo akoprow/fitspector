@@ -29,7 +29,10 @@
 
       <!-- ------------------------------------- Login/Logout dropdown ------------------------------------- -->
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
+        <li ng-show="isLoggedIn">
+          <span class="glyphicon glyphicon-off"></span> Logout
+        </li>
+        <li ng-hide="isLoggedIn" class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Login <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li>

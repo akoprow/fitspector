@@ -1,3 +1,3 @@
 'use strict'
 
-angular.module('fitspector', ['ngRoute'])
+angular.module 'fitspector', ['ngRoute']

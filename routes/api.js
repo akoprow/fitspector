@@ -112,7 +112,7 @@ var mkUser = function(input, callback) {
 };
 
 exports.loginRK = function(req, res) {
-  logger.log('info', 'RunKeeper login request');
+  logger.log('info', 'RunKeeper login request with code: ' + req.params.code);
   var login = async.compose(mkUser, getProfile, getUser, getToken);
   login({code: req.params.code}, function(err, user) {
     logger.log('info', 'Login successful', user);

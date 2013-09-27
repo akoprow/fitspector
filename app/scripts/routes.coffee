@@ -5,8 +5,8 @@ class Routes
     $locationProvider.html5Mode true
     $routeProvider
       .when '/login_rk',
-        templateUrl: 'views/login_rk.html'
-        controller: 'RunKeeperLoginCtrl'
+        templateUrl: 'views/login_rk'
+        controller: 'LoginRunKeeperCtrl'
 
       .when '/workouts',
         templateUrl: 'views/workouts.html'

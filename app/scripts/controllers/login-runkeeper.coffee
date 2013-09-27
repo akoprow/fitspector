@@ -1,7 +1,13 @@
 'use strict'
 
-angular.module('fitspector')
-  .controller 'RunKeeperLoginCtrl', ['$scope', '$http', '$routeParams', ($scope, $http, $routeParams) ->
+class LoginRunKeeperCtrl
+  constructor: ($scope, $location, $http, $routeParams, LoginService) ->
     code = $routeParams.code
-    $http.get ('/api/login_rk/' + code)
-  ]
+    success = (user) ->
+      LoginService.setUser user
+      $location.url '/'
+    error = (err) -> # TODO(koper)
+    $http.get('/api/login_rk/' + code).success(success).error(error)
+
+
+angular.module('fitspector').controller 'LoginRunKeeperCtrl', ['$scope', '$location', '$http', '$routeParams', 'LoginService', LoginRunKeeperCtrl]

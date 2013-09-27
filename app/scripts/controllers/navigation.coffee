@@ -5,11 +5,14 @@ class NavigationCtrl
     workouts: '/workouts'
     leaderboard: '/leaderboard'
 
-  constructor: ($location, $scope) ->
+  constructor: ($location, $scope, LoginService) ->
     $scope.isAt = (id) ->
       return $location.path() == NavigationCtrl.urls[id]
 
     $scope.goTo = (id) ->
       $location.path(NavigationCtrl.urls[id])
 
-angular.module('fitspector').controller 'NavigationCtrl', ['$location', '$scope', NavigationCtrl]
+    $scope.isLoggedIn = ->
+      LoginService.getUser() != null
+
+angular.module('fitspector').controller 'NavigationCtrl', ['$location', '$scope', 'LoginService', NavigationCtrl]
