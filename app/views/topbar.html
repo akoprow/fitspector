@@ -29,9 +29,14 @@
 
       <!-- ------------------------------------- Login/Logout dropdown ------------------------------------- -->
       <ul class="nav navbar-nav navbar-right">
+        <li ng-if="isLoggedIn()" class="disabled">
+          <a href="#">
+            <span class="user-name" ng-bind="getUser().name"></span>
+          </a>
+        </li>
         <li ng-if="isLoggedIn()">
           <a href="#" class="dropdown-toggle user-toggle" data-toggle="dropdown">
-            <img class="img-rounded" ng-src="{{userImgUrl()}}" />
+            <img class="img-rounded" ng-src="{{getUser().smallImgUrl}}" />
             <b class="caret"></b>
           </a>
           <ul class="dropdown-menu">

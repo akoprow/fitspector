@@ -16,8 +16,8 @@ class NavigationCtrl
       user = LoginService.getUser()
       user != undefined && user != null
 
-    $scope.userImgUrl = ->
-      LoginService.getUser().smallImgUrl
+    $scope.getUser = ->
+      LoginService.getUser()
 
 
 angular.module('fitspector').controller 'NavigationCtrl', ['$location', '$scope', 'LoginService', NavigationCtrl]
