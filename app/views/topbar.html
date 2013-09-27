@@ -29,10 +29,20 @@
 
       <!-- ------------------------------------- Login/Logout dropdown ------------------------------------- -->
       <ul class="nav navbar-nav navbar-right">
-        <li ng-show="isLoggedIn">
-          <span class="glyphicon glyphicon-off"></span> Logout
+        <li ng-if="isLoggedIn()">
+          <a href="#" class="dropdown-toggle user-toggle" data-toggle="dropdown">
+            <img class="img-rounded" ng-src="{{userImgUrl()}}" />
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="#">
+                <span class="glyphicon glyphicon-off"></span> Logout
+              </a>
+            </li>
+          </ul>
         </li>
-        <li ng-hide="isLoggedIn" class="dropdown">
+        <li ng-hide="isLoggedIn()" class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Login <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li>

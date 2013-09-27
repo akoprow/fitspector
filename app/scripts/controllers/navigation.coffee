@@ -13,6 +13,11 @@ class NavigationCtrl
       $location.path(NavigationCtrl.urls[id])
 
     $scope.isLoggedIn = ->
-      LoginService.getUser() != null
+      user = LoginService.getUser()
+      user != undefined && user != null
+
+    $scope.userImgUrl = ->
+      LoginService.getUser().smallImgUrl
+
 
 angular.module('fitspector').controller 'NavigationCtrl', ['$location', '$scope', 'LoginService', NavigationCtrl]
