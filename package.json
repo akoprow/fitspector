@@ -8,7 +8,8 @@
     "async": "~0.2.9",
     "winston": "~0.7.2",
     "firebase": "~0.6.3",
-    "string": "~1.6.0"
+    "string": "~1.6.0",
+    "underscore": "~1.5.2"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

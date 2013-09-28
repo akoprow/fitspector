@@ -5,6 +5,7 @@ var request = require('request');
 var string = require('string');
 var winston = require('winston');
 var Firebase = require('firebase');
+var _ = require('underscore');
 
 var MAX_WORKOUTS_PROCESSED_AT_A_TIME = 20;
 
@@ -128,7 +129,7 @@ var runKeeperWorkoutType = function(type) {
   }
 };
 
-var addWorkout = function(data, cb) {
+var addWorkout = function(userRef, data, cb) {
   var prefix = '/fitnessActivities/';
   if (!string(data.uri).startsWith(prefix)) {
     cb('Cannot get activity ID from its URI: ' + data.uri);
@@ -142,18 +143,27 @@ var addWorkout = function(data, cb) {
     totalDistance: data['total_distance'],
     totalDuration: data.duration
   };
-  logger.info('Processed workout [', workoutId, ']: ', workout);
+
+  userRef.child('workouts').child(workoutId).set(workout);
+  logger.info('Processed workout ', workoutId, ' -> ', workout);
   cb();
 };
 
 var loadAllWorkouts = function(userId, accessToken) {
   logger.info('Fetching all workouts for user: ', userId, ' with token: ', accessToken);
+  var userRef = new Firebase('https://fitspector.firebaseIO.com/users').child(userId);
+
   runKeeper.get(accessToken, runKeeper.api.userActivities, function(err, response) {
-    async.eachLimit(response.items, MAX_WORKOUTS_PROCESSED_AT_A_TIME, addWorkout, function(err) {
-      if (err) {
-        logger.error('Error while importing workouts for: ', userId, ' -> ', err);
+    async.eachLimit(
+      response.items,
+      MAX_WORKOUTS_PROCESSED_AT_A_TIME,
+      _.partial(addWorkout, userRef),
+      function(err) {
+        if (err) {
+          logger.error('Error while importing workouts for: ', userId, ' -> ', err);
+        }
       }
-    });
+    );
   });
 };
 
