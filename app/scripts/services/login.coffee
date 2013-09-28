@@ -1,11 +1,12 @@
 'use strict'
 
 class LoginService
-  constructor: ->
+  constructor: (@angularFire, @$rootScope) ->
 
-  getUser: -> @user
+  getUser: -> @$rootScope.user
 
-  setUser: (user) ->
-    @user = user
+  setUser: (userId) ->
+    userRef = new Firebase("https://fitspector.firebaseio.com/users").child userId
+    @angularFire userRef, @$rootScope, "user"
 
-angular.module('fitspector').service 'LoginService', [LoginService]
+angular.module('fitspector').service 'LoginService', ['angularFire', '$rootScope', LoginService]

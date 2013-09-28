@@ -3,10 +3,6 @@
 var express = require('express');
 var index = require('./routes/index');
 var api = require('./routes/api');
-var mongoose = require('mongoose');
-
-// DB
-mongoose.connect('mongodb://localhost/test');
 
 // Configure
 var app = express();
@@ -32,7 +28,6 @@ app.get('/api/login_rk/:code', api.loginRK);
 app.get('*', index.index);
 
 // Listen
-
 var port = process.env.PORT || 8080;
 app.listen(port, function() {
   console.log('Listening on ' + port);

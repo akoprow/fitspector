@@ -3,7 +3,7 @@
 var async = require('async');
 var request = require('request');
 var winston = require('winston');
-var User = require('../app/scripts/models/user').User;
+var Firebase = require('firebase');
 
 
 var logger = new (winston.Logger)({
@@ -95,20 +95,17 @@ var getProfile = function(input, callback) {
 
 var mkUser = function(input, callback) {
   logger.debug('mkUser | %j', input);
-  var user = new User({
-    id: 'RK' + input.userData.userID,
+  var userId = 'RK' + input.userData.userID;
+  var user = {
     name: input.profileData.name,
     isMale: input.profileData.gender === 'M',
     birthday: new Date(input.profileData.birthday),
     smallImgUrl: input.profileData['medium_picture']
-  });
-  user.save(function(err) {
-    if (err) {
-      logger.error('Could not persist user %j in DB', user);
-    }
-  });
+  };
+  var usersRef = new Firebase('https://fitspector.firebaseIO.com/users');
+  usersRef.child(userId).set(user);
 
-  callback(null, user);
+  callback(null, {id: userId});
 };
 
 exports.loginRK = function(req, res) {
