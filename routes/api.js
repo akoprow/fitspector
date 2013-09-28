@@ -2,8 +2,11 @@
 
 var async = require('async');
 var request = require('request');
+var string = require('string');
 var winston = require('winston');
 var Firebase = require('firebase');
+
+var MAX_WORKOUTS_PROCESSED_AT_A_TIME = 20;
 
 
 var logger = new (winston.Logger)({
@@ -33,6 +36,10 @@ var runKeeper = {
     userInfo: {
       path: 'user',
       accept: 'application/vnd.com.runkeeper.User+json'
+    },
+    userActivities: {
+      path: 'fitnessActivities?pageSize=1000',
+      accept: 'application/vnd.com.runkeeper.FitnessActivityFeed+json'
     },
     profile: function(userInfo) {
       return {
@@ -88,7 +95,11 @@ var getUser = function(input, callback) {
 var getProfile = function(input, callback) {
   logger.debug('getProfile | %j', input);
   var cb = function(err, body) {
-    callback(null, {userData: input.userData, profileData: body});
+    callback(null, {
+      accessToken: input.accessToken,
+      userData: input.userData,
+      profileData: body
+    });
   };
   runKeeper.get(input.accessToken, runKeeper.api.profile(input.userData), cb);
 };
@@ -105,14 +116,54 @@ var mkUser = function(input, callback) {
   var usersRef = new Firebase('https://fitspector.firebaseIO.com/users');
   usersRef.child(userId).set(user);
 
-  callback(null, {id: userId});
+  callback(null, {userId: userId, accessToken: input.accessToken});
+};
+
+var runKeeperWorkoutType = function(type) {
+  switch (type) {
+  case 'Running':
+    return 'run';
+  default:
+    return '???';
+  }
+};
+
+var addWorkout = function(data, cb) {
+  var prefix = '/fitnessActivities/';
+  if (!string(data.uri).startsWith(prefix)) {
+    cb('Cannot get activity ID from its URI: ' + data.uri);
+    return;
+  }
+
+  var workoutId = string(data.uri).chompLeft(prefix).toString();
+  var workout = {
+    type: runKeeperWorkoutType(data.type),
+    startTime: data['start_time'],
+    totalDistance: data['total_distance'],
+    totalDuration: data.duration
+  };
+  logger.info('Processed workout [', workoutId, ']: ', workout);
+  cb();
+};
+
+var loadAllWorkouts = function(userId, accessToken) {
+  logger.info('Fetching all workouts for user: ', userId, ' with token: ', accessToken);
+  runKeeper.get(accessToken, runKeeper.api.userActivities, function(err, response) {
+    async.eachLimit(response.items, MAX_WORKOUTS_PROCESSED_AT_A_TIME, addWorkout, function(err) {
+      if (err) {
+        logger.error('Error while importing workouts for: ', userId, ' -> ', err);
+      }
+    });
+  });
 };
 
 exports.loginRK = function(req, res) {
   logger.log('info', 'RunKeeper login request with code: ' + req.params.code);
   var login = async.compose(mkUser, getProfile, getUser, getToken);
-  login({code: req.params.code}, function(err, user) {
-    logger.log('info', 'Login successful', user);
-    res.send(user);
+  login({code: req.params.code}, function(err, data) {
+    var response = {userId: data.userId};
+    logger.info('Response: ', response);
+    res.send(response);
+    loadAllWorkouts(data.userId, data.accessToken);
   });
 };
