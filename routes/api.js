@@ -136,9 +136,9 @@ var addWorkout = function(userRef, workoutIds, data, cb) {
     return;
   }
 
-  var workoutId = string(data.uri).chompLeft(prefix).toString();
+  var workoutId = 'RKW' + string(data.uri).chompLeft(prefix).toString();
   // We already have this workout
-  if (_(workoutIds).contains(workoutId)) {
+  if (workoutIds && workoutIds[workoutId]) {
     cb(null, 0);
     return;
   }
@@ -151,7 +151,7 @@ var addWorkout = function(userRef, workoutIds, data, cb) {
   };
 
   // Note workout ID and save workout data.
-  userRef.child('workoutIds').push(workoutId);
+  userRef.child('workoutIds').child(workoutId).set(true);
   userRef.child('workouts').child(workoutId).set(workout);
 
   logger.info('Processed workout ', workoutId, ' -> ', workout);
@@ -161,13 +161,12 @@ var addWorkout = function(userRef, workoutIds, data, cb) {
 var loadAllWorkouts = function(userId, accessToken) {
   logger.info('Fetching all workouts for user: ', userId, ' with token: ', accessToken);
   var userRef = new Firebase('https://fitspector.firebaseIO.com/users').child(userId);
-  userRef.child('workoutIds').once('value', function(data) {
-    var workoutIds = _(data.val()).values();
+  userRef.child('workoutIds').once('value', function(workoutIds) {
     runKeeper.get(accessToken, runKeeper.api.userActivities, function(err, response) {
       async.mapLimit(
         response.items,
         MAX_WORKOUTS_PROCESSED_AT_A_TIME,
-        _.partial(addWorkout, userRef, workoutIds),
+        _.partial(addWorkout, userRef, workoutIds.val()),
         function(err, data) {
           if (err) {
             logger.error('Error while importing workouts for: ', userId, ' -> ', err);
