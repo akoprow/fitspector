@@ -115,7 +115,7 @@ var mkUser = function(input, callback) {
     smallImgUrl: input.profileData['medium_picture']
   };
   var usersRef = new Firebase('https://fitspector.firebaseIO.com/users');
-  usersRef.child(userId).set(user);
+  usersRef.child(userId).update(user);
 
   callback(null, {userId: userId, accessToken: input.accessToken});
 };
@@ -129,7 +129,7 @@ var runKeeperWorkoutType = function(type) {
   }
 };
 
-var addWorkout = function(userRef, data, cb) {
+var addWorkout = function(userRef, workoutIds, data, cb) {
   var prefix = '/fitnessActivities/';
   if (!string(data.uri).startsWith(prefix)) {
     cb('Cannot get activity ID from its URI: ' + data.uri);
@@ -137,6 +137,11 @@ var addWorkout = function(userRef, data, cb) {
   }
 
   var workoutId = string(data.uri).chompLeft(prefix).toString();
+  // We already have this workout
+  if (_(workoutIds).contains(workoutId)) {
+    return;
+  }
+
   var workout = {
     type: runKeeperWorkoutType(data.type),
     startTime: data['start_time'],
@@ -144,7 +149,10 @@ var addWorkout = function(userRef, data, cb) {
     totalDuration: data.duration
   };
 
+  // Note workout ID and save workout data.
+  userRef.child('workoutIds').push(workoutId);
   userRef.child('workouts').child(workoutId).set(workout);
+
   logger.info('Processed workout ', workoutId, ' -> ', workout);
   cb();
 };
@@ -152,18 +160,19 @@ var addWorkout = function(userRef, data, cb) {
 var loadAllWorkouts = function(userId, accessToken) {
   logger.info('Fetching all workouts for user: ', userId, ' with token: ', accessToken);
   var userRef = new Firebase('https://fitspector.firebaseIO.com/users').child(userId);
-
-  runKeeper.get(accessToken, runKeeper.api.userActivities, function(err, response) {
-    async.eachLimit(
-      response.items,
-      MAX_WORKOUTS_PROCESSED_AT_A_TIME,
-      _.partial(addWorkout, userRef),
-      function(err) {
-        if (err) {
-          logger.error('Error while importing workouts for: ', userId, ' -> ', err);
+  userRef.child('workoutIds').once('value', function(workoutIds) {
+    runKeeper.get(accessToken, runKeeper.api.userActivities, function(err, response) {
+      async.eachLimit(
+        response.items,
+        MAX_WORKOUTS_PROCESSED_AT_A_TIME,
+        _.partial(addWorkout, userRef, workoutIds.val()),
+        function(err) {
+          if (err) {
+            logger.error('Error while importing workouts for: ', userId, ' -> ', err);
+          }
         }
-      }
-    );
+      );
+    });
   });
 };
 

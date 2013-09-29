@@ -93,15 +93,6 @@ module.exports = (grunt) ->
           ]
         ]
 
-    jshint:
-      options:
-        jshintrc: '.jshintrc'
-      all: [
-        'Gruntfile.js'
-        'server.js'
-        '<%= yeoman.routes %>/{,*/}*.js'
-      ]
-
     coffee:
       app:
         files: [
@@ -295,7 +286,6 @@ module.exports = (grunt) ->
     'env:dev'
     'copy'
     'concurrent:dev'
-    'jshint'
     'express:fitspector'
     'watch'
   ];
@@ -326,7 +316,6 @@ module.exports = (grunt) ->
   ];
 
   grunt.registerTask 'default', [
-    'jshint'
     'test'
     'build'
   ];
