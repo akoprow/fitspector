@@ -114,9 +114,27 @@ runKeeperWorkoutType = (type) ->
   switch type
     when "Running"
       "run"
+    when "Cycling"
+      "bik"
+    when "Mountain Biking"
+      "bik"
+    when "Walking"
+      "hik"
+    when "Hiking"
+      "hik"
+    when "Downhill Skiing"
+      "ski"
+    when "Cross-Country Skiing"
+      "xcs"
+    when "Swimming"
+      "swi"
+    when "Rowing"
+      "row"
+    when "Elliptical", "Wheelchair", "Snowboarding", "Skating", "Other"
+      "oth"
     else
       log.error "Unknown RunKeeper workout type", type
-      "???"
+      "oth"
 
 
 addWorkout = (userRef, workoutIds, data, cb) ->

@@ -1,7 +1,8 @@
 "use strict"
-express = require("express")
-index = require("./routes/index")
-api = require("./routes/api")
+
+express = require "express"
+index = require "./routes/index"
+api = require "./routes/api"
 
 # Configure
 app = express()
