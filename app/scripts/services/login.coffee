@@ -6,6 +6,7 @@ class LoginService
   getUser: -> @$rootScope.user
 
   setUserId: (userId) ->
+    @$rootScope.userId = userId
     userRef = new Firebase("https://fitspector.firebaseio.com/users").child userId
     @angularFire userRef, @$rootScope, "user"
 

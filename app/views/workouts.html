@@ -61,20 +61,23 @@
     <table class="table workouts-list">
       <tr>
         <th class="date">
-          <span class="sortHandler" ng-click="orderBy('startedAt')">Date</span>
-          <sorting-ctrl this="startedAt" selected="{{order}}"></sorting-ctrl>
+          <span class="sortHandler" ng-click="orderBy('startTime')">Date</span>
+          <sorting-ctrl this="startTime" selected="{{order}}"></sorting-ctrl>
         </th>
         <th class="sport">
           <span class="sortHandler" ng-click="orderBy('exerciseType')">Sport</span>
           <sorting-ctrl this="exerciseType" selected="{{order}}"></sorting-ctrl>
         </th>
         <th class="note">Notes</th>
-        <th class="time-label"></th>
+        <th class="time-label">Time</th>
+<!--
         <th class="time-gauge">
           <span class="sortHandler" ng-click="orderBy('totalTime.asSeconds()')">Time</span>
           <sorting-ctrl this="totalTime.asSeconds()" selected="{{order}}"></sorting-ctrl>
         </th>
-        <th class="distance-label"></th>
+-->
+        <th class="distance-label">Distance</th>
+<!--
         <th class="distance-gauge">
           <span class="sortHandler" ng-click="orderBy('totalDistance.asKilometers()')">Distance</span>
           <sorting-ctrl this="totalDistance.asKilometers()" selected="{{order}}"></sorting-ctrl>
@@ -84,17 +87,16 @@
           <span class="sortHandler" ng-click="orderBy('totalElevation')">Elevation</span>
           <sorting-ctrl this="totalElevation" selected="{{order}}"></sorting-ctrl>
         </th>
-<!--
         <th class="icons hide">
         </th>
 -->
         <th class="details">
         </th>
       </tr>
-      <tr ng-repeat="workout in getWorkouts() | orderBy: order" class="sport-{{workout.exerciseType}}">
+      <tr ng-repeat="workout in workouts | orderBy: order" class="sport-{{workout.exerciseType}}">
         <td class="date">
-          <div ng-bind="workout.startedAt | date"></div>
-          <div ng-bind="workout.startedAt | time"></div>
+          <div ng-bind="workout.startTime | date"></div>
+          <div ng-bind="workout.startTime | time"></div>
         </td>
         <td class="sport">
           <sport-icon sport-id="workout.exerciseType"></sport-icon>
@@ -103,14 +105,17 @@
           <span ng-bind="workout.note"></span>
         </td>
         <td class="time-label">
-          <workout-time time="workout.time"></workout-time>
+          <workout-time time="workout.totalDuration"></workout-time>
         </td>
+<!--
         <td class="time-gauge">
           <workout-time-gauge time="workout.time" max-gauge-time="maxGaugeTime"></workout-time-gauge>
         </td>
+-->
         <td class="distance-label">
-          <workout-distance distance="workout.distance"></workout-distance>
+          <workout-distance distance="workout.totalDistance"></workout-distance>
         </td>
+<!--
         <td class="distance-gauge">
           <workout-distance-gauge distance="workout.distance" max-gauge-distance="maxGaugeDistance"></workout-distance-gauge>
         </td>
@@ -118,7 +123,6 @@
         </td>
         <td class="elevation-gauge">
         </td>
-<!--
         <td class="icons hide">
           <span class="glyphicon glyphicon-thumbs-up"></span> 3
           <span class="glyphicon glyphicon-comment"></span> 10

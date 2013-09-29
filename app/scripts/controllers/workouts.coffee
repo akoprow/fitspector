@@ -76,12 +76,12 @@ class WorkoutsCtrl
       timeEnd = $scope.timeEnd()
 
       withinTimeRange = (workout) ->
-        (workout.startedAt.isBefore timeEnd) &&
-          ((workout.startedAt.isAfter timeBeg) || (workout.startedAt.isSame timeBeg))
+        (workout.startTime.isBefore timeEnd) &&
+          ((workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg))
       _(DataService.getAllWorkouts()).filter withinTimeRange
 
     # ----- Sorting -----
-    $scope.order = '-startedAt'
+    $scope.order = '-startTime'
 
     $scope.orderBy = (newOrder) ->
       newOrderRev = "-#{newOrder}"

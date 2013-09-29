@@ -84,13 +84,17 @@ allWorkoutTypes =
 
 
 class DataService
-  constructor: ($http) ->
-    $http.get('/data/workouts.json')
-    .success (data) =>
-      @workouts = []
-      addWorkout = (json) =>
-        @workouts.push (Workout.fromJson json)
-      data.forEach addWorkout
+  constructor: (angularFire, $rootScope) ->
+    $rootScope.$watch 'userId', (userId) =>
+      if userId?
+        # Make sure we disable updates on previous reference.
+        @workoutsRef.off() if @workoutsRef
+        userRef = new Firebase("https://fitspector.firebaseio.com/users").child userId
+        @workoutsRef = userRef.child 'workouts'
+        angularFire @workoutsRef, $rootScope, 'dbWorkouts'
+
+    $rootScope.$watch 'dbWorkouts', (dbWorkouts) =>
+      $rootScope.workouts = _(dbWorkouts).map Workout.fromJson
 
     @workoutType = allWorkoutTypes
 
@@ -98,7 +102,5 @@ class DataService
     sportType = allWorkoutTypes[sportId]
     sportType.name if sportType
 
-  getAllWorkouts: ->
-    @workouts
 
-angular.module('fitspector').service 'DataService', ['$http', DataService]
+angular.module('fitspector').service 'DataService', ['angularFire', '$rootScope', DataService]

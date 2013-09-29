@@ -107,7 +107,7 @@ var getProfile = function(input, callback) {
 
 var mkUser = function(input, callback) {
   logger.debug('mkUser | %j', input);
-  var userId = 'RK' + input.userData.userID;
+  var userId = 'RKU' + input.userData.userID;
   var user = {
     name: input.profileData.name,
     isMale: input.profileData.gender === 'M',
@@ -144,7 +144,7 @@ var addWorkout = function(userRef, workoutIds, data, cb) {
   }
 
   var workout = {
-    type: runKeeperWorkoutType(data.type),
+    exerciseType: runKeeperWorkoutType(data.type),
     startTime: data['start_time'],
     totalDistance: data['total_distance'],
     totalDuration: data.duration
