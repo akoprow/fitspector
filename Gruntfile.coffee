@@ -55,7 +55,7 @@ module.exports = (grunt) ->
         tasks: ['copy:html', 'preprocess']
       express:
         files: [
-          'server.js'
+          '<%= yeoman.tmp %>/server.js'
           '<%= yeoman.tmp %>/routes/{,*/}*.js'
         ]
         tasks: ['express:fitspector']
