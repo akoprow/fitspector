@@ -139,6 +139,7 @@ var addWorkout = function(userRef, workoutIds, data, cb) {
   var workoutId = string(data.uri).chompLeft(prefix).toString();
   // We already have this workout
   if (_(workoutIds).contains(workoutId)) {
+    cb(null, 0);
     return;
   }
 
@@ -154,21 +155,25 @@ var addWorkout = function(userRef, workoutIds, data, cb) {
   userRef.child('workouts').child(workoutId).set(workout);
 
   logger.info('Processed workout ', workoutId, ' -> ', workout);
-  cb();
+  cb(null, 1);
 };
 
 var loadAllWorkouts = function(userId, accessToken) {
   logger.info('Fetching all workouts for user: ', userId, ' with token: ', accessToken);
   var userRef = new Firebase('https://fitspector.firebaseIO.com/users').child(userId);
-  userRef.child('workoutIds').once('value', function(workoutIds) {
+  userRef.child('workoutIds').once('value', function(data) {
+    var workoutIds = _(data.val()).values();
     runKeeper.get(accessToken, runKeeper.api.userActivities, function(err, response) {
-      async.eachLimit(
+      async.mapLimit(
         response.items,
         MAX_WORKOUTS_PROCESSED_AT_A_TIME,
-        _.partial(addWorkout, userRef, workoutIds.val()),
-        function(err) {
+        _.partial(addWorkout, userRef, workoutIds),
+        function(err, data) {
           if (err) {
             logger.error('Error while importing workouts for: ', userId, ' -> ', err);
+          } else {
+            var total = _.reduce(data, function(x, y) { return x + y; }, 0);
+            logger.info('Imported ', total, 'new exercises for ', userId);
           }
         }
       );
