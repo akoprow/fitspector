@@ -11,26 +11,22 @@
             <button class="btn btn-primary"
                     ng-class="{active: competitionMode == 'distance'}"
                     ng-click="setCompetitionMode('distance')">
-              <span class="glyphicon glyphicon-road"></span>
-              Distance
+              <icon type="distance"></icon> Distance
             </button>
             <button class="btn btn-primary"
                     ng-class="{active: competitionMode == 'time'}"
                     ng-click="setCompetitionMode('time')">
-              <span class="glyphicon glyphicon-time"></span>
-              Time
+              <icon type="time"></icon> Time
             </button>
             <button class="btn btn-primary"
                     ng-class="{active: competitionMode == 'elevation'}"
                     ng-click="setCompetitionMode('elevation')">
-              <span class="glyphicon glyphicon-chevron-up"></span>
-              Elevation gain
+              <icon type="elevation"></icon> Elevation gain
             </button>
             <button class="btn btn-primary"
                     ng-class="{active: competitionMode == 'intensity'}"
                     ng-click="setCompetitionMode('intensity')">
-              <span class="glyphicon glyphicon-tint"></span>
-              Workout intensity
+              <icon type="intensity"></icon> Workout intensity
             </button>
           </div>
         </div>
@@ -109,7 +105,7 @@
         </td>
 -->
         <td class="score">
-          <span class="glyphicon glyphicon-road"></span>
+          <icon type="distance"></icon>
           <span ng-bind="player.score | workoutDistance"></span> <span class="unit">km</span>
           <div class="behindLeader" ng-hide="$index == 0">
             (<span ng-bind="player.scoreToLeader | workoutDistance"></span> <span class="unit">km</span>)
