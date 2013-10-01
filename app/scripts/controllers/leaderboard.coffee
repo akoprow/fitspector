@@ -34,10 +34,17 @@ class LeaderboardCtrl
 
     $scope.$watch 'playersDB', makePlayers, true
 
+    # ------------ Random numbers ------------
+    randomValues = []
+    generate = ->
+      randomValues = _.range(0, 100).map( -> Math.random())
+    generate()
+
     # ------------ Competition modes ------------
     $scope.competitionMode = 'distance'
 
     $scope.setCompetitionMode = (mode) ->
+      generate()
       $scope.competitionMode = mode
 
     # ------------ Time segments ------------
@@ -45,24 +52,27 @@ class LeaderboardCtrl
 #      switch $scope.timeMode
 #    $scope.dayNames = _.range(0, 7).map (offset) -> moment(begDate).add('days', offset).format('ddd')
 
-    # ------------ Random numbers ------------
-    randomValues = []
-    generate = ->
-      randomValues = _.range(0, 100).map( -> Math.random())
-    generate()
-
     # ------------ Scoreboard ------------
-    $scope.getPlayers = ->
+    computeLeaderboard = ->
       return [] if $scope.players.length == 0
       random = randomValues
-      scoreboard = _.map $scope.players, (player) ->
+
+      mkPlayer = (player) ->
         name: player.name
         img: player.img
         score: new Distance(random.pop() * 60000)
-      scoreboard = _(scoreboard).sortBy (player) -> -player.score.asKilometers()
-      leaderScore = scoreboard[0].score
-      _(scoreboard).map (player) ->
+
+      leaderboard = _.chain($scope.players)
+        .map(mkPlayer)
+        .sortBy((player) -> -player.score.asKilometers())
+        .value()
+
+      leaderScore = leaderboard[0].score
+      leaderboard = _(leaderboard).map (player) ->
         _.extend player, {scoreToLeader: Distance.subtract leaderScore, player.score}
+      $scope.leaderboard = leaderboard
+
+    $scope.$watch 'players', computeLeaderboard, true
 
 
 angular.module('fitspector').controller 'LeaderboardCtrl', ['$http', '$scope', 'angularFire', LeaderboardCtrl]
