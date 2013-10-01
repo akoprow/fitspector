@@ -105,10 +105,9 @@
         </td>
 -->
         <td class="score">
-          <icon type="distance"></icon>
-          <span ng-bind="player.score | workoutDistance"></span> <span class="unit">km</span>
+          <workout-distance distance="player.score"></workout-distance>
           <div class="behindLeader" ng-hide="$index == 0">
-            (<span ng-bind="player.scoreToLeader | workoutDistance"></span> <span class="unit">km</span>)
+            (<workout-distance no-icon="true" distance="player.scoreToLeader"></workout-distance>)
           </div>
         </td>
       </tr>

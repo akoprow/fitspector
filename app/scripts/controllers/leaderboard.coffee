@@ -15,7 +15,6 @@ class LeaderboardCtrl
         img: player.smallImgUrl
         total: Distance.zero
         days: _.range(0, 7).map( -> Distance.zero)
-        scoreDistance: new Distance(70 * 1000 * Math.random())
         
 #      processWorkout = (workout) ->
 #        distance = new Distance(workout.distance * 1000)
@@ -46,13 +45,20 @@ class LeaderboardCtrl
 #      switch $scope.timeMode
 #    $scope.dayNames = _.range(0, 7).map (offset) -> moment(begDate).add('days', offset).format('ddd')
 
+    # ------------ Random numbers ------------
+    randomValues = []
+    generate = ->
+      randomValues = _.range(0, 100).map( -> Math.random())
+    generate()
+
     # ------------ Scoreboard ------------
     $scope.getPlayers = ->
       return [] if $scope.players.length == 0
+      random = randomValues
       scoreboard = _.map $scope.players, (player) ->
         name: player.name
         img: player.img
-        score: player.scoreDistance
+        score: new Distance(random.pop() * 60000)
       scoreboard = _(scoreboard).sortBy (player) -> -player.score.asKilometers()
       leaderScore = scoreboard[0].score
       _(scoreboard).map (player) ->

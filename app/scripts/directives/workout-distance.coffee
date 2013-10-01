@@ -8,6 +8,7 @@ class WorkoutDistanceDirective
       templateUrl: 'views/directives/workout-distance.html'
       scope:
         distance: '='
+        noIcon: '@'
     }
 
 angular.module('fitspector').directive 'workoutDistance', [WorkoutDistanceDirective]
