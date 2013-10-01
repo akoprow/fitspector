@@ -5,17 +5,16 @@ class IconDirective
     return {
       replace: true
       restrict: 'E'
-      templateUrl: 'views/directives/icon.html'
-      scope:
-        type: '@'
-      link: (scope) ->
-        scope.iconId =
-          switch scope.type
+      template: '<span class="glyphicon"></span>'
+      link: (scope, elt) ->
+        iconId =
+          switch elt.attr 'type'
             when 'distance' then 'road'
             when 'time' then 'time'
             when 'elevation' then 'chevron-up'
             when 'intensity' then 'tint'
             else throw new Error "Unknown icon type: #{scope.type}"
+        elt.addClass "glyphicon-#{iconId}"
     }
 
 angular.module('fitspector').directive 'icon', [IconDirective]
