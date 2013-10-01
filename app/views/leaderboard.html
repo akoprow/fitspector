@@ -89,12 +89,14 @@
         <td class="player">
           <img class="img-thumbnail thumb" ng-src="{{player.img}}"> {{player.name}}
         </td>
+<!--
         <td class="day" ng-class="{active: !dailyDistance.isZero()}" ng-repeat="dailyDistance in player.days track by $index">
           <span ng-hide="dailyDistance.isZero()">
             <span ng-bind="dailyDistance | workoutDistance"></span> <span class="unit">km</span>
           </span>
           <span ng-show="dailyDistance.isZero()">—</span>
         </td>
+-->
         <td class="score">
           <span class="glyphicon glyphicon-road"></span>
           <span ng-bind="player.total | workoutDistance"></span> <span class="unit">km</span>

@@ -45,7 +45,7 @@ class LeaderboardCtrl
     $scope.behindLeader = (player) ->
       Distance.subtract $scope.players[0].total, player.total
 
-    $scope.dayNames = _.range(0, 7).map (offset) -> moment(begDate).add('days', offset).format('ddd')
+#    $scope.dayNames = _.range(0, 7).map (offset) -> moment(begDate).add('days', offset).format('ddd')
 
 
 angular.module('fitspector').controller 'LeaderboardCtrl', ['$http', '$scope', 'angularFire', LeaderboardCtrl]
