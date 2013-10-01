@@ -1,38 +1,108 @@
 <div ng-controller="LeaderboardCtrl">
-  <table class="table table-hover leaderboard">
-    <tr>
-      <th class="position">
-        #
-      </th>
-      <th class="player">
-        Player
-      </th>
-      <th class="day" ng-repeat="day in dayNames" ng-bind="day"></th>
-      <th class="score">
-        Score
-        <div class="behindLeader">(behind the leader)</div>
-      </th>
-    </tr>
-    <tr ng-repeat="player in players">
-      <td class="position">
-        <span ng-bind="$index+1"></span>
-      </td>
-      <td class="player">
-        <img class="img-thumbnail thumb" ng-src="{{player.img}}"> {{player.name}}
-      </td>
-      <td class="day" ng-class="{active: !dailyDistance.isZero()}" ng-repeat="dailyDistance in player.days track by $index">
-        <span ng-hide="dailyDistance.isZero()">
-          <span ng-bind="dailyDistance | workoutDistance"></span> <span class="unit">km</span>
-        </span>
-        <span ng-show="dailyDistance.isZero()">—</span>
-      </td>
-      <td class="score">
-        <span class="glyphicon glyphicon-road"></span>
-        <span ng-bind="player.total | workoutDistance"></span> <span class="unit">km</span>
-        <div class="behindLeader" ng-hide="$index == 0">
-          (<span ng-bind="behindLeader(player) | workoutDistance"></span> <span class="unit">km</span>)
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Leaderboard</h3>
+    </div>
+    <div class="panel-body">
+      <div class="btn-toolbar">
+        <div class="btn-group">
+          <button class="btn btn-primary"
+                  ng-class="{active: competitionMode == 'distance'}"
+                  ng-click="setCompetitionMode('distance')">
+            <span class="glyphicon glyphicon-road"></span>
+            Distance
+          </button>
+          <button class="btn btn-primary"
+                  ng-class="{active: competitionMode == 'time'}"
+                  ng-click="setCompetitionMode('time')">
+            <span class="glyphicon glyphicon-time"></span>
+            Time
+          </button>
+          <button class="btn btn-primary"
+                  ng-class="{active: competitionMode == 'elevation'}"
+                  ng-click="setCompetitionMode('elevation')">
+            <span class="glyphicon glyphicon-chevron-up"></span>
+            Elevation gain
+          </button>
         </div>
-      </td>
-    </tr>
-  </table>
+        <div class="btn-group">
+          <button class="btn btn-primary"
+                  ng-class="{active: mode == 'year'}"
+                  ng-click="setMode('year')">
+            Year
+          </button>
+          <button class="btn btn-primary"
+                  ng-class="{active: mode == 'month'}"
+                  ng-click="setMode('month')">
+            Month
+          </button>
+          <button class="btn btn-primary"
+                  ng-class="{active: mode == 'week'}"
+                  ng-click="setMode('week')">
+            Week
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <div class="btn-group">
+        <button type="button"
+                class="btn btn-primary"
+                ng-click="prev()">
+          <span class="glyphicon glyphicon-chevron-left">
+        </button>
+        <button type="button"
+                class="btn btn-primary"
+                ng-click="goNow()"
+                ng-bind="modeDesc">
+        </button>
+        <button type="button"
+                class="btn btn-primary"
+                ng-click="next()">
+          <span class="glyphicon glyphicon-chevron-right">
+        </button>
+      </div>
+      <div>
+        <small ng-bind="modeFullDesc"></small>
+      </div>
+    </div>
+
+    <table class="table table-hover leaderboard">
+      <tr>
+        <th class="position">
+          #
+        </th>
+        <th class="player">
+          Player
+        </th>
+        <th class="day" ng-repeat="day in dayNames" ng-bind="day"></th>
+        <th class="score">
+          Score
+          <div class="behindLeader">(behind the leader)</div>
+        </th>
+      </tr>
+      <tr ng-repeat="player in players">
+        <td class="position">
+          <span ng-bind="$index+1"></span>
+        </td>
+        <td class="player">
+          <img class="img-thumbnail thumb" ng-src="{{player.img}}"> {{player.name}}
+        </td>
+        <td class="day" ng-class="{active: !dailyDistance.isZero()}" ng-repeat="dailyDistance in player.days track by $index">
+          <span ng-hide="dailyDistance.isZero()">
+            <span ng-bind="dailyDistance | workoutDistance"></span> <span class="unit">km</span>
+          </span>
+          <span ng-show="dailyDistance.isZero()">—</span>
+        </td>
+        <td class="score">
+          <span class="glyphicon glyphicon-road"></span>
+          <span ng-bind="player.total | workoutDistance"></span> <span class="unit">km</span>
+          <div class="behindLeader" ng-hide="$index == 0">
+            (<span ng-bind="behindLeader(player) | workoutDistance"></span> <span class="unit">km</span>)
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
 </div>
