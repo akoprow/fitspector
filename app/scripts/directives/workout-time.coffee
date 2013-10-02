@@ -8,6 +8,7 @@ class WorkoutTimeDirective
       templateUrl: 'views/directives/workout-time.html'
       scope:
         time: '='
+        noIcon: '@'
     }
 
 angular.module('fitspector').directive 'workoutTime', [WorkoutTimeDirective]

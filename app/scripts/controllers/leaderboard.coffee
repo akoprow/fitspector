@@ -44,8 +44,9 @@ class LeaderboardCtrl
     $scope.competitionMode = 'distance'
 
     $scope.setCompetitionMode = (mode) ->
-      generate()
       $scope.competitionMode = mode
+      generate()
+      computeLeaderboard()
 
     # ------------ Time segments ------------
 #    $scope.getSegments = ->
@@ -57,19 +58,26 @@ class LeaderboardCtrl
       return [] if $scope.players.length == 0
       random = randomValues
 
+      randomScore =
+        switch $scope.competitionMode
+          when 'distance' then (random) -> new Distance(random * 60000)  # max 60 km
+          when 'time' then (random) -> new Time(random * 60 * 60 * 10)    # max 10h
+          when 'elevation' then (random) -> new Elevation(random * 3000) # max 3000m
+          when 'itensity' then new (random) -> Intensity(random * 500)   # max 50 pts
+
       mkPlayer = (player) ->
         name: player.name
         img: player.img
-        score: new Distance(random.pop() * 60000)
+        score: randomScore(random.pop())
 
       leaderboard = _.chain($scope.players)
         .map(mkPlayer)
-        .sortBy((player) -> -player.score.asKilometers())
+        .sortBy((player) -> -player.score.value())
         .value()
 
       leaderScore = leaderboard[0].score
       leaderboard = _(leaderboard).map (player) ->
-        _.extend player, {scoreToLeader: Distance.subtract leaderScore, player.score}
+        _.extend player, {scoreToLeader: leaderScore.subtract player.score}
       $scope.leaderboard = leaderboard
 
     $scope.$watch 'players', computeLeaderboard, true

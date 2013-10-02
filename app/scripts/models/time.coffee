@@ -27,3 +27,8 @@ class root.Time
   minutes: -> @t.minutes()
 
   asSeconds: -> @t.asSeconds()
+
+  subtract: (t) ->
+    new Time(@asSeconds() - t.asSeconds())
+
+  value: -> @asSeconds()

@@ -71,9 +71,6 @@
       </form>
     </div>
 
-    <div class="text-center">
-    </div>
-
     <table class="table table-hover leaderboard">
       <tr>
         <th class="position">
@@ -105,10 +102,19 @@
         </td>
 -->
         <td class="score">
-          <workout-distance distance="player.score"></workout-distance>
-          <div class="behindLeader" ng-hide="$index == 0">
-            (<workout-distance no-icon="true" distance="player.scoreToLeader"></workout-distance>)
-          </div>
+          <div ng-switch="competitionMode">
+            <div ng-switch-when="distance">
+              <workout-distance distance="player.score"></workout-distance>
+              <div class="behindLeader" ng-hide="$index == 0">
+                (<workout-distance no-icon="true" distance="player.scoreToLeader"></workout-distance>)
+              </div>
+            </div>
+            <div ng-switch-when="time">
+              <workout-time time="player.score"></workout-time>
+              <div class="behindLeader" ng-hide="$index == 0">
+                (<workout-time no-icon="true" time="player.scoreToLeader"></workout-time>)
+              </div>
+            </div>
         </td>
       </tr>
     </table>

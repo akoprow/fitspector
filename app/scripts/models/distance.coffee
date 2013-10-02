@@ -25,3 +25,8 @@ class root.Distance
   isZero: -> @meters == 0
 
   asKilometers: -> @meters / METERS_IN_KILOMETER
+
+  subtract: (d) ->
+    new Distance(@asKilometers() - d.asKilometers())
+
+  value: -> @asKilometers()
