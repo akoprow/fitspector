@@ -122,48 +122,48 @@ module.exports = (grunt) ->
       dist:
         files:
           src: [
-            '<%= yeoman.dist %>/scripts/{,*/}*.js'
-            '<%= yeoman.dist %>/styles/{,*/}*.css'
-            '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-            '<%= yeoman.dist %>/styles/fonts/*'
+            '<%= yeoman.dist %>/<%= yeoman.app %>/scripts/{,*/}*.js'
+            '<%= yeoman.dist %>/<%= yeoman.app %>/styles/{,*/}*.css'
+            '<%= yeoman.dist %>/<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+            '<%= yeoman.dist %>/<%= yeoman.app %>/styles/fonts/*'
           ]
 
     useminPrepare:
-      html: '<%= yeoman.app %>/index.html'
+      html: '<%= yeoman.tmp %>/<%= yeoman.app %>/index.html'
       options:
-        dest: '<%= yeoman.dist %>'
+        dest: '<%= yeoman.dist %>/<%= yeoman.app %>'
 
     usemin:
-      html: ['<%= yeoman.dist %>/{,*/}*.html']
-      css: ['<%= yeoman.dist %>/styles/{,*/}*.css']
+      html: ['<%= yeoman.dist %>/<%= yeoman.app %>/{,views,views/directives}/*.html']
+      css: ['<%= yeoman.dist %>/<%= yeoman.app %>/styles/*.css']
       options:
-        dirs: ['<%= yeoman.dist %>']
+        dirs: ['<%= yeoman.dist %>/<%= yeoman.app %>']
 
     imagemin:
       dist:
         files: [
           expand: true
-          cwd: '<%= yeoman.app %>/images'
+          cwd: '<%= yeoman.tmp %>/<%= yeoman.app %>/images'
           src: '{,*/}*.{png,jpg,jpeg}'
-          dest: '<%= yeoman.dist %>/images'
+          dest: '<%= yeoman.dist %>/<%= yeoman.app %>/images'
         ]
 
     svgmin:
       dist:
         files: [
           expand: true
-          cwd: '<%= yeoman.app %>/images'
+          cwd: '<%= yeoman.tmp %>/<%= yeoman.app %>/images'
           src: '{,*/}*.svg'
-          dest: '<%= yeoman.dist %>/images'
+          dest: '<%= yeoman.dist %>/<%= yeoman.app %>/images'
         ]
 
     htmlmin:
       dist:
         files: [
           expand: true
-          cwd: '<%= yeoman.app %>'
-          src: ['*.html', 'views/*.html']
-          dest: '<%= yeoman.dist %>'
+          cwd: '<%= yeoman.tmp %>/<%= yeoman.app %>/'
+          src: ['**/*.html']
+          dest: '<%= yeoman.dist %>/<%= yeoman.app %>/'
         ]
 
     preprocess:
@@ -200,47 +200,56 @@ module.exports = (grunt) ->
         dest: '<%= yeoman.tmp %>/<%= yeoman.app %>'
         expand: true
       coffee:
-        cwd: '<%= yeoman.app %>'
+        cwd: '<%= yeoman.app %>/scripts'
         src: '**/*.coffee'
-        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/scripts'
         expand: true
-      app:
-        files: [
-          cwd: '<%= yeoman.app %>'
-          src: [
-            '**'
-            '!images/sport-icons/**'
-          ]
-          dest: '<%= yeoman.tmp %>/<%= yeoman.app %>'
-          expand: true
-        ,
-          cwd: '<%= yeoman.routes %>'
-          src: '**'
-          dest: '<%= yeoman.tmp %>/<%= yeoman.routes %>'
-          expand: true
-        ,
-          cwd: '<%= yeoman.bower_components %>/'
-          src: [
-            'jquery/jquery.js'
-            'angular/angular.js'
-            'angular-animate/angular-animate.js'
-            'angular-route/angular-route.js'
-            'angular-resource/angular-resource.js'
-            'bootstrap/js/dropdown.js'
-            'bootstrap/js/tooltip.js'
-            'd3/d3.js'
-            'momentjs/moment.js'
-            'underscore/underscore.js'
+      img:
+        cwd: '<%= yeoman.app %>/images'
+        src: ['**/*', '!sport-icons/*']
+        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/images'
+        expand: true
+      routes:
+        cwd: '<%= yeoman.routes %>'
+        src: '**'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.routes %>'
+        expand: true
+      libs:
+        cwd: '<%= yeoman.bower_components %>/'
+        src: [
+          'jquery/jquery.js'
+          'angular/angular.js'
+          'angular-animate/angular-animate.js'
+          'angular-route/angular-route.js'
+          'angular-resource/angular-resource.js'
+          'bootstrap/js/dropdown.js'
+          'bootstrap/js/tooltip.js'
+          'd3/d3.js'
+          'momentjs/moment.js'
+          'underscore/underscore.js'
 
-            'bootstrap/dist/fonts/*'
-            'bootstrap/dist/css/bootstrap.css'
-            'bootstrap/dist/css/bootstrap-theme.css'
-          ]
-          dest: '<%= yeoman.tmp %>/libs/'
-          expand: true
-        ,
-          '<%= yeoman.tmp %>/server.js': 'server.js'
+          'bootstrap/dist/fonts/*'
+          'bootstrap/dist/css/bootstrap.css'
+          'bootstrap/dist/css/bootstrap-theme.css'
         ]
+        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/libs/'
+        expand: true
+      server:
+        src: ['server.coffee', 'Procfile']
+        dest: '<%= yeoman.tmp %>'
+        expand: true
+      # TODO(koper) This is ugly; actually I want two configs: all of the above + dist; how do I do that with Grunt?
+      # Some distribution resources that are not processed by usemin.
+      dist:
+        cwd: '<%= yeoman.tmp %>'
+        src: [
+          'server.js'
+          'Procfile'
+          '<%= yeoman.routes %>/*.js'
+          '<%= yeoman.app %>/fonts/*'
+        ]
+        dest: '<%= yeoman.dist %>'
+        expand: true
 
     karma:
       unit:
@@ -260,15 +269,10 @@ module.exports = (grunt) ->
           dest: '<%= yeoman.dist %>/scripts'
         ]
 
-    uglify:
-      dist:
-        files:
-          '<%= yeoman.dist %>/scripts/scripts.js': '<%= yeoman.dist %>/scripts/scripts.js'
-
     concurrent:
       dev: [
         'less'
-        'preprocess:all'
+        'preprocess'
         'coffee:app'
         'sprite'
       ]
@@ -294,9 +298,10 @@ module.exports = (grunt) ->
     'env:prod'
     'clean:dist'
     'copy'
-    'preprocess:all'
+    'concurrent:dev'
     'useminPrepare'
-    'concurrent'
+    'copy:dist'
+    'concurrent:dist'
     'autoprefixer'
     'concat'
     'cdnify'

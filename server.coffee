@@ -10,10 +10,7 @@ app.configure ->
   app.use express.compress()
   app.use express.bodyParser()
   app.use express.methodOverride()
-  app.use express.static(__dirname + "/app")
-
-  # TODO(koper) This needs to be removed; at least in prod.
-  app.use express.static(__dirname + "/libs")
+  app.use express.static(__dirname + '/app')
   app.use app.router
 
 
