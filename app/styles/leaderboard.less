@@ -5,49 +5,56 @@
 @score-width: 150px;
 @day-width: (@total-width - @position-width - @player-width - @score-width) / 7;
 
-table.leaderboard {
-  table-layout: fixed;
+#leaderboard {
 
-  tr.me {
-    background-color: #faa;
+  .btn.selected-time {
+    width: 100px;
   }
 
-  .position {
-    vertical-align: middle;
-    text-align: center;
-    font-size: 150%;
-    width: @position-width;
-  }
+  table.leaderboard {
+    table-layout: fixed;
 
-  .player {
-    vertical-align: middle;
-    font-size: 110%;
-    width: @player-width;
-
-    .thumb {
-      width: 60px;
-      height: 60px;
+    tr.me {
+      background-color: #faa;
     }
-  }
 
-  .score {
-    font-size: 120%;
-    vertical-align: middle;
-    text-align: center;
-    width: @score-width;
-
-    .behindLeader {
-      font-size: 80%;
+    .position {
+      vertical-align: middle;
+      text-align: center;
+      font-size: 150%;
+      width: @position-width;
     }
-  }
 
-  .day {
-    vertical-align: middle;
-    text-align: center;
-    width: @day-width;
+    .player {
+      vertical-align: middle;
+      font-size: 110%;
+      width: @player-width;
 
-    &.active {
-      background-color: rgba(179, 220, 108, 0.2);
+      .thumb {
+        width: 60px;
+        height: 60px;
+      }
+    }
+
+    .score {
+      font-size: 120%;
+      vertical-align: middle;
+      text-align: center;
+      width: @score-width;
+
+      .behindLeader {
+        font-size: 80%;
+      }
+    }
+
+    .day {
+      vertical-align: middle;
+      text-align: center;
+      width: @day-width;
+
+      &.active {
+        background-color: rgba(179, 220, 108, 0.2);
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-<div ng-controller="LeaderboardCtrl">
+<div id="leaderboard" ng-controller="LeaderboardCtrl">
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Leaderboard</h3>
@@ -34,18 +34,18 @@
           <label>Time range:</label>
           <div class="btn-group">
             <button class="btn btn-primary"
-                    ng-class="{active: mode == 'year'}"
-                    ng-click="setMode('year')">
+                    ng-class="{active: timeMode == 'year'}"
+                    ng-click="setTimeMode('year')">
               Year
             </button>
             <button class="btn btn-primary"
-                    ng-class="{active: mode == 'month'}"
-                    ng-click="setMode('month')">
+                    ng-class="{active: timeMode == 'month'}"
+                    ng-click="setTimeMode('month')">
               Month
             </button>
             <button class="btn btn-primary"
-                    ng-class="{active: mode == 'week'}"
-                    ng-click="setMode('week')">
+                    ng-class="{active: timeMode == 'week'}"
+                    ng-click="setTimeMode('week')">
               Week
             </button>
           </div>
@@ -56,7 +56,7 @@
               <span class="glyphicon glyphicon-chevron-left">
             </button>
             <button type="button"
-                    class="btn btn-primary"
+                    class="btn btn-primary selected-time"
                     ng-click="goNow()"
                     ng-bind="modeDesc">
             </button>
