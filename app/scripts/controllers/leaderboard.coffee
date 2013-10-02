@@ -108,7 +108,23 @@ class LeaderboardCtrl
         switch $scope.timeMode
           when 'year' then $scope.timeStart.format('YYYY')
           when 'month' then $scope.timeStart.format('MMM YYYY')
-          when 'week' then $scope.timeStart.format('W / gggg')        
+          when 'week' then $scope.timeStart.format('W / gggg')
+
+      $scope.modeFullDesc =
+        switch $scope.timeMode
+          when 'week'
+            timeEnd = $scope.timeStart.clone().add 'days', 6
+            weekStartString = $scope.timeStart.format('LL')
+            weekEndString = timeEnd.format('LL')
+            "(#{weekStartString} — #{weekEndString})"
+          else ""
+
+      $scope.leaderboardDesc =
+        switch $scope.timeMode
+          when 'year' then "#{$scope.timeStart.format('YYYY')}"
+          when 'month' then $scope.timeStart.format('MMMM YYYY')
+          when 'week' then "week #{$scope.timeStart.format('W / gggg')}"
+
       $scope.modeFullDesc =
         if $scope.timeMode == 'week'
           timeEnd = $scope.timeStart.clone().add 'days', 6
