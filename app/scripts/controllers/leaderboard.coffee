@@ -49,6 +49,14 @@ class LeaderboardCtrl
       generate()
       computeLeaderboard()
 
+    $scope.$watch 'competitionMode', (mode) ->
+      $scope.leaderboardModeTitle =
+        switch mode
+          when 'distance' then 'total workout distance'
+          when 'time' then 'total workout time'
+          when 'elevation' then 'total elevation gain'
+          when 'intensity' then 'workout intensity'
+
     # ------------ Time segments ------------
 #    $scope.getSegments = ->
 #      switch $scope.timeMode
@@ -99,7 +107,7 @@ class LeaderboardCtrl
 
     $scope.prev = -> $scope.timeStart.add timeUnit(), -1
 
-    $scope.setTimeMode 'month'
+    $scope.setTimeMode 'week'
     $scope.goNow()
 
     updateTime = ->
@@ -119,7 +127,7 @@ class LeaderboardCtrl
             "(#{weekStartString} — #{weekEndString})"
           else ""
 
-      $scope.leaderboardDesc =
+      $scope.leaderboardTimeTitle =
         switch $scope.timeMode
           when 'year' then "#{$scope.timeStart.format('YYYY')}"
           when 'month' then $scope.timeStart.format('MMMM YYYY')

@@ -34,9 +34,9 @@
           <label>Time range:</label>
           <div class="btn-group">
             <button class="btn btn-primary"
-                    ng-class="{active: timeMode == 'year'}"
-                    ng-click="setTimeMode('year')">
-              Year
+                    ng-class="{active: timeMode == 'week'}"
+                    ng-click="setTimeMode('week')">
+              Week
             </button>
             <button class="btn btn-primary"
                     ng-class="{active: timeMode == 'month'}"
@@ -44,9 +44,9 @@
               Month
             </button>
             <button class="btn btn-primary"
-                    ng-class="{active: timeMode == 'week'}"
-                    ng-click="setTimeMode('week')">
-              Week
+                    ng-class="{active: timeMode == 'year'}"
+                    ng-click="setTimeMode('year')">
+              Year
             </button>
           </div>
           <div class="btn-group">
@@ -72,7 +72,7 @@
     </div>
 
     <h3 class="text-center">
-      Leaderboard for {{leaderboardDesc}}
+      Leaderboard for {{leaderboardTimeTitle}}<br/><small>Based on {{leaderboardModeTitle}}</small>
     </h3>
 
     <table class="table table-hover leaderboard">
