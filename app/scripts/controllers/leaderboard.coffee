@@ -39,15 +39,12 @@ class LeaderboardCtrl
     randomValues = []
     generate = ->
       randomValues = _.range(0, 100).map( -> Math.random())
-    generate()
 
     # ------------ Competition modes ------------
     $scope.competitionMode = 'distance'
 
     $scope.setCompetitionMode = (mode) ->
       $scope.competitionMode = mode
-      generate()
-      computeLeaderboard()
 
     $scope.$watch 'competitionMode', (mode) ->
       $scope.leaderboardModeTitle =
@@ -57,22 +54,22 @@ class LeaderboardCtrl
           when 'elevation' then 'total elevation gain'
           when 'intensity' then 'workout intensity'
 
-    # ------------ Time segments ------------
-#    $scope.getSegments = ->
-#      switch $scope.timeMode
-#    $scope.dayNames = _.range(0, 7).map (offset) -> moment(begDate).add('days', offset).format('ddd')
-
     # ------------ Scoreboard ------------
     computeLeaderboard = ->
       return [] if $scope.players.length == 0
-      random = randomValues
+      daysInRange =
+        switch $scope.timeMode
+          when 'week' then 7
+          when 'month' then 30
+          when 'year' then 365
+      random = _(randomValues).map (r) -> r * daysInRange
 
       randomScore =
         switch $scope.competitionMode
-          when 'distance' then (random) -> new Distance(random * 60000)     # max 60 km
-          when 'time' then (random) -> new Time(random * 60 * 60 * 10)      # max 10h
-          when 'elevation' then (random) -> new Distance(random * 3000)     # max 3000m
-          when 'intensity' then (random) -> new Intensity(random * 500) # max 50 pts
+          when 'distance' then (random) -> new Distance(random * 10000)  # max daily 10 km
+          when 'time' then (random) -> new Time(random * 60 * 60 * 1)    # max daily 1h
+          when 'elevation' then (random) -> new Distance(random * 300)   # max daily 300m
+          when 'intensity' then (random) -> new Intensity(random * 40)  # max daily 40 pts
           else throw new Error "Unknown competition mode: #{$scope.competitionMode}"
 
       mkPlayer = (player) -> _.extend {score: randomScore(random.pop())}, player
@@ -88,6 +85,9 @@ class LeaderboardCtrl
       $scope.leaderboard = leaderboard
 
     $scope.$watch 'players', computeLeaderboard, true
+    $scope.$watch 'competitionMode', ->
+      generate()
+      computeLeaderboard()
 
     # ----- Time navigation -----
     # TODO(koper) Extract this into a time-selection service/controller?
@@ -139,10 +139,16 @@ class LeaderboardCtrl
           "#{$scope.timeStart.format('LL')} — #{timeEnd.format('LL')}"
         else
           ''        
+
+    $scope.$watch 'timeStart.valueOf()', ->
+      updateTime()
+      generate()
       computeLeaderboard()
 
-    $scope.$watch 'timeStart.valueOf()', updateTime
-    $scope.$watch 'timeMode', updateTime
+    $scope.$watch 'timeMode', ->
+      updateTime()
+      generate()
+      computeLeaderboard()
 
 
 angular.module('fitspector').controller 'LeaderboardCtrl', ['$http', '$scope', 'angularFire', LeaderboardCtrl]
