@@ -13,6 +13,7 @@ class LeaderboardCtrl
       res =
         name: player.name
         img: player.smallImgUrl
+        me: player.me
         total: Distance.zero
         days: _.range(0, 7).map( -> Distance.zero)
         
@@ -66,10 +67,7 @@ class LeaderboardCtrl
           when 'intensity' then (random) -> new Intensity(random * 500) # max 50 pts
           else throw new Error "Unknown competition mode: #{$scope.competitionMode}"
 
-      mkPlayer = (player) ->
-        name: player.name
-        img: player.img
-        score: randomScore(random.pop())
+      mkPlayer = (player) -> _.extend {score: randomScore(random.pop())}, player
 
       leaderboard = _.chain($scope.players)
         .map(mkPlayer)

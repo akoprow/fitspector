@@ -86,7 +86,7 @@
           <div class="behindLeader">(behind the leader)</div>
         </th>
       </tr>
-      <tr ng-repeat="player in leaderboard">
+      <tr ng-repeat="player in leaderboard" ng-class="{success: player.me}">
         <td class="position">
           <span ng-bind="$index+1"></span>
         </td>
