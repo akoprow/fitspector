@@ -85,56 +85,40 @@ class LeaderboardCtrl
     # TODO(koper) Extract this into a time-selection service/controller?
     # TODO(koper) This is duplicated between here and workouts controller; FIX FIX FIX.
 
-    # TODO(koper) Call this automatically by $watch'ing time range.
-    updateTime = ->
+    timeUnit = ->
       switch $scope.timeMode
-        when 'year' then $scope.modeDesc = $scope.timeStart.format('YYYY')
-        when 'month' then $scope.modeDesc = $scope.timeStart.format('MMM YYYY')
-        when 'week' then $scope.modeDesc = $scope.timeStart.format('W / gggg')
+        when 'year' then 'years'
+        when 'month' then 'months'
+        when 'week' then 'weeks'
+
+    $scope.setTimeMode = (newMode) -> $scope.timeMode = newMode
+
+    $scope.goNow = -> $scope.timeStart = moment()
+
+    $scope.next = -> $scope.timeStart.add timeUnit(), 1
+
+    $scope.prev = -> $scope.timeStart.add timeUnit(), -1
+
+    $scope.setTimeMode 'month'
+    $scope.goNow()
+
+    updateTime = ->
+      $scope.timeStart.startOf $scope.timeMode
+      $scope.modeDesc =
+        switch $scope.timeMode
+          when 'year' then $scope.timeStart.format('YYYY')
+          when 'month' then $scope.timeStart.format('MMM YYYY')
+          when 'week' then $scope.timeStart.format('W / gggg')        
       $scope.modeFullDesc =
         if $scope.timeMode == 'week'
-          timeEnd = $scope.timeEnd().subtract 'days', 1
+          timeEnd = $scope.timeStart.clone().add 'days', 6
           "#{$scope.timeStart.format('LL')} — #{timeEnd.format('LL')}"
         else
-          ''
+          ''        
       computeLeaderboard()
 
-    adjustTime = (time) ->
-      switch $scope.timeMode
-        when 'year' then time.startOf 'year'
-        when 'month' then time.startOf 'month'
-        when 'week' then time.startOf 'week'
-
-    timeMove = (delta, time) ->
-      switch $scope.timeMode
-        when 'year' then time.add 'years', delta
-        when 'month' then time.add 'months', delta
-        when 'week' then time.add 'weeks', delta
-      adjustTime time
-
-    $scope.setTimeMode = (newMode) ->
-      $scope.timeMode = newMode
-      adjustTime $scope.timeStart
-      updateTime()
-
-    $scope.next = ->
-      timeMove 1, $scope.timeStart
-      updateTime()
-
-    $scope.prev = ->
-      timeMove -1, $scope.timeStart
-      updateTime()
-
-    $scope.goNow = ->
-      $scope.timeStart = moment()
-      timeMove 0, $scope.timeStart
-      updateTime()
-
-    $scope.timeEnd = ->
-       timeMove 1, $scope.timeStart.clone()
-
-    $scope.goNow()
-    $scope.setTimeMode 'month'
+    $scope.$watch 'timeStart.valueOf()', updateTime
+    $scope.$watch 'timeMode', updateTime
 
 
 angular.module('fitspector').controller 'LeaderboardCtrl', ['$http', '$scope', 'angularFire', LeaderboardCtrl]
