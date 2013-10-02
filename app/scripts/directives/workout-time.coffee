@@ -7,7 +7,7 @@ class WorkoutTimeDirective
       restrict: 'E'
       templateUrl: 'views/directives/workout-time.html'
       scope:
-        time: '='
+        value: '='
         noIcon: '@'
     }
 

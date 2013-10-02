@@ -26,7 +26,9 @@ class root.Distance
 
   asKilometers: -> @meters / METERS_IN_KILOMETER
 
-  subtract: (d) ->
-    new Distance(@asKilometers() - d.asKilometers())
+  asMeters: -> @meters
 
-  value: -> @asKilometers()
+  subtract: (d) ->
+    new Distance(@value() - d.value())
+
+  value: -> @asMeters()

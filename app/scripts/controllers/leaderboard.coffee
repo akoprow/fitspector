@@ -60,10 +60,11 @@ class LeaderboardCtrl
 
       randomScore =
         switch $scope.competitionMode
-          when 'distance' then (random) -> new Distance(random * 60000)  # max 60 km
-          when 'time' then (random) -> new Time(random * 60 * 60 * 10)    # max 10h
-          when 'elevation' then (random) -> new Elevation(random * 3000) # max 3000m
-          when 'itensity' then new (random) -> Intensity(random * 500)   # max 50 pts
+          when 'distance' then (random) -> new Distance(random * 60000)     # max 60 km
+          when 'time' then (random) -> new Time(random * 60 * 60 * 10)      # max 10h
+          when 'elevation' then (random) -> new Distance(random * 3000)     # max 3000m
+          when 'intensity' then (random) -> new Intensity(random * 500) # max 50 pts
+          else throw new Error "Unknown competition mode: #{$scope.competitionMode}"
 
       mkPlayer = (player) ->
         name: player.name

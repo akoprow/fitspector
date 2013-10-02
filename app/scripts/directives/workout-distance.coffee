@@ -7,7 +7,7 @@ class WorkoutDistanceDirective
       restrict: 'E'
       templateUrl: 'views/directives/workout-distance.html'
       scope:
-        distance: '='
+        value: '='
         noIcon: '@'
     }
 

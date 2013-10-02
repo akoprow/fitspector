@@ -104,17 +104,30 @@
         <td class="score">
           <div ng-switch="competitionMode">
             <div ng-switch-when="distance">
-              <workout-distance distance="player.score"></workout-distance>
+              <workout-distance value="player.score"></workout-distance>
               <div class="behindLeader" ng-hide="$index == 0">
-                (<workout-distance no-icon="true" distance="player.scoreToLeader"></workout-distance>)
+                (<workout-distance no-icon="true" value="player.scoreToLeader"></workout-distance>)
               </div>
             </div>
             <div ng-switch-when="time">
-              <workout-time time="player.score"></workout-time>
+              <workout-time value="player.score"></workout-time>
               <div class="behindLeader" ng-hide="$index == 0">
-                (<workout-time no-icon="true" time="player.scoreToLeader"></workout-time>)
+                (<workout-time no-icon="true" value="player.scoreToLeader"></workout-time>)
               </div>
             </div>
+            <div ng-switch-when="elevation">
+              <workout-elevation value="player.score"></workout-elevation>
+              <div class="behindLeader" ng-hide="$index == 0">
+                (<workout-elevation no-icon="true" value="player.scoreToLeader"></workout-elevation>)
+              </div>
+            </div>
+            <div ng-switch-when="intensity">
+              <workout-intensity value="player.score"></workout-intensity>
+              <div class="behindLeader" ng-hide="$index == 0">
+                (<workout-intensity no-icon="true" value="player.scoreToLeader"></workout-intensity>)
+              </div>
+            </div>
+          </div>
         </td>
       </tr>
     </table>
