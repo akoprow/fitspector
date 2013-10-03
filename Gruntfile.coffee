@@ -235,7 +235,11 @@ module.exports = (grunt) ->
         dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/libs/'
         expand: true
       server:
-        src: ['server.coffee', 'Procfile']
+        src: [
+          'server.coffee'
+          'Procfile'
+          'package.json'
+        ]
         dest: '<%= yeoman.tmp %>'
         expand: true
       # TODO(koper) This is ugly; actually I want two configs: all of the above + dist; how do I do that with Grunt?
@@ -244,6 +248,7 @@ module.exports = (grunt) ->
         cwd: '<%= yeoman.tmp %>'
         src: [
           'server.js'
+          'package.json'
           'Procfile'
           '<%= yeoman.routes %>/*.js'
           '<%= yeoman.app %>/fonts/*'
