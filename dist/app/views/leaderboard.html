@@ -1,0 +1,118 @@
+<div id="leaderboard" ng-controller="LeaderboardCtrl">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Leaderboard</h3>
+    </div>
+    <div class="panel-body">
+      <form>
+        <div class="form-group">
+          <label>Compare based on:</label>
+          <div class="btn-group">
+            <button class="btn btn-primary" ng-class="{active: competitionMode == 'distance'}" ng-click="setCompetitionMode('distance')">
+              <icon type="distance"></icon> Distance
+            </button>
+            <button class="btn btn-primary" ng-class="{active: competitionMode == 'time'}" ng-click="setCompetitionMode('time')">
+              <icon type="time"></icon> Time
+            </button>
+            <button class="btn btn-primary" ng-class="{active: competitionMode == 'elevation'}" ng-click="setCompetitionMode('elevation')">
+              <icon type="elevation"></icon> Elevation gain
+            </button>
+            <button class="btn btn-primary" ng-class="{active: competitionMode == 'intensity'}" ng-click="setCompetitionMode('intensity')">
+              <icon type="intensity"></icon> Workout intensity
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Time range:</label>
+          <div class="btn-group">
+            <button class="btn btn-primary" ng-class="{active: timeMode == 'week'}" ng-click="setTimeMode('week')">
+              Week
+            </button>
+            <button class="btn btn-primary" ng-class="{active: timeMode == 'month'}" ng-click="setTimeMode('month')">
+              Month
+            </button>
+            <button class="btn btn-primary" ng-class="{active: timeMode == 'year'}" ng-click="setTimeMode('year')">
+              Year
+            </button>
+          </div>
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary" ng-click="prev()">
+              <span class="glyphicon glyphicon-chevron-left">
+            </span></button>
+            <button type="button" class="btn btn-primary selected-time" ng-click="goNow()" ng-bind="modeDesc">
+            </button>
+            <button type="button" class="btn btn-primary" ng-click="next()">
+              <span class="glyphicon glyphicon-chevron-right">
+            </span></button>
+          </div>
+          <small ng-bind="modeFullDesc"></small>
+        </div>
+      </form>
+    </div>
+
+    <h3 class="text-center">
+      Leaderboard for {{leaderboardTimeTitle}}<br><small>Based on {{leaderboardModeTitle}}</small>
+    </h3>
+
+    <table class="table table-hover leaderboard">
+      <tr>
+        <th class="position">
+          #
+        </th>
+        <th class="player">
+          Player
+        </th>
+        <th class="segment" ng-repeat="segment in getSegments()" ng-bind="segment.name">
+        </th>
+        <th class="score">
+          Score
+          <div class="behindLeader">(behind the leader)</div>
+        </th>
+      </tr>
+      <tr ng-repeat="player in leaderboard" ng-class="{success: player.me}">
+        <td class="position">
+          <span ng-bind="$index+1"></span>
+        </td>
+        <td class="player">
+          <img class="img-thumbnail thumb" ng-src="{{player.img}}"> {{player.name}}
+        </td>
+<!--
+        <td class="segment" ng-class="{active: !segment.isZero()}" ng-repeat="segment in playersSegments(player) track by $index">
+          <ng-switch ng-hide="segment.isZero()">
+            <span ng-bind="segment | workoutDistance"></span> <span class="unit">km</span>
+          </ng-switch>
+          <span ng-show="segment.isZero()">—</span>
+        </td>
+-->
+        <td class="score">
+          <div ng-switch="competitionMode">
+            <div ng-switch-when="distance">
+              <workout-distance value="player.score"></workout-distance>
+              <div class="behindLeader" ng-hide="$index == 0">
+                (<workout-distance no-icon="true" value="player.scoreToLeader"></workout-distance>)
+              </div>
+            </div>
+            <div ng-switch-when="time">
+              <workout-time value="player.score"></workout-time>
+              <div class="behindLeader" ng-hide="$index == 0">
+                (<workout-time no-icon="true" value="player.scoreToLeader"></workout-time>)
+              </div>
+            </div>
+            <div ng-switch-when="elevation">
+              <workout-elevation value="player.score"></workout-elevation>
+              <div class="behindLeader" ng-hide="$index == 0">
+                (<workout-elevation no-icon="true" value="player.scoreToLeader"></workout-elevation>)
+              </div>
+            </div>
+            <div ng-switch-when="intensity">
+              <workout-intensity value="player.score"></workout-intensity>
+              <div class="behindLeader" ng-hide="$index == 0">
+                (<workout-intensity no-icon="true" value="player.scoreToLeader"></workout-intensity>)
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
