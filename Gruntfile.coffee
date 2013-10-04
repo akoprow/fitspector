@@ -124,7 +124,10 @@ module.exports = (grunt) ->
           src: [
             '<%= yeoman.dist %>/<%= yeoman.app %>/scripts/{,*/}*.js'
             '<%= yeoman.dist %>/<%= yeoman.app %>/styles/{,*/}*.css'
-            '<%= yeoman.dist %>/<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+# Temporarily we need to give up image revisioning (is it important?) because we cannot easily post-process directives
+# that are concatenated by ngtemplates task.  If we decide we want to revision images it may be worth looking into:
+# https://github.com/wmluke/grunt-inline-angular-templates.
+#            '<%= yeoman.dist %>/<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
             '<%= yeoman.dist %>/<%= yeoman.app %>/styles/fonts/*'
           ]
 
@@ -134,7 +137,7 @@ module.exports = (grunt) ->
         dest: '<%= yeoman.dist %>/<%= yeoman.app %>'
 
     usemin:
-      html: ['<%= yeoman.dist %>/<%= yeoman.app %>/{,views,views/directives}/*.html']
+      html: ['<%= yeoman.dist %>/<%= yeoman.app %>/*.html']
       css: ['<%= yeoman.dist %>/<%= yeoman.app %>/styles/*.css']
       options:
         dirs: ['<%= yeoman.dist %>/<%= yeoman.app %>']
@@ -162,7 +165,7 @@ module.exports = (grunt) ->
         files: [
           expand: true
           cwd: '<%= yeoman.tmp %>/<%= yeoman.app %>/'
-          src: ['**/*.html']
+          src: ['*.html']
           dest: '<%= yeoman.dist %>/<%= yeoman.app %>/'
         ]
 
@@ -274,6 +277,23 @@ module.exports = (grunt) ->
           dest: '<%= yeoman.dist %>/scripts'
         ]
 
+    ngtemplates:
+      fitspector:
+        cwd: '<%= yeoman.tmp %>/<%= yeoman.app %>'
+        src: 'views/**/*.html'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/scripts/template.js'
+        options:
+          concat: '<%= yeoman.dist%>/<%= yeoman.app %>/scripts/scripts.js'
+          htmlmin:
+            collapseBooleanAttributes: true
+            collapseWhitespace: true
+            removeAttributeQuotes: false  # Was giving me problems in some cases
+            removeComments: true
+            removeEmptyAttributes: true
+            removeRedundantAttributes: true
+            removeScriptTypeAttributes: true
+            removeStyleLinkTypeAttributes: true
+
     concurrent:
       dev: [
         'less'
@@ -307,6 +327,7 @@ module.exports = (grunt) ->
     'useminPrepare'
     'copy:dist'
     'concurrent:dist'
+    'ngtemplates'
     'autoprefixer'
     'concat'
     'cdnify'
