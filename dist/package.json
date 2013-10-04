@@ -43,7 +43,8 @@
     "grunt-preprocess": "~3.0.1",
     "grunt-express-server": "~0.4.3",
     "grunt-contrib-less": "~0.7.0",
-    "grunt-spritesmith": "~1.8.0"
+    "grunt-spritesmith": "~1.8.0",
+    "grunt-angular-templates": "~0.4.2"
   },
   "engines": {
     "node": ">=0.8.0"
