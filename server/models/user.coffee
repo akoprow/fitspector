@@ -1,6 +1,6 @@
 logger = require '../utils/logger'
 passport = require 'passport'
-runKeeperStrategy = require('passport-runkeeper').Strategy
+RunKeeperStrategy = require('passport-runkeeper').Strategy
 string = require 'string'
 
 isRunKeeperId = (id) ->

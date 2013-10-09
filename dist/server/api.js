@@ -1,30 +1,22 @@
 (function() {
   "use strict";
-  var Firebase, MAX_WORKOUTS_PROCESSED_AT_A_TIME, RUNKEEPER_API_URL, addWorkout, async, getProfile, getToken, getUser, loadAllWorkouts, logger, mkUser, request, requestCallback, runKeeper, runKeeperWorkoutType, string, winston, _;
+  var Firebase, MAX_WORKOUTS_PROCESSED_AT_A_TIME, RUNKEEPER_API_URL, addWorkout, async, getProfile, getToken, getUser, loadAllWorkouts, logger, mkUser, request, requestCallback, runKeeper, runKeeperWorkoutType, string, _;
 
-  async = require("async");
+  async = require('async');
 
-  request = require("request");
+  request = require('request');
 
-  string = require("string");
+  string = require('string');
 
-  winston = require("winston");
+  Firebase = require('firebase');
 
-  Firebase = require("firebase");
+  _ = require('underscore');
 
-  _ = require("underscore");
+  logger = require('./utils/logger');
 
   MAX_WORKOUTS_PROCESSED_AT_A_TIME = 20;
 
   RUNKEEPER_API_URL = "https://api.runkeeper.com/";
-
-  logger = new winston.Logger({
-    transports: [
-      new winston.transports.Console(), new winston.transports.File({
-        filename: "fitspector.log"
-      })
-    ]
-  });
 
   requestCallback = function(cb) {
     return function(err, res, body) {
