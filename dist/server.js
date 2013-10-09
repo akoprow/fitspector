@@ -1,12 +1,12 @@
 (function() {
   "use strict";
-  var api, app, express, index, port;
+  var api, app, express, port, routes;
 
   express = require("express");
 
-  index = require("./routes/index");
+  routes = require('./server/routes');
 
-  api = require("./routes/api");
+  api = require('./server/api');
 
   app = express();
 
@@ -14,17 +14,15 @@
     app.use(express.compress());
     app.use(express.bodyParser());
     app.use(express.methodOverride());
-    app.use(express["static"](__dirname + '/app'));
+    app.use(express["static"](__dirname + '/client'));
     return app.use(app.router);
   });
 
-  app.get("/", index.index);
+  app.get("/", routes.index);
 
-  app.get("/views/:name", index.partials);
+  app.get("/views/:name", routes.partials);
 
-  app.get("/api/login_rk/:code", api.loginRK);
-
-  app.get("*", index.index);
+  app.get("*", routes.index);
 
   port = process.env.PORT || 8080;
 

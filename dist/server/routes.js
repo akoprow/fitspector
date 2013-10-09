@@ -4,7 +4,7 @@
 
   path = require('path');
 
-  filePath = __dirname.replace('routes', 'app/');
+  filePath = path.join(__dirname, '../client');
 
   exports.index = function(req, res) {
     return res.sendfile(path.join(filePath, 'index.html'));
