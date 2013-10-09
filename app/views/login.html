@@ -3,16 +3,8 @@
     <h2>Login</h2>
     <p>To access your workouts and compare with friends, you need to login first</p>
 
-    <!-- @if NODE_ENV == 'dev' -->
-    <a href='https://runkeeper.com/apps/authorize?client_id=b459a206aced43729fc79026df108e60&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Flogin_rk&response_type=code&state='>
+    <a href="" ng-click="loginRunKeeper()">
       <img src='http://static1.runkeeper.com/images/assets/login-blue-black-200x38.png'/>
     </a>
-    <!-- @endif -->
-
-    <!-- @if NODE_ENV == 'prod' -->
-    <a href='https://runkeeper.com/apps/authorize?client_id=b459a206aced43729fc79026df108e60&redirect_uri=https%3A%2F%2Fwww.fitspector.com%2Flogin_rk&response_type=code&state='>
-      <img src='http://static1.runkeeper.com/images/assets/login-blue-black-200x38.png'/>
-    </a>
-    <!-- @endif -->
   </div>
 </div>

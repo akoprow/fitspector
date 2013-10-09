@@ -6,6 +6,7 @@ class Routes
     $routeProvider
       .when '/login',
         templateUrl: 'views/login'
+        controller: 'LoginCtrl'
 
       .when '/workouts',
         templateUrl: 'views/workouts.html'
