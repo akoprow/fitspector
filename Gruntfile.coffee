@@ -15,14 +15,14 @@ module.exports = (grunt) ->
   grunt.option 'env', (grunt.option 'env' || 'dev')
 
   yeomanConfig =
-    app: 'app'
     dist: 'dist'
     tmp: '.tmp'
-    routes: 'routes'
+    client: 'client'
+    server: 'server'
     bower_components: '.bower_components'
 
   try
-    yeomanConfig.app = require('./bower.json').appPath || yeomanConfig.app
+    yeomanConfig.client = require('./bower.json').clientPath || yeomanConfig.client
   catch e
 
   grunt.initConfig
@@ -45,18 +45,18 @@ module.exports = (grunt) ->
       options:
         livereload: true
       less:
-        files: '<%= yeoman.app %>/styles/*.less'
+        files: '<%= yeoman.client %>/styles/*.less'
         tasks: ['copy:less', 'less']
       coffee:
-        files: '<%= yeoman.app %>/scripts/{,*/}*.coffee'
-        tasks: ['copy:coffee', 'coffee:app']
+        files: '<%= yeoman.client %>/scripts/{,*/}*.coffee'
+        tasks: ['copy:coffee', 'coffee:all']
       html:
-        files: '<%= yeoman.app %>/**/*.html'
+        files: '<%= yeoman.client %>/**/*.html'
         tasks: ['copy:html', 'preprocess']
       express:
         files: [
           '<%= yeoman.tmp %>/server.js'
-          '<%= yeoman.tmp %>/routes/{,*/}*.js'
+          '<%= yeoman.tmp %>/<%= yeoman.server %>/{,*/}*.js'
         ]
         tasks: ['express:fitspector']
         options:
@@ -94,7 +94,7 @@ module.exports = (grunt) ->
         ]
 
     coffee:
-      app:
+      all:
         files: [
           expand: true,
           cwd: '<%= yeoman.tmp %>',
@@ -114,59 +114,59 @@ module.exports = (grunt) ->
         ]
 
     less:
-      app:
+      client:
         files:
-          '<%= yeoman.tmp %>/<%= yeoman.app %>/styles/main.css': '<%= yeoman.tmp %>/<%= yeoman.app %>/styles/main.less'
+          '<%= yeoman.tmp %>/<%= yeoman.client %>/styles/main.css': '<%= yeoman.tmp %>/<%= yeoman.client %>/styles/main.less'
 
     rev:
       dist:
         files:
           src: [
-            '<%= yeoman.dist %>/<%= yeoman.app %>/scripts/{,*/}*.js'
-            '<%= yeoman.dist %>/<%= yeoman.app %>/styles/{,*/}*.css'
+            '<%= yeoman.dist %>/<%= yeoman.client %>/scripts/{,*/}*.js'
+            '<%= yeoman.dist %>/<%= yeoman.client %>/styles/{,*/}*.css'
 # Temporarily we need to give up image revisioning (is it important?) because we cannot easily post-process directives
 # that are concatenated by ngtemplates task.  If we decide we want to revision images it may be worth looking into:
 # https://github.com/wmluke/grunt-inline-angular-templates.
-#            '<%= yeoman.dist %>/<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-            '<%= yeoman.dist %>/<%= yeoman.app %>/styles/fonts/*'
+#            '<%= yeoman.dist %>/<%= yeoman.client %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+            '<%= yeoman.dist %>/<%= yeoman.client %>/styles/fonts/*'
           ]
 
     useminPrepare:
-      html: '<%= yeoman.tmp %>/<%= yeoman.app %>/index.html'
+      html: '<%= yeoman.tmp %>/<%= yeoman.client %>/index.html'
       options:
-        dest: '<%= yeoman.dist %>/<%= yeoman.app %>'
+        dest: '<%= yeoman.dist %>/<%= yeoman.client %>'
 
     usemin:
-      html: ['<%= yeoman.dist %>/<%= yeoman.app %>/*.html']
-      css: ['<%= yeoman.dist %>/<%= yeoman.app %>/styles/*.css']
+      html: ['<%= yeoman.dist %>/<%= yeoman.client %>/*.html']
+      css: ['<%= yeoman.dist %>/<%= yeoman.client %>/styles/*.css']
       options:
-        dirs: ['<%= yeoman.dist %>/<%= yeoman.app %>']
+        dirs: ['<%= yeoman.dist %>/<%= yeoman.client %>']
 
     imagemin:
       dist:
         files: [
           expand: true
-          cwd: '<%= yeoman.tmp %>/<%= yeoman.app %>/images'
+          cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>/images'
           src: '{,*/}*.{png,jpg,jpeg}'
-          dest: '<%= yeoman.dist %>/<%= yeoman.app %>/images'
+          dest: '<%= yeoman.dist %>/<%= yeoman.client %>/images'
         ]
 
     svgmin:
       dist:
         files: [
           expand: true
-          cwd: '<%= yeoman.tmp %>/<%= yeoman.app %>/images'
+          cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>/images'
           src: '{,*/}*.svg'
-          dest: '<%= yeoman.dist %>/<%= yeoman.app %>/images'
+          dest: '<%= yeoman.dist %>/<%= yeoman.client %>/images'
         ]
 
     htmlmin:
       dist:
         files: [
           expand: true
-          cwd: '<%= yeoman.tmp %>/<%= yeoman.app %>/'
+          cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>/'
           src: ['*.html']
-          dest: '<%= yeoman.dist %>/<%= yeoman.app %>/'
+          dest: '<%= yeoman.dist %>/<%= yeoman.client %>/'
         ]
 
     preprocess:
@@ -179,43 +179,43 @@ module.exports = (grunt) ->
 
     sprite:
       sportIcons:
-        src: '<%= yeoman.app %>/images/sport-icons/*'
-        destImg: '<%= yeoman.tmp %>/<%= yeoman.app %>/images/sport-icons.png'
-        destCSS: '<%= yeoman.tmp %>/<%= yeoman.app %>/styles/sport-icons.css'
+        src: '<%= yeoman.client %>/images/sport-icons/*'
+        destImg: '<%= yeoman.tmp %>/<%= yeoman.client %>/images/sport-icons.png'
+        destCSS: '<%= yeoman.tmp %>/<%= yeoman.client %>/styles/sport-icons.css'
         algorithm: 'binary-tree'
         cssOpts:
           cssClass: (item) -> '.sport-icon.sport-' + item.name
 
     copy:
       less:
-        cwd: '<%= yeoman.app %>/styles'
+        cwd: '<%= yeoman.client %>/styles'
         src: '*.less'
-        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/styles'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/styles'
         expand: true
       fonts:
-        cwd: '<%= yeoman.app %>/fonts'
+        cwd: '<%= yeoman.client %>/fonts'
         src: '*'
-        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/fonts'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/fonts'
         expand: true
       html:
-        cwd: '<%= yeoman.app %>'
+        cwd: '<%= yeoman.client %>'
         src: '**/*.html'
-        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.client %>'
         expand: true
       coffee:
-        cwd: '<%= yeoman.app %>/scripts'
+        cwd: '<%= yeoman.client %>/scripts'
         src: '**/*.coffee'
-        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/scripts'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/scripts'
         expand: true
       img:
-        cwd: '<%= yeoman.app %>/images'
+        cwd: '<%= yeoman.client %>/images'
         src: ['**/*', '!sport-icons/*']
-        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/images'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/images'
         expand: true
-      routes:
-        cwd: '<%= yeoman.routes %>'
+      server:
+        cwd: '<%= yeoman.server %>'
         src: '**'
-        dest: '<%= yeoman.tmp %>/<%= yeoman.routes %>'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.server %>'
         expand: true
       libs:
         cwd: '<%= yeoman.bower_components %>/'
@@ -235,9 +235,9 @@ module.exports = (grunt) ->
           'bootstrap/dist/css/bootstrap.css'
           'bootstrap/dist/css/bootstrap-theme.css'
         ]
-        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/libs/'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/libs/'
         expand: true
-      server:
+      toplevel:
         src: [
           'server.coffee'
           'Procfile'
@@ -253,8 +253,8 @@ module.exports = (grunt) ->
           'server.js'
           'package.json'
           'Procfile'
-          '<%= yeoman.routes %>/*.js'
-          '<%= yeoman.app %>/fonts/*'
+          '<%= yeoman.server %>/*.js'
+          '<%= yeoman.client %>/fonts/*'
         ]
         dest: '<%= yeoman.dist %>'
         expand: true
@@ -279,11 +279,11 @@ module.exports = (grunt) ->
 
     ngtemplates:
       fitspector:
-        cwd: '<%= yeoman.tmp %>/<%= yeoman.app %>'
+        cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>'
         src: 'views/**/*.html'
-        dest: '<%= yeoman.tmp %>/<%= yeoman.app %>/scripts/template.js'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/scripts/template.js'
         options:
-          concat: '<%= yeoman.dist%>/<%= yeoman.app %>/scripts/scripts.js'
+          concat: '<%= yeoman.dist%>/<%= yeoman.client %>/scripts/scripts.js'
           htmlmin:
             collapseBooleanAttributes: true
             collapseWhitespace: true
@@ -298,7 +298,7 @@ module.exports = (grunt) ->
       dev: [
         'less'
         'preprocess'
-        'coffee:app'
+        'coffee:all'
         'sprite'
       ]
       test: [

@@ -1,9 +1,8 @@
-'use strict';
+'use strict'
 
 path = require 'path'
 
-# get correct directory path
-filePath = __dirname.replace 'routes', 'app/'
+filePath = path.join __dirname, '../client'
 
 exports.index = (req, res) ->
   res.sendfile (path.join filePath, 'index.html')
