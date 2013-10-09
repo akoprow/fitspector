@@ -18,7 +18,7 @@ module.exports =
     config =
       clientID: process.env.RUN_KEEPER_ID || throw new Error 'Missing RUN_KEEPER_ID'
       clientSecret: process.env.RUN_KEEPER_SECRET || throw new Error 'Missing RUN_KEEPER_SECRET'
-      callbackURL: process.env.RUN_KEEPER_CALLBACK_URL || 'http://localhost:8000/auth/runkeeper/callback'
+      callbackURL: process.env.RUN_KEEPER_CALLBACK_URL || throw new Error 'Missing RUN_KEEPER_CALLBACK_URL'
 
     callback = (token, tokenSecret, profile, done) ->
       logger.debug "RunKeeper callback | token: %j | tokenSecret: %j | profile: %j", token, tokenSecret, profile

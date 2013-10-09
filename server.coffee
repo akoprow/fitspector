@@ -1,10 +1,9 @@
-"use strict"
+'use strict'
 
 express = require 'express'
 passport = require 'passport'
 
 routes = require './server/routes'
-api = require './server/api'
 
 User = require './server/models/user'
 
@@ -25,13 +24,19 @@ passport.serializeUser User.serializeUser
 passport.deserializeUser User.deserializeUser
 
 # Routes
-app.get "/", routes.index
-app.get "/views/:name", routes.partials
+app.get '/auth/runkeeper', passport.authenticate 'runkeeper'
+
+app.get '/auth/runkeeper/callback',
+  passport.authenticate('runkeeper', { failureRedirect: '/login' }),
+  (req, res) -> res.redirect '/'
+
+app.get '/', routes.index
+app.get '/views/:name', routes.partials
 
 # redirect all other requests to the index (HTML5 history)
-app.get "*", routes.index
+app.get '*', routes.index
 
 # Listen
 port = process.env.PORT or 8080
 app.listen port, ->
-  console.log "Listening on " + port
+  console.log 'Listening on ' + port
