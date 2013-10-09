@@ -4,9 +4,8 @@ class Routes
   constructor: ($locationProvider, $routeProvider) ->
     $locationProvider.html5Mode true
     $routeProvider
-      .when '/login_rk',
-        templateUrl: 'views/login_rk'
-        controller: 'LoginRunKeeperCtrl'
+      .when '/login',
+        templateUrl: 'views/login'
 
       .when '/workouts',
         templateUrl: 'views/workouts.html'

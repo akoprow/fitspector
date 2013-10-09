@@ -29,6 +29,13 @@
 
       <!-- ------------------------------------- Login/Logout dropdown ------------------------------------- -->
       <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="/login">
+            <span class="glyphicon glyphicon-log-in"></span>
+            Login
+          </a>
+        </li>
+<!--
         <li ng-if="isLoggedIn()" class="disabled">
           <a href="#">
             <span class="user-name" ng-bind="getUser().name"></span>
@@ -47,24 +54,7 @@
             </li>
           </ul>
         </li>
-        <li ng-hide="isLoggedIn()" class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Login <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li>
-              <!-- @if NODE_ENV == 'dev' -->
-              <a href='https://runkeeper.com/apps/authorize?client_id=b459a206aced43729fc79026df108e60&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Flogin_rk&response_type=code&state='>
-                <img src='http://static1.runkeeper.com/images/assets/login-blue-black-200x38.png'/>
-              </a>
-              <!-- @endif -->
-
-              <!-- @if NODE_ENV == 'prod' -->
-              <a href='https://runkeeper.com/apps/authorize?client_id=b459a206aced43729fc79026df108e60&redirect_uri=https%3A%2F%2Fwww.fitspector.com%2Flogin_rk&response_type=code&state='>
-                <img src='http://static1.runkeeper.com/images/assets/login-blue-black-200x38.png'/>
-              </a>
-              <!-- @endif -->
-            </li>
-          </ul>
-        </li>
+-->
       </ul>
     </div>
   </div>
