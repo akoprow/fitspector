@@ -1,23 +1,16 @@
 "use strict"
 
-async = require "async"
-request = require "request"
-string = require "string"
-winston = require "winston"
-Firebase = require "firebase"
-_ = require "underscore"
+async = require 'async'
+request = require 'request'
+string = require 'string'
+Firebase = require 'firebase'
+_ = require 'underscore'
 
+logger = require './utils/logger'
 
 MAX_WORKOUTS_PROCESSED_AT_A_TIME = 20
 RUNKEEPER_API_URL = "https://api.runkeeper.com/"
 
-
-logger = new (winston.Logger)(
-  transports: [
-    new (winston.transports.Console)(),
-    new (winston.transports.File)(filename: "fitspector.log")
-  ]
-)
 
 requestCallback = (cb) ->
   (err, res, body) ->

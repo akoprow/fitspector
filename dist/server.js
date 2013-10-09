@@ -1,22 +1,33 @@
 (function() {
   "use strict";
-  var api, app, express, port, routes;
+  var User, api, app, express, passport, port, routes;
 
-  express = require("express");
+  express = require('express');
+
+  passport = require('passport');
 
   routes = require('./server/routes');
 
   api = require('./server/api');
 
+  User = require('./server/models/user');
+
   app = express();
 
   app.configure(function() {
     app.use(express.compress());
+    app.use(express.cookieParser());
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express["static"](__dirname + '/client'));
     return app.use(app.router);
   });
+
+  passport.use(User.runKeeperStrategy());
+
+  passport.serializeUser(User.serializeUser);
+
+  passport.deserializeUser(User.deserializeUser);
 
   app.get("/", routes.index);
 

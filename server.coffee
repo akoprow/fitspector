@@ -1,17 +1,28 @@
 "use strict"
 
-express = require "express"
+express = require 'express'
+passport = require 'passport'
+
 routes = require './server/routes'
 api = require './server/api'
+
+User = require './server/models/user'
 
 # Configure
 app = express()
 app.configure ->
   app.use express.compress()
+  app.use express.cookieParser()
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use express.static(__dirname + '/client')
   app.use app.router
+
+# Configure Passport
+passport.use User.runKeeperStrategy()
+
+passport.serializeUser User.serializeUser
+passport.deserializeUser User.deserializeUser
 
 # Routes
 app.get "/", routes.index
