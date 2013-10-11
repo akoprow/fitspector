@@ -7,11 +7,15 @@ isRunKeeperId = (id) ->
   string(id).startsWith 'RKU'
 
 loadRunKeeperUser = (id) ->
+  logger.warn "loadRunKeeperUser | id: %j", id
   # TODO(koper) Implement...
   null
 
 createRunKeeperUser = (id, token) ->
-  null
+  logger.warn "createRunKeeperUser | id: %j | token: %j", id, token
+  user =
+    id: 'RKU' + id
+  user
 
 module.exports =
   runKeeperStrategy: ->
@@ -21,8 +25,9 @@ module.exports =
       callbackURL: process.env.RUN_KEEPER_CALLBACK_URL || throw new Error 'Missing RUN_KEEPER_CALLBACK_URL'
 
     callback = (token, tokenSecret, profile, done) ->
-      logger.debug "RunKeeper callback | token: %j | tokenSecret: %j | profile: %j", token, tokenSecret, profile
-      user = loadRunKeeperUser profile.id || createRunKeeperUser profile.id, token
+      logger.warn "RunKeeper callback | token: %j | tokenSecret: %j | profile: %j", token, tokenSecret, profile
+      user = loadRunKeeperUser profile.id
+      user ?= createRunKeeperUser profile.id, token
       done null, user
 
     return new RunKeeperStrategy config, callback

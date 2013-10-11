@@ -15,6 +15,12 @@ app.configure ->
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use express.static(__dirname + '/client')
+  app.use express.cookieSession(
+    # TODO(koper) Make sure this does not need to be secure
+    secret: process.env.COOKIE_SECRET || "top-secret"
+  )
+  app.use passport.initialize()
+  app.use passport.session()
   app.use app.router
 
 # Configure Passport
