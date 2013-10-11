@@ -4,8 +4,7 @@ express = require 'express'
 passport = require 'passport'
 
 routes = require './server/routes'
-
-User = require './server/models/user'
+runkeeper = require './server/runkeeper'
 
 # Configure
 app = express()
@@ -24,10 +23,10 @@ app.configure ->
   app.use app.router
 
 # Configure Passport
-passport.use User.runKeeperStrategy()
+passport.use runkeeper.runKeeperStrategy()
 
-passport.serializeUser User.serializeUser
-passport.deserializeUser User.deserializeUser
+passport.serializeUser runkeeper.serializeUser
+passport.deserializeUser runkeeper.deserializeUser
 
 # Routes
 app.get '/auth/runkeeper', passport.authenticate 'runkeeper'
