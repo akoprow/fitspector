@@ -2,11 +2,13 @@ logger = require './utils/logger'
 passport = require 'passport'
 request = require 'request'
 string = require 'string'
+Firebase = require 'firebase'
 RunKeeperStrategy = require('passport-runkeeper').Strategy
 
 ####################################################################################################
 
-RUNKEEPER_API_URL = 'https://api.runkeeper.com/'
+RUNKEEPER_API_URL = 'https://api.runkeeper.com'
+FIREBASE_URL = 'https://fitspector.firebaseIO.com'
 
 ####################################################################################################
 
@@ -25,15 +27,15 @@ runKeeper =
       uri: 'https://runkeeper.com/apps/token'
 
     userInfo:
-      path: 'user'
+      path: '/user'
       accept: 'application/vnd.com.runkeeper.User+json'
 
     userActivities:
-      path: 'fitnessActivities?pageSize=1000'
+      path: '/fitnessActivities?pageSize=1000'
       accept: 'application/vnd.com.runkeeper.FitnessActivityFeed+json'
 
     profile:
-      path: 'profile'
+      path: '/profile'
       accept: 'application/vnd.com.runkeeper.Profile+json'
 
   callbackURL: process.env.RUN_KEEPER_CALLBACK_URL ||
@@ -58,18 +60,20 @@ isRunKeeperId = (id) ->
 
 ####################################################################################################
 
-createRunKeeperUser = (id, token, done) ->
-  logger.warn 'createRunKeeperUser | id: %j | token: %j', id, token
+createRunKeeperUser = (userId, token, done) ->
+  logger.warn 'createRunKeeperUser | id: %j | token: %j', userId, token
 
   createUser = (err, profile) ->
     logger.warn 'createUser | %j', profile
     return done err if err
+    return done 'Missing user profile' if not profile?
     user =
-      id: id
+      id: userId
       name: profile.name
       isMale: profile.gender is 'M'
       birthday: new Date(profile.birthday)
       smallImgUrl: profile['medium_picture']
+    new Firebase("#{FIREBASE_URL}/users").child(userId).update user
     logger.warn '  createdUser --> | %j', user
     done null, user
 
@@ -77,10 +81,21 @@ createRunKeeperUser = (id, token, done) ->
 
 ####################################################################################################
 
-loadRunKeeperUser = (id, token, done) ->
-  logger.warn 'loadRunKeeperUser | id: %j', id
-  # TODO(koper) Implement... for now we always create a new user
-  createRunKeeperUser id, token, done
+loadRunKeeperUser = (userId, token, done) ->
+  logger.warn 'loadRunKeeperUser | id: %j', userId
+
+  loadUser = (user) ->
+    logger.warn 'user read from DB: %j', user
+    if user?
+      done null, user
+    else
+      createRunKeeperUser userId, token, done
+
+  noUser = ->
+    logger.warn 'no user read from DB'
+    createRunKeeperUser userId, token, done
+
+  new Firebase("#{FIREBASE_URL}/users").child(userId).once 'value', loadUser, noUser
 
 ####################################################################################################
 
@@ -103,8 +118,6 @@ module.exports =
     done null, user.id
 
   deserializeUser: (id, done) ->
-    user =
-      switch
-        when isRunKeeperId id then loadRunKeeperUser id
-        else null
-    done null, user
+    switch
+      when isRunKeeperId id then loadRunKeeperUser id, undefined, done
+      else done "Unknown user ID: #{id}"
