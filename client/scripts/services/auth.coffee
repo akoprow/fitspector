@@ -1,16 +1,22 @@
 'use strict'
 
 class AuthService
-  constructor: ($cookieStore, @$http) ->
+  GUEST = { guest: true }
+
+  constructor: ($cookieStore, @$rootScope, @$http) ->
     # Restore user data from the cookie.
-    @user = $cookieStore.get 'user'
-    @user = null if @user?.guest
+    @changeUser ($cookieStore.get 'user') || GUEST
     $cookieStore.remove 'user'
+
+  changeUser: (@user) ->
+    @$rootScope.$broadcast 'userChanged', @user
+
+  getUser: -> @user
 
   logout: (callback) ->
     (@$http.post '/logout').success =>
-      @user = null
+      @changeUser GUEST
       callback()
 
 
-angular.module('fitspector').service 'AuthService', ['$cookieStore', '$http', AuthService]
+angular.module('fitspector').service 'AuthService', ['$cookieStore', '$rootScope', '$http', AuthService]

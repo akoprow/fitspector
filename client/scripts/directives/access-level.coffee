@@ -1,7 +1,7 @@
 'use strict'
 
 class AccessLevelDirective
-  constructor: (AuthService) ->
+  constructor: ($rootScope, AuthService) ->
     return {
       replace: true
       restrict: 'A'
@@ -9,17 +9,16 @@ class AccessLevelDirective
         originalDisplay = element.css 'display'
         accessLevel = attrs.accessLevel
 
-        $scope.user = AuthService.user
-        $scope.$watch 'user', (user) ->
-          update()
-
-        update = ->
+        update = (user) ->
           visible =
             switch accessLevel
-              when 'guest' then !$scope.user?
-              when 'user' then $scope.user?
+              when 'guest' then user.guest
+              when 'user' then user.name?
           element.css 'display', if visible then originalDisplay else 'none'
+
+        $rootScope.$on 'userChanged', (e, user) -> update user
+        update AuthService.getUser()
     }
 
 
-angular.module('fitspector').directive 'accessLevel', ['AuthService', AccessLevelDirective]
+angular.module('fitspector').directive 'accessLevel', ['$rootScope', 'AuthService', AccessLevelDirective]

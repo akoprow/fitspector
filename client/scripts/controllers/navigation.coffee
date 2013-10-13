@@ -17,7 +17,7 @@ class NavigationCtrl
 
     $scope.logout = ->
       AuthService.logout ->
-        $location.path '/login'
+        $location.path '/'
 
 
 angular.module('fitspector').controller 'NavigationCtrl', ['$location', '$scope', 'AuthService', NavigationCtrl]
