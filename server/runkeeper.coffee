@@ -1,3 +1,5 @@
+'use strict'
+
 logger = require './utils/logger'
 passport = require 'passport'
 request = require 'request'
