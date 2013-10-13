@@ -9,15 +9,15 @@ class AccessLevelDirective
         originalDisplay = element.css 'display'
         accessLevel = attrs.accessLevel
 
-        $scope.$watch 'AuthService.getUser()', (user) ->
+        $scope.user = AuthService.user
+        $scope.$watch 'user', (user) ->
           update()
 
         update = ->
-          user = AuthService.getUser()
           visible =
             switch accessLevel
-              when 'guest' then !user?
-              when 'user' then user?
+              when 'guest' then !$scope.user?
+              when 'user' then $scope.user?
           element.css 'display', if visible then originalDisplay else 'none'
     }
 

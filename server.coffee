@@ -44,6 +44,11 @@ app.get '/auth/runkeeper/callback',
   passport.authenticate('runkeeper', { failureRedirect: '/login' }),
   (req, res) -> res.redirect '/'
 
+app.post '/logout',
+  (req, res) ->
+    req.logout()
+    res.send 200
+
 app.get '/', routes.index
 app.get '/views/:name', routes.partials
 

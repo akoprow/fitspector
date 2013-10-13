@@ -13,7 +13,11 @@ class NavigationCtrl
       $location.path(NavigationCtrl.urls[id])
 
     $scope.getUser = ->
-      AuthService.getUser()
+      AuthService.user
+
+    $scope.logout = ->
+      AuthService.logout ->
+        $location.path '/login'
 
 
 angular.module('fitspector').controller 'NavigationCtrl', ['$location', '$scope', 'AuthService', NavigationCtrl]
