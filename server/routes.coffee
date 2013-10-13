@@ -9,8 +9,9 @@ filePath = path.join __dirname, '../client'
 
 exports.index = (req, res) ->
   logger.warn 'index request'
-  logger.warn 'user cookie: %s', JSON.stringify req.user
-  res.cookie 'user', JSON.stringify req.user
+  user = req.user || { guest: true }
+  logger.warn 'user: %j', user
+  res.cookie 'user', JSON.stringify user
   res.sendfile (path.join filePath, 'index.html')
 
 ####################################################################################################
