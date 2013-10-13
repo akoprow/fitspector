@@ -1,3 +1,3 @@
 'use strict'
 
-angular.module 'fitspector', ['ngRoute', 'firebase']
+angular.module 'fitspector', ['ngRoute', 'ngCookies', 'firebase']
