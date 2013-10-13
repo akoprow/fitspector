@@ -4,6 +4,7 @@ request = require 'request'
 string = require 'string'
 Firebase = require 'firebase'
 RunKeeperStrategy = require('passport-runkeeper').Strategy
+User = require '../client/scripts/models/user'
 
 ####################################################################################################
 
@@ -61,19 +62,14 @@ isRunKeeperId = (id) ->
 ####################################################################################################
 
 createRunKeeperUser = (userId, token, done) ->
-  logger.warn 'createRunKeeperUser | id: %j | token: %j', userId, token
+  logger.warn 'createRunKeeperUser | id: %d | token: %d', userId, token
 
   createUser = (err, profile) ->
     logger.warn 'createUser | %j', profile
     return done err if err
     return done 'Missing user profile' if not profile?
-    user =
-      id: userId
-      name: profile.name
-      isMale: profile.gender is 'M'
-      birthday: new Date(profile.birthday)
-      smallImgUrl: profile['medium_picture']
-    new Firebase("#{FIREBASE_URL}/users").child(userId).update user
+    user = User.fromRunKeeperProfile profile
+    new Firebase("#{FIREBASE_URL}/users").child(userId).child('profile').update user
     logger.warn '  createdUser --> | %j', user
     done null, user
 
@@ -82,9 +78,10 @@ createRunKeeperUser = (userId, token, done) ->
 ####################################################################################################
 
 loadRunKeeperUser = (userId, token, done) ->
-  logger.warn 'loadRunKeeperUser | id: %j', userId
+  logger.warn 'loadRunKeeperUser | id: %d', userId
 
-  loadUser = (user) ->
+  loadUser = (userProfile) ->
+    user = userProfile.val()
     logger.warn 'user read from DB: %j', user
     if user?
       done null, user
@@ -95,7 +92,7 @@ loadRunKeeperUser = (userId, token, done) ->
     logger.warn 'no user read from DB'
     createRunKeeperUser userId, token, done
 
-  new Firebase("#{FIREBASE_URL}/users").child(userId).once 'value', loadUser, noUser
+  new Firebase("#{FIREBASE_URL}/users").child(userId).child('profile').once 'value', loadUser, noUser
 
 ####################################################################################################
 
@@ -107,7 +104,7 @@ module.exports =
       callbackURL: runKeeper.callbackURL
 
     callback = (token, tokenSecret, profile, done) ->
-      logger.warn 'RunKeeper callback | token: %j | tokenSecret: %j | profile: %j',
+      logger.warn 'RunKeeper callback | token: %d | tokenSecret: %d | profile: %j',
         token, tokenSecret, profile
       userId = 'RKU' + profile.id
       loadRunKeeperUser userId, token, done
