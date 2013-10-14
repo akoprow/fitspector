@@ -4,6 +4,7 @@ fitspector
 Setup
 ------
 `npm install`
+`bower install`
 
 Run
 ---
