@@ -9,7 +9,10 @@
     "winston": "~0.7.2",
     "firebase": "~0.6.3",
     "string": "~1.6.0",
-    "underscore": "~1.5.2"
+    "underscore": "~1.5.2",
+    "passport": "~0.1.17",
+    "passport-runkeeper": "~0.1.2",
+    "restify": "~2.6.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
