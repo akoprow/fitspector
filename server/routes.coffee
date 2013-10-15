@@ -21,4 +21,4 @@ exports.index = (req, res) ->
 
 exports.partials = (req, res) ->
   name = req.params.name
-  res.sendfile (path.join filePath, 'views', name + '.html')
+  res.sendfile (path.join filePath, 'views', name)

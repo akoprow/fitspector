@@ -11,12 +11,20 @@ runkeeper = require './server/runkeeper'
 ####################################################################################################
 
 app = express()
+
 app.configure ->
+  app.use express.logger 'dev'
   app.use express.compress()
   app.use express.cookieParser()
   app.use express.bodyParser()
   app.use express.methodOverride()
-  app.use express.static(__dirname + '/client')
+  # TODO(koper) Duh, there must be a way of serving just the top-level dir
+  app.use '/fonts', express.static(__dirname + '/client/fonts')
+  app.use '/images', express.static(__dirname + '/client/images')
+  app.use '/scripts', express.static(__dirname + '/client/scripts')
+  app.use '/styles', express.static(__dirname + '/client/styles')
+  # TODO(koper) Libs are not needed in 'prod'
+  app.use '/libs', express.static(__dirname + '/client/libs')
   app.use express.cookieSession(
     # TODO(koper) Make sure this does not need to be secure
     secret: process.env.COOKIE_SECRET || "top-secret"
