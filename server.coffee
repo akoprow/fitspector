@@ -23,6 +23,7 @@ app.configure ->
   app.use '/images', express.static(__dirname + '/client/images')
   app.use '/scripts', express.static(__dirname + '/client/scripts')
   app.use '/styles', express.static(__dirname + '/client/styles')
+  app.use '/views', express.static(__dirname + '/client/views')
   # TODO(koper) Libs are not needed in 'prod'
   app.use '/libs', express.static(__dirname + '/client/libs')
   app.use express.cookieSession(
@@ -58,7 +59,6 @@ app.post '/logout',
     res.send 200
 
 app.get '/', routes.index
-app.get '/views/:name', routes.partials
 
 # redirect all other requests to the index (HTML5 history)
 app.get '*', routes.index
