@@ -2,8 +2,9 @@
 
 class NavigationCtrl
   @urls:
+    login: '/login'
+    compare: '/compare'
     workouts: '/workouts'
-    leaderboard: '/leaderboard'
 
   constructor: ($location, $scope, AuthService) ->
     $scope.isAt = (id) ->
