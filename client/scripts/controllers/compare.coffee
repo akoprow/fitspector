@@ -1,6 +1,6 @@
 'use strict'
 
-class LeaderboardCtrl
+class CompareCtrl
 
   constructor: ($http, $scope, angularFire) ->
     # ------------ DB connectivity ------------
@@ -151,4 +151,4 @@ class LeaderboardCtrl
       computeLeaderboard()
 
 
-angular.module('fitspector').controller 'LeaderboardCtrl', ['$http', '$scope', 'angularFire', LeaderboardCtrl]
+angular.module('fitspector').controller 'CompareCtrl', ['$http', '$scope', 'angularFire', CompareCtrl]

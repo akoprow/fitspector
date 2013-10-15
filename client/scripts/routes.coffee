@@ -12,9 +12,9 @@ class Routes
         templateUrl: 'views/workouts.html'
         controller: 'WorkoutsCtrl'
 
-      .when '/leaderboard',
-        templateUrl: 'views/leaderboard.html'
-        controller: 'LeaderboardCtrl'
+      .when '/compare',
+        templateUrl: 'views/compare.html'
+        controller: 'CompareCtrl'
 
       .when '/',
         templateUrl: 'views/main.html'
