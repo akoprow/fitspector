@@ -1,3 +1,7 @@
+<p>
+  Leaderboard coming soon...
+</p>
+<!--
 <div id="leaderboard" ng-controller="LeaderboardCtrl">
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -97,14 +101,14 @@
         <td class="player">
           <img class="img-thumbnail thumb" ng-src="{{player.img}}"> {{player.name}}
         </td>
-<!--
+<!-
         <td class="segment" ng-class="{active: !segment.isZero()}" ng-repeat="segment in playersSegments(player) track by $index">
           <ng-switch ng-hide="segment.isZero()">
             <span ng-bind="segment | workoutDistance"></span> <span class="unit">km</span>
           </ng-switch>
           <span ng-show="segment.isZero()">—</span>
         </td>
--->
+->
         <td class="score">
           <div ng-switch="competitionMode">
             <div ng-switch-when="distance">
@@ -137,3 +141,4 @@
     </table>
   </div>
 </div>
+-->
