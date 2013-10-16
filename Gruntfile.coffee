@@ -214,7 +214,7 @@ module.exports = (grunt) ->
         expand: true
       server:
         cwd: '<%= yeoman.server %>'
-        src: '**'
+        src: '**/*'
         dest: '<%= yeoman.tmp %>/<%= yeoman.server %>'
         expand: true
       libs:
@@ -254,7 +254,7 @@ module.exports = (grunt) ->
           'server.js'
           'package.json'
           'Procfile'
-          '<%= yeoman.server %>/*.js'
+          '<%= yeoman.server %>/**/*.js'
           '<%= yeoman.client %>/fonts/*'
         ]
         dest: '<%= yeoman.dist %>'
