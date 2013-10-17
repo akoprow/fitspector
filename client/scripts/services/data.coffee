@@ -84,23 +84,33 @@ allWorkoutTypes =
 
 
 class DataService
-  constructor: (angularFire, $rootScope) ->
-    $rootScope.$watch 'userId', (userId) =>
-      if userId?
-        # Make sure we disable updates on previous reference.
-        @workoutsRef.off() if @workoutsRef
-        userRef = new Firebase("https://fitspector.firebaseio.com/users").child userId
-        @workoutsRef = userRef.child 'workouts'
-        angularFire @workoutsRef, $rootScope, 'dbWorkouts'
 
+  constructor: (angularFireCollection, $rootScope) ->
+    # Loading data for a given user
+    loadUser = (user) =>
+      # Make sure we disable updates on previous reference.
+      @workoutsRef.off() if @workoutsRef
+      if user.id?
+        userRef = new Firebase("https://fitspector.firebaseio.com/users").child user.id
+        @workoutsRef = userRef.child 'workouts'
+        $rootScope.dbWorkouts = angularFireCollection @workoutsRef
+        
+    # load current user
+    loadUser $rootScope.user if $rootScope.user?
+
+    # re-load data on user change
+    $rootScope.$watch 'user', (user) => loadUser user
+
+    # sync workouts with DB data
     $rootScope.$watch 'dbWorkouts', (dbWorkouts) =>
       $rootScope.workouts = _(dbWorkouts).map Workout.fromJson
 
     @workoutType = allWorkoutTypes
+
 
   getSportName: (sportId) ->
     sportType = allWorkoutTypes[sportId]
     sportType.name if sportType
 
 
-angular.module('fitspector').service 'DataService', ['angularFire', '$rootScope', DataService]
+angular.module('fitspector').service 'DataService', ['angularFireCollection', '$rootScope', DataService]

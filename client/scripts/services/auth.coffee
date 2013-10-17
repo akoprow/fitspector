@@ -8,10 +8,11 @@ class AuthService
     @changeUser ($cookieStore.get 'user') || GUEST
     $cookieStore.remove 'user'
 
-  changeUser: (@user) ->
-    @$rootScope.$broadcast 'userChanged', @user
+  changeUser: (user) ->
+    @$rootScope.user = user
 
-  getUser: -> @user
+  getUser: ->
+    @$rootScope.user
 
   logout: (callback) ->
     (@$http.post '/logout').success =>
