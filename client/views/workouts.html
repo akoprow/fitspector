@@ -134,7 +134,11 @@
         </td>
 -->
         <td class="details">
-          <a class="btn btn-primary btn-sm" href="/"><span class="glyphicon glyphicon-zoom-in"></span> details</a>
+          <ng-switch on="workout.source()">
+            <a ng-switch-when="RunKeeper" class="btn btn-primary btn-sm" ng-href="{{workout.detailsUri}}" target="_blank">
+              <span class="glyphicon glyphicon-zoom-in"></span> details
+            </a>
+          </ng-switch>
         </td>
       </tr>
     </table>

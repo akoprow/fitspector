@@ -107,11 +107,15 @@ addWorkout = (userRef, workouts, data, cb) ->
     cb null, 0
     return
 
+  logger.info "Workout data: %j", data
   workout =
     exerciseType: runKeeperWorkoutType(data.type)
     startTime: data["start_time"]
     totalDistance: data["total_distance"]
     totalDuration: data.duration
+
+  # TODO(koper) Load more data by fetching activity details.
+  # workout.detailsUri = workoutDetails.activity
 
   # Note workout ID and save workout data.
   userRef.child("workouts").child(workoutId).set workout
@@ -145,7 +149,7 @@ createRunKeeperUser = (userId, token, done) ->
     logger.warn 'createUser | %j', profile
     return done err if err
     return done 'Missing user profile' if not profile?
-    user = User.fromRunKeeperProfile profile
+    user = User.fromRunKeeperProfile profile, userId
     new Firebase("#{FIREBASE_URL}/users").child(userId).child('profile').update user
     logger.warn '  createdUser --> | %j', user
     done null, user
