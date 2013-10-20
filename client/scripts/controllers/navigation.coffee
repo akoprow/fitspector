@@ -14,7 +14,7 @@ class NavigationCtrl
       $location.path(NavigationCtrl.urls[id])
 
     $scope.getUser = ->
-      AuthService.user
+      AuthService.getUser()
 
     $scope.logout = ->
       AuthService.logout ->

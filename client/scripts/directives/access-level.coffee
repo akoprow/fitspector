@@ -12,6 +12,7 @@ class AccessLevelDirective
         update = (user) ->
           visible =
             switch accessLevel
+              # TODO(koper) This is fragile; find a better way to distinguish between different user classes.
               when 'guest' then user.guest
               when 'user' then user.name?
           element.css 'display', if visible then originalDisplay else 'none'

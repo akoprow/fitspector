@@ -94,7 +94,7 @@ class DataService
         userRef = new Firebase("https://fitspector.firebaseio.com/users").child user.id
         @workoutsRef = userRef.child 'workouts'
         $rootScope.dbWorkouts = angularFireCollection @workoutsRef
-        
+
     # load current user
     loadUser $rootScope.user if $rootScope.user?
 

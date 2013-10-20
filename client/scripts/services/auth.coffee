@@ -10,6 +10,7 @@ class AuthService
 
   changeUser: (user) ->
     @$rootScope.user = user
+    @$rootScope.$broadcast 'userChanged', user
 
   getUser: ->
     @$rootScope.user
