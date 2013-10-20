@@ -8,7 +8,7 @@ string = require 'string'
 _ = require 'underscore'
 Firebase = require 'firebase'
 RunKeeperStrategy = require('passport-runkeeper').Strategy
-User = require '../client/scripts/models/user'
+User = require('../client/scripts/models/user').User
 
 ####################################################################################################
 
