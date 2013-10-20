@@ -94,6 +94,11 @@
         </th>
       </tr>
       <tr ng-repeat="workout in workouts | orderBy: order" class="sport-{{workout.exerciseType}}">
+<!--
+        <td>
+          {{ workout | json }}
+        </td>
+-->
         <td class="date">
           <div ng-bind="workout.startTime | date"></div>
           <div ng-bind="workout.startTime | time"></div>
@@ -105,7 +110,7 @@
           <span ng-bind="workout.note"></span>
         </td>
         <td class="time-label">
-          <workout-time time="workout.totalDuration"></workout-time>
+          <workout-time value="workout.totalDuration"></workout-time>
         </td>
 <!--
         <td class="time-gauge">
@@ -113,7 +118,7 @@
         </td>
 -->
         <td class="distance-label">
-          <workout-distance distance="workout.totalDistance"></workout-distance>
+          <workout-distance value="workout.totalDistance"></workout-distance>
         </td>
 <!--
         <td class="distance-gauge">
