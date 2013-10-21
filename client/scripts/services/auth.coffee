@@ -15,6 +15,9 @@ class AuthService
   getUser: ->
     @$rootScope.user
 
+  isLoggedIn: ->
+    @getUser().name?
+
   logout: (callback) ->
     (@$http.post '/logout').success =>
       @changeUser GUEST

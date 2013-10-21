@@ -36,3 +36,10 @@ class Routes
     $httpProvider.responseInterceptors.push requestLoginInterceptor
 
 angular.module('fitspector').config ['$locationProvider', '$routeProvider', '$httpProvider', Routes]
+
+
+angular.module('fitspector').run ['$rootScope', '$location', 'AuthService', ($rootScope, $location, AuthService) ->
+  $rootScope.$on '$routeChangeStart', (event, next, current) ->
+    $rootScope.error = null
+    $location.path '/login' if next.restricted && !AuthService.isLoggedIn()
+]
