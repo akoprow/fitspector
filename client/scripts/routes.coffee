@@ -1,8 +1,9 @@
 'use strict'
 
 class Routes
-  constructor: ($locationProvider, $routeProvider) ->
+  constructor: ($locationProvider, $routeProvider, $httpProvider) ->
     $locationProvider.html5Mode true
+
     $routeProvider
       .when '/login',
         templateUrl: 'views/login.html'
@@ -11,10 +12,12 @@ class Routes
       .when '/workouts',
         templateUrl: 'views/workouts.html'
         controller: 'WorkoutsCtrl'
+        restricted: true
 
       .when '/compare',
         templateUrl: 'views/compare.html'
         controller: 'CompareCtrl'
+        restricted: true
 
       .when '/',
         templateUrl: 'views/main.html'
@@ -22,4 +25,14 @@ class Routes
       .otherwise
         redirectTo: '/'
 
-angular.module('fitspector').config ['$locationProvider', '$routeProvider', Routes]
+    requestLoginInterceptor = ['$location', '$q', ($location, $q) ->
+      success = (response) -> response
+      error = (response) ->
+        $location.path '/login' if response.status == 401
+        return $q.reject response
+      return (promise) -> promise.then success, error
+    ]
+
+    $httpProvider.responseInterceptors.push requestLoginInterceptor
+
+angular.module('fitspector').config ['$locationProvider', '$routeProvider', '$httpProvider', Routes]
