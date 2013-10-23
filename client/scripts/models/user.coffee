@@ -8,4 +8,4 @@ class root.User
     name: profile.name
     isMale: profile.gender is 'M'
     birthday: new Date(profile.birthday)
-    smallImgUrl: profile['medium_picture']
+    smallImgUrl: profile['medium_picture'] || ''
