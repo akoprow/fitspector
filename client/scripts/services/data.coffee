@@ -104,7 +104,7 @@ class DataService
 
     # sync workouts with DB data
     $rootScope.$watch 'dbWorkouts', (dbWorkouts) =>
-      $rootScope.workouts = _(dbWorkouts).map Workout.fromJson
+      $rootScope.allWorkouts = _(dbWorkouts).map Workout.fromJson
 
     @workoutType = allWorkoutTypes
 

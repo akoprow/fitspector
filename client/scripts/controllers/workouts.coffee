@@ -1,7 +1,7 @@
 'use strict'
 
 class WorkoutsCtrl
-  constructor: (DataService, $scope) ->
+  constructor: (DataService, $scope, $rootScope) ->
     # ----- Gauges -----
     # TODO(koper) Make this dependant on user data.
     # TODO(koper) Make better constructors {hours: 2}, {km: 20}
@@ -9,7 +9,7 @@ class WorkoutsCtrl
     $scope.maxGaugeDistance = new Distance(20 * 1000)
 
     # ----- Time navigation -----
-# 
+
     # TODO(koper) Extract this into a time-selection service/controller?
     updateTimeDesc = ->
       switch $scope.mode
@@ -70,15 +70,19 @@ class WorkoutsCtrl
     $scope.setMode 'year'
 
     # ----- List of workouts (passing filters) -----
-    # TODO(koper) Filtering should be done in the DataService.
-    $scope.getWorkouts = ->
+
+    recomputeWorkouts = ->
       timeBeg = $scope.timeStart
       timeEnd = $scope.timeEnd()
 
       withinTimeRange = (workout) ->
         (workout.startTime.isBefore timeEnd) &&
           ((workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg))
-      _(DataService.getAllWorkouts()).filter withinTimeRange
+      $scope.workouts = _($rootScope.allWorkouts).filter withinTimeRange
+
+    $rootScope.$watch 'allWorkouts', recomputeWorkouts
+    $scope.$watch 'timeStart.valueOf()', recomputeWorkouts
+    $scope.$watch 'mode', recomputeWorkouts
 
     # ----- Sorting -----
     $scope.order = '-startTime'
@@ -87,4 +91,4 @@ class WorkoutsCtrl
       newOrderRev = "-#{newOrder}"
       $scope.order = if $scope.order == newOrderRev then newOrder else newOrderRev
 
-angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', '$scope', WorkoutsCtrl]
+angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', '$scope', '$rootScope', WorkoutsCtrl]
