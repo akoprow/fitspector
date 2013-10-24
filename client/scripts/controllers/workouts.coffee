@@ -67,7 +67,7 @@ class WorkoutsCtrl
        timeMove 1, $scope.timeStart.clone()
 
     $scope.goNow()
-    $scope.setMode 'year'
+    $scope.setMode 'week'
 
     # ----- List of workouts (passing filters) -----
 
