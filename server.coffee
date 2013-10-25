@@ -1,10 +1,15 @@
+####################################################################################################
+# Main server of the application
+#
+# Author: Adam Koprowski
+####################################################################################################
 'use strict'
 
 express = require 'express'
 passport = require 'passport'
 
 routes = require './server/routes'
-runkeeper = require './server/runkeeper'
+runKeeper = require './server/runkeeper'
 
 ####################################################################################################
 # Configure
@@ -38,18 +43,18 @@ app.configure ->
 # Configure Passport
 ####################################################################################################
 
-passport.use runkeeper.runKeeperStrategy()
+passport.use runKeeper.runKeeperStrategy()
 
-serializeUser: (user, done) ->
+serializeUser = (user, done) ->
   done null, user.id
 
-deserializeUser: (id, done) ->
+deserializeUser = (id, done) ->
   switch
     when runKeeper.isRunKeeperId id then runKeeper.loadRunKeeperUser id, done
     else done "Unknown user ID: #{id}"
 
-passport.serializeUser runkeeper.serializeUser
-passport.deserializeUser runkeeper.deserializeUser
+passport.serializeUser serializeUser
+passport.deserializeUser deserializeUser
 
 ####################################################################################################
 # Routes

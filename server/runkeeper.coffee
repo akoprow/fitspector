@@ -1,3 +1,8 @@
+####################################################################################################
+# Interface to RunKeeper
+#
+# Author: Adam Koprowski
+####################################################################################################
 'use strict'
 
 async = require 'async'
@@ -6,16 +11,15 @@ passport = require 'passport'
 request = require 'request'
 string = require 'string'
 _ = require 'underscore'
-Firebase = require 'firebase'
 RunKeeperStrategy = require('passport-runkeeper').Strategy
 User = require('../client/scripts/models/user').User
+Storage = require('./storage')
 
 ####################################################################################################
 
 MAX_WORKOUTS_PROCESSED_AT_A_TIME = 20
 
 RUNKEEPER_API_URL = 'https://api.runkeeper.com'
-FIREBASE_URL = 'https://fitspector.firebaseIO.com'
 
 ####################################################################################################
 
@@ -95,7 +99,7 @@ isRunKeeperId = (id) ->
 
 ####################################################################################################
 
-addWorkout = (userRef, workouts, data, cb) ->
+addWorkout = (userId, workouts, data, cb) ->
   prefix = "/fitnessActivities/"
   unless string(data.uri).startsWith(prefix)
     cb "Cannot get activity ID from its URI: " + data.uri
@@ -118,7 +122,7 @@ addWorkout = (userRef, workouts, data, cb) ->
   # workout.detailsUri = workoutDetails.activity
 
   # Note workout ID and save workout data.
-  userRef.child("workouts").child(workoutId).set workout
+  Storage.addWorkout userId, workoutId, workout
   logger.info "Processed workout ", workoutId, " -> ", workout
   cb null, 1
 
@@ -126,11 +130,10 @@ addWorkout = (userRef, workouts, data, cb) ->
 
 loadAllWorkouts = (userId, accessToken) ->
   logger.info "Fetching all workouts for user: ", userId, " with token: ", accessToken
-  userRef = new Firebase("https://fitspector.firebaseIO.com/users").child(userId)
-  userRef.child("workouts").once "value", (workouts) ->
+  Storage.getAllUserWorkouts userId, (workouts) ->
     runKeeper.get accessToken, runKeeper.api.userActivities, (err, response) ->
       logger.info 'Existing workouts: %s, RunKeeper error: %s, RunKeeper response: %s', workouts, err, response
-      addWorkoutMap = _.partial(addWorkout, userRef, workouts.val())
+      addWorkoutMap = _.partial(addWorkout, userId, workouts)
       cb = (err, data) ->
         if err
           logger.error "Error while importing workouts for: ", userId, " -> ", err
@@ -150,7 +153,8 @@ createRunKeeperUser = (userId, token, done) ->
     return done err if err
     return done 'Missing user profile' if not profile?
     user = User.fromRunKeeperProfile profile, userId
-    new Firebase("#{FIREBASE_URL}/users").child(userId).child('profile').update user
+
+    Storage.updateUserProfile userId, user
     logger.warn '  createdUser --> | %j', user
     done null, user
 
@@ -168,8 +172,7 @@ loadRunKeeperUser = (userId, done, token) ->
     # and then asynchronously load all user's workouts
     loadAllWorkouts userId, token if token? # provided we have the token
 
-  loadUser = (userProfile) ->
-    user = userProfile.val()
+  loadUser = (user) ->
     logger.warn 'user read from DB: %j', user
     if user?
       finishLoading null, user
@@ -180,7 +183,7 @@ loadRunKeeperUser = (userId, done, token) ->
     logger.warn 'no user read from DB'
     createRunKeeperUser userId, token, finishLoading
 
-  new Firebase("#{FIREBASE_URL}/users").child(userId).child('profile').once 'value', loadUser, noUser
+  Storage.getUserProfile userId, loadUser, noUser
 
 ####################################################################################################
 
