@@ -158,7 +158,8 @@ createRunKeeperUser = (userId, token, done) ->
 
 ####################################################################################################
 
-loadRunKeeperUser = (userId, token, done) ->
+# TODO(koper) Token should not be passed as a parameter here.
+loadRunKeeperUser = (userId, done, token) ->
   logger.warn 'loadRunKeeperUser | id: %d | token: %s', userId, token
 
   finishLoading = (err, res) ->
@@ -194,14 +195,10 @@ module.exports =
       logger.warn 'RunKeeper callback | token: %d | tokenSecret: %d | profile: %j',
         token, tokenSecret, profile
       userId = 'RKU' + profile.id
-      loadRunKeeperUser userId, token, done
+      loadRunKeeperUser userId, done, token
 
     return new RunKeeperStrategy config, callback
 
-  serializeUser: (user, done) ->
-    done null, user.id
+  isRunKeeperId: isRunKeeperId
 
-  deserializeUser: (id, done) ->
-    switch
-      when isRunKeeperId id then loadRunKeeperUser id, undefined, done
-      else done "Unknown user ID: #{id}"
+  loadRunKeeperUser: loadRunKeeperUser

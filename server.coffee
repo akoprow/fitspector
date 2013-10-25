@@ -40,6 +40,14 @@ app.configure ->
 
 passport.use runkeeper.runKeeperStrategy()
 
+serializeUser: (user, done) ->
+  done null, user.id
+
+deserializeUser: (id, done) ->
+  switch
+    when runKeeper.isRunKeeperId id then runKeeper.loadRunKeeperUser id, done
+    else done "Unknown user ID: #{id}"
+
 passport.serializeUser runkeeper.serializeUser
 passport.deserializeUser runkeeper.deserializeUser
 
