@@ -66,10 +66,10 @@ class CompareCtrl
 
       randomScore =
         switch $scope.competitionMode
-          when 'distance' then (random) -> new Distance(random * 10000)  # max daily 10 km
-          when 'time' then (random) -> new Time(random * 60 * 60 * 1)    # max daily 1h
-          when 'elevation' then (random) -> new Distance(random * 300)   # max daily 300m
-          when 'intensity' then (random) -> new Intensity(random * 40)  # max daily 40 pts
+          when 'distance' then (random) -> new Distance {km: random * 10}        # max daily 10 km
+          when 'time' then (random) -> new Time {hours: random}                  # max daily 1h
+          when 'elevation' then (random) -> new Distance {meters: random * 300}  # max daily 300m
+          when 'intensity' then (random) -> new Intensity(random * 40)           # max daily 40 pts
           else throw new Error "Unknown competition mode: #{$scope.competitionMode}"
 
       mkPlayer = (player) -> _.extend {score: randomScore(random.pop())}, player

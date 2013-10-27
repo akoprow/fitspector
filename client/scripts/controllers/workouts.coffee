@@ -5,8 +5,8 @@ class WorkoutsCtrl
     # ----- Gauges -----
     # TODO(koper) Make this dependant on user data.
     # TODO(koper) Make better constructors {hours: 2}, {km: 20}
-    $scope.maxGaugeTime = new Time(2 * 60 * 60)
-    $scope.maxGaugeDistance = new Distance(20 * 1000)
+    $scope.maxGaugeTime = new Time {hours: 2}
+    $scope.maxGaugeDistance = new Distance {km: 20}
 
     # ----- Time navigation -----
 

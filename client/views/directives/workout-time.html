@@ -1,4 +1,4 @@
-<span class="workout-time">
+<span class="workout-time" ng-hide="value.isZero()">
   <icon ng-hide="noIcon" type="time"></icon>
   <span ng-bind="value | workoutTime"></span>
 </span>
