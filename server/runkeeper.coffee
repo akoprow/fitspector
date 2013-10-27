@@ -1,9 +1,12 @@
-####################################################################################################
+###################################################################################################
 # Interface to RunKeeper
 #
 # Author: Adam Koprowski
 ####################################################################################################
 'use strict'
+
+# TODO!!!(koper) This badly needs to be re-factored.  RunKeeper logic should stay here, dependency
+# on Storage should be removed and a new module should be created that would coordinate the two.
 
 async = require 'async'
 logger = require './utils/logger'
@@ -45,6 +48,10 @@ runKeeper =
       path: '/fitnessActivities?pageSize=1000'
       accept: 'application/vnd.com.runkeeper.FitnessActivityFeed+json'
 
+    activityDetails: (uri) ->
+      path: uri
+      accept: 'application/vnd.com.runkeeper.FitnessActivity+json'
+
     profile:
       path: '/profile'
       accept: 'application/vnd.com.runkeeper.Profile+json'
@@ -55,6 +62,7 @@ runKeeper =
   secret: process.env.RUN_KEEPER_SECRET || throw new Error 'Missing RUN_KEEPER_SECRET'
 
   get: (accessToken, config, cb) ->
+    logger.debug 'RunKeeper GET at %s (type: %s)', config.path, config.accept
     opts =
       url: RUNKEEPER_API_URL + config.path
       json: {}
@@ -99,7 +107,7 @@ isRunKeeperId = (id) ->
 
 ####################################################################################################
 
-addWorkout = (userId, workouts, data, cb) ->
+addWorkout = (accessToken, userId, workouts, data, cb) ->
   prefix = "/fitnessActivities/"
   unless string(data.uri).startsWith(prefix)
     cb "Cannot get activity ID from its URI: " + data.uri
@@ -111,51 +119,48 @@ addWorkout = (userId, workouts, data, cb) ->
     cb null, 0
     return
 
-  logger.info "Workout data: %j", data
-  workout =
-    exerciseType: runKeeperWorkoutType(data.type)
-    startTime: data["start_time"]
-    totalDistance: data["total_distance"]
-    totalDuration: data.duration
+  activityDetailsConfig = runKeeper.api.activityDetails data.uri
+  runKeeper.get accessToken, activityDetailsConfig, (err, response) ->
+    # TODO(koper) Handle errors...
+    workout =
+      exerciseType: runKeeperWorkoutType(response.type)
+      startTime: response["start_time"]
+      totalDistance: response["total_distance"]
+      totalDuration: response.duration
 
-  # TODO(koper) Load more data by fetching activity details.
-  # workout.detailsUri = workoutDetails.activity
-
-  # Note workout ID and save workout data.
-  Storage.addWorkout userId, workoutId, workout
-  logger.info "Processed workout ", workoutId, " -> ", workout
-  cb null, 1
+    # Note workout ID and save workout data.
+    Storage.addWorkout userId, workoutId, workout
+    logger.info "Processed workout %s into: %j", workoutId, workout
+    cb null, 1
 
 ####################################################################################################
 
 loadAllWorkouts = (userId, accessToken) ->
-  logger.info "Fetching all workouts for user: ", userId, " with token: ", accessToken
+  logger.info "Fetching all workouts for user: %s", userId
   Storage.getAllUserWorkouts userId, (workouts) ->
     runKeeper.get accessToken, runKeeper.api.userActivities, (err, response) ->
       logger.info 'Existing workouts: %s, RunKeeper error: %s, RunKeeper response: %s', workouts, err, response
-      addWorkoutMap = _.partial(addWorkout, userId, workouts)
+      addWorkoutMap = _.partial(addWorkout, accessToken, userId, workouts)
       cb = (err, data) ->
         if err
-          logger.error "Error while importing workouts for: ", userId, " -> ", err
+          logger.error "Error while importing workouts for: %s -> %j", userId, err
         else
           total = _.reduce(data, ((x, y) -> x + y), 0)
-          logger.info "Imported ", total, "new exercises for ", userId
+          logger.info "Imported %d new exercises for %s", total, userId
 
       async.mapLimit response.items, MAX_WORKOUTS_PROCESSED_AT_A_TIME, addWorkoutMap, cb
 
 ####################################################################################################
 
 createRunKeeperUser = (userId, token, done) ->
-  logger.warn 'createRunKeeperUser | id: %d | token: %d', userId, token
 
   createUser = (err, profile) ->
-    logger.warn 'createUser | %j', profile
     return done err if err
     return done 'Missing user profile' if not profile?
     user = User.fromRunKeeperProfile profile, userId
 
     Storage.updateUserProfile userId, user
-    logger.warn '  createdUser --> | %j', user
+    logger.warn 'Created new user profile: %j', user
     done null, user
 
   runKeeper.get token, runKeeper.api.profile, createUser
@@ -164,7 +169,6 @@ createRunKeeperUser = (userId, token, done) ->
 
 # TODO(koper) Token should not be passed as a parameter here.
 loadRunKeeperUser = (userId, done, token) ->
-  logger.warn 'loadRunKeeperUser | id: %d | token: %s', userId, token
 
   finishLoading = (err, res) ->
     # Invoke the callback
@@ -195,8 +199,6 @@ module.exports =
       callbackURL: runKeeper.callbackURL
 
     callback = (token, tokenSecret, profile, done) ->
-      logger.warn 'RunKeeper callback | token: %d | tokenSecret: %d | profile: %j',
-        token, tokenSecret, profile
       userId = 'RKU' + profile.id
       loadRunKeeperUser userId, done, token
 
