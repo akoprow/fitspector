@@ -6,7 +6,7 @@
 @col-details-width: 90px;
 @col-gauge-label-width: 70px;
 
-@fixed-cols-width:  @col-date-width + @col-sport-icon-width + @col-note-width + @col-details-width + 3*@col-gauge-label-width;
+@fixed-cols-width:  @col-date-width + @col-sport-icon-width + @col-note-width + @col-details-width + 4*@col-gauge-label-width;
 @gauge-cols-width: (@screen-width - @fixed-cols-width) / 3;
 
 @table-rows-sport-color-hover-fadeout: 85%;
@@ -71,7 +71,8 @@
 
     .time-label,
     .distance-label,
-    .elevation-label {
+    .elevation-label,
+    .pace-label {
       width: @col-gauge-label-width;
       padding-right: 0;
     }

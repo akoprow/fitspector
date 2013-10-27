@@ -13,6 +13,7 @@ class IconDirective
             when 'time' then 'time'
             when 'elevation' then 'chevron-up'
             when 'intensity' then 'tint'
+            when 'pace' then 'dashboard'
             else throw new Error "Unknown icon type: #{scope.type}"
         elt.addClass "glyphicon-#{iconId}"
     }

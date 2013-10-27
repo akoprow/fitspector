@@ -21,5 +21,9 @@ class root.Workout
     workout.notes = json.notes
     workout.totalDuration = Time.fromJson json.totalDuration
     workout.totalDistance = Distance.fromJson json.totalDistance
+    if not workout.totalDistance.isZero()
+      workout.pace = new Pace
+        time: workout.totalDuration,
+        distance: workout.totalDistance
 
     return workout

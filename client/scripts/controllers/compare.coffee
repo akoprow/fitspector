@@ -17,15 +17,6 @@ class CompareCtrl
         total: Distance.zero
         days: _.range(0, 7).map( -> Distance.zero)
         
-#      processWorkout = (workout) ->
-#        distance = new Distance(workout.distance * 1000)
-#        # TODO(koper) This needs to be address better.
-#        day = (moment(workout.date).weekday() + 6) % 7
-#        res.total = Distance.plus res.total, distance
-#        res.days[day] = Distance.plus res.days[day], distance
-
-#      _(player.workouts).each processWorkout
-
       return res
 
     # Watch for DB changes and reflect them on $scope.players
