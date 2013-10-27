@@ -33,7 +33,7 @@ app.configure ->
   app.use '/libs', express.static(__dirname + '/client/libs')
   app.use express.cookieSession(
     # TODO(koper) Make sure this does not need to be secure
-    secret: process.env.COOKIE_SECRET || "top-secret"
+    secret: process.env.COOKIE_SECRET || 'top-secret'
   )
   app.use passport.initialize()
   app.use passport.session()
@@ -51,7 +51,7 @@ serializeUser = (user, done) ->
 deserializeUser = (id, done) ->
   switch
     when runKeeper.isRunKeeperId id then runKeeper.loadRunKeeperUser id, done
-    else done "Unknown user ID: #{id}"
+    else done 'Unknown user ID: #{id}'
 
 passport.serializeUser serializeUser
 passport.deserializeUser deserializeUser
