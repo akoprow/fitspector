@@ -69,10 +69,22 @@
           <sorting-ctrl this="exerciseType" selected="{{order}}"></sorting-ctrl>
         </th>
         <th class="notes">Notes</th>
-        <th class="time-label">Time</th>
-        <th class="distance-label">Distance</th>
-        <th class="pace-label">Pace</th>
-        <th class="elevation-label">Elevation</th>
+        <th class="time-label">
+          <span class="sortHandler" ng-click="orderBy('totalDuration.asSeconds()')">Time</span>
+          <sorting-ctrl this="totalDuration.asSeconds()" selected="{{order}}"></sorting-ctrl>
+        </th>
+        <th class="distance-label">
+          <span class="sortHandler" ng-click="orderBy('totalDistance.asMeters()')">Distance</span>
+          <sorting-ctrl this="totalDistance.asMeters()" selected="{{order}}"></sorting-ctrl>
+        </th>
+        <th class="pace-label">
+          <span class="sortHandler" ng-click="orderBy('pace.asTimePerKm().asSeconds()')">Pace</span>
+          <sorting-ctrl this="pace.asTimePerKm().asSeconds()" selected="{{order}}"></sorting-ctrl>
+        </th>
+        <th class="elevation-label">
+          <span class="sortHandler" ng-click="orderBy('totalElevation.asMeters()')">Elevation</span>
+          <sorting-ctrl this="totalElevation.asMeters()" selected="{{order}}"></sorting-ctrl>
+        </th>
 <!--
         <th class="time-gauge">
           <span class="sortHandler" ng-click="orderBy('totalTime.asSeconds()')">Time</span>
@@ -94,11 +106,6 @@
         </th>
       </tr>
       <tr ng-repeat="workout in workouts | orderBy: order" class="sport-{{workout.exerciseType}}">
-<!--
-        <td>
-          {{ workout | json }}
-        </td>
--->
         <td class="date">
           <div ng-bind="workout.startTime | date"></div>
           <div ng-bind="workout.startTime | time"></div>
