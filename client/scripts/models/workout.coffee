@@ -20,6 +20,12 @@ class root.Workout
         time: @totalDuration,
         distance: @totalDistance
 
+    if not @totalDistance.isZero() and not @totalElevation.isZero()
+      # Steepness in meters/km
+      @steepness = new Distance
+        meters: @totalElevation.asMeters() / @totalDistance.asKilometers()
+
+
   detailsUrl: ->
     if not @source?
       null
