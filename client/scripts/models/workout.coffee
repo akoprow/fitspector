@@ -8,6 +8,7 @@ class root.Workout
     # Normalize exerciseType id
     @exerciseType = json.exerciseType.toLowerCase()
     @notes = json.notes
+    @source = json.source
 
     @totalCalories = json.totalCalories # TODO(koper) Create a type for calories
     @totalDistance = new Distance {meters: json.totalDistance}
@@ -19,3 +20,10 @@ class root.Workout
         time: @totalDuration,
         distance: @totalDistance
 
+  detailsUrl: ->
+    if not @source?
+      null
+    else if @source.hasOwnProperty 'runKeeper'
+      @source.runKeeper
+    else
+      null
