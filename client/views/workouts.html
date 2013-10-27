@@ -105,6 +105,11 @@
         <th class="details">
         </th>
       </tr>
+      <tr ng-hide="workouts">
+        <td colspan="8" class="text-center">
+          No workouts in the selected time period.
+        </td>
+      </tr>
       <tr ng-repeat="workout in workouts | orderBy: order" class="sport-{{workout.exerciseType}}">
         <td class="date">
           <div ng-bind="workout.startTime | date"></div>
