@@ -1,13 +1,12 @@
 @screen-width: 1100px;
 
-@col-date-width: 120px;
+@col-date-width: 110px;
 @col-sport-icon-width: 60px;
 @col-notes-width: 200px;
-@col-details-width: 90px;
-@col-gauge-label-width: 70px;
+@col-details-width: 85px;
+@col-metric-width: 100px;
 
-@fixed-cols-width:  @col-date-width + @col-sport-icon-width + @col-notes-width + @col-details-width + 4*@col-gauge-label-width;
-@gauge-cols-width: (@screen-width - @fixed-cols-width) / 3;
+@col-notes-width: @screen-width - (@col-date-width + @col-sport-icon-width + @col-details-width + 4*@col-metric-width);
 
 @table-rows-sport-color-hover-fadeout: 85%;
 @table-rows-sport-color-fadeout: 97%;
@@ -73,16 +72,18 @@
     .distance-label,
     .elevation-label,
     .pace-label {
-      width: @col-gauge-label-width;
+      width: @col-metric-width;
       padding-right: 0;
     }
 
+/*
     .time-gauge,
     .distance-gauge,
     .elevation-gauge {
       width: @gauge-cols-width;
       padding-left: 0 !important;
     }
+*/
 
     th.details,
     td.details {
