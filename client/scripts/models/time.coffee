@@ -25,6 +25,7 @@ class root.Time
 
   hours: -> @t.hours() + HOURS_IN_A_DAY * @t.days()
   minutes: -> @t.minutes()
+  seconds: -> @t.seconds()
 
   asSeconds: -> @t.asSeconds()
 

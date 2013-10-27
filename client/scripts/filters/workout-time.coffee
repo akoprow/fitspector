@@ -2,10 +2,14 @@
 
 class WorkoutTime
   constructor: ->
-    return (time) ->
-      h = time.hours()
-      m = time.minutes()
-      p = if m < 10 then '0' else ''
-      "#{h}:#{p}#{m}"
+    # If short display: mm:ss, otherwise hh:mm
+    return (time, format) ->
+      [h, l] = switch format
+        when 'short'
+          [time.minutes(), time.seconds()]
+        else
+          [time.hours(), time.minutes()]
+      p = if l < 10 then '0' else ''
+      "#{h}:#{p}#{l}"
 
 angular.module('fitspector').filter 'workoutTime', [WorkoutTime]
