@@ -133,7 +133,7 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
       totalCalories: response['total_calories']
       totalDistance: response['total_distance']
       totalDuration: response.duration
-      totalElevationGain: response.climb
+      totalElevation: response.climb
 
     # Delete undefined properties (Firebase does not like them)
     for own key, value of workout

@@ -13,7 +13,7 @@ class root.Workout
     @totalCalories = json.totalCalories # TODO(koper) Create a type for calories
     @totalDistance = new Distance {meters: json.totalDistance}
     @totalDuration = new Time {seconds: json.totalDuration}
-    @totalElevationGain = new Distance {meters: json.totalElevationGain}
+    @totalElevation = new Distance {meters: json.totalElevation}
 
     if not @totalDistance.isZero()
       @pace = new Pace
