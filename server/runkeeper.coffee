@@ -124,14 +124,21 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
     # TODO(koper) Handle errors...
     workout =
       source:
-        runKeeper: response.uri
+        runKeeper: response.activity
       exerciseType: runKeeperWorkoutType(response.type)
       startTime: response['start_time']
       notes: response.notes
       avgHR: response['average_heart_rate']
+
+      totalCalories: response['total_calories']
       totalDistance: response['total_distance']
       totalDuration: response.duration
       totalElevationGain: response.climb
+
+    # Delete undefined properties (Firebase does not like them)
+    for own key, value of workout
+      if not value?
+        delete workout[key]
 
     # Note workout ID and save workout data.
     Storage.addWorkout userId, workoutId, workout
