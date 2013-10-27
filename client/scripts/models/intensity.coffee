@@ -5,9 +5,6 @@ root = exports ? this
 class root.Intensity
   constructor: (@points) ->
 
-  @fromJson: (json) ->
-    new Intensity(json)
-
   # TODO(koper) Derive many of those methods from conversions to/from numerical values.
   @plus: (i0, i1) ->
     new Intensity(i0.points + i1.points)

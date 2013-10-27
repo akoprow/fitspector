@@ -8,10 +8,6 @@ class root.Time
   constructor: (args) ->
     @t = moment.duration args
 
-  # TODO(koper) Make some conventions/patterns for constructing objects from JSON
-  @fromJson: (json) ->
-    new Time {seconds: json}
-
   @plus: (t0, t1) ->
     new Time {seconds: t0.t.asSeconds() + t1.t.asSeconds()}
 

@@ -7,15 +7,12 @@ METERS_IN_KILOMETER = 1000
 class root.Distance
   constructor: (args) ->
     switch
-      when args.meters?
+      when args.hasOwnProperty 'meters'
         @meters = args.meters
-      when args.km?
+      when args.hasOwnProperty 'km'
         @meters = args.km * METERS_IN_KILOMETER
       else
         throw new Error 'Unknown unit when constructing an instance of Distance'
-
-  @fromJson: (json) ->
-    new Distance {meters: json}
 
   @plus: (d0, d1) ->
     new Distance {meters: d0.meters + d1.meters}

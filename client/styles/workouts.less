@@ -2,11 +2,11 @@
 
 @col-date-width: 120px;
 @col-sport-icon-width: 60px;
-@col-note-width: 200px;
+@col-notes-width: 200px;
 @col-details-width: 90px;
 @col-gauge-label-width: 70px;
 
-@fixed-cols-width:  @col-date-width + @col-sport-icon-width + @col-note-width + @col-details-width + 4*@col-gauge-label-width;
+@fixed-cols-width:  @col-date-width + @col-sport-icon-width + @col-notes-width + @col-details-width + 4*@col-gauge-label-width;
 @gauge-cols-width: (@screen-width - @fixed-cols-width) / 3;
 
 @table-rows-sport-color-hover-fadeout: 85%;
@@ -47,11 +47,11 @@
       width: @col-sport-icon-width;
     }
 
-    th.note,
-    td.note {
-      width: @col-note-width;
+    th.notes,
+    td.notes {
+      width: @col-notes-width;
     }
-    td.note {
+    td.notes {
       font-size: 90%;
 
       & > span {
