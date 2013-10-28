@@ -47,14 +47,18 @@
       width: @col-sport-icon-width;
     }
 
-    th.notes,
-    td.notes {
+    th.notes-and-labels,
+    td.notes-and-labels {
       width: @col-notes-width;
     }
-    td.notes {
+    td.notes-and-labels {
       font-size: 90%;
 
-      & > span {
+      .label {
+	margin: 1px;
+      }
+
+      .notes {
         display: block;
         white-space: nowrap;
         overflow: hidden;

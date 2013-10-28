@@ -68,7 +68,7 @@
           <span class="sortHandler" ng-click="orderBy('exerciseType')">Sport</span>
           <sorting-ctrl this="exerciseType" selected="{{order}}"></sorting-ctrl>
         </th>
-        <th class="notes">Notes</th>
+        <th class="notes-and-labels">Notes</th>
         <th class="time-label">
           <span class="sortHandler" ng-click="orderBy('totalDuration.asSeconds()')">Time</span>
           <sorting-ctrl this="totalDuration.asSeconds()" selected="{{order}}"></sorting-ctrl>
@@ -119,8 +119,9 @@
         <td class="sport">
           <sport-icon sport-id="workout.exerciseType"></sport-icon>
         </td>
-        <td class="notes">
-          <span ng-bind="workout.notes"></span>
+        <td class="notes-and-labels">
+          <span ng-repeat="label in workout.labels" class="label label-primary" ng-bind="label"></span>
+          <span class="notes" ng-bind="workout.notes"></span>
         </td>
         <td class="time-label">
           <workout-time value="workout.totalDuration"></workout-time>

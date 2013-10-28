@@ -14,6 +14,7 @@ class root.Workout
     @totalDistance = new Distance {meters: json.totalDistance}
     @totalDuration = new Time {seconds: json.totalDuration}
     @totalElevation = new Distance {meters: json.totalElevation}
+    @labels = json.labels
 
     if @totalDistance.isZero()
       @pace = null
