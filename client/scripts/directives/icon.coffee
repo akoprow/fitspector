@@ -10,10 +10,11 @@ class IconDirective
         iconId =
           switch elt.attr 'type'
             when 'distance' then 'road'
-            when 'time' then 'time'
             when 'elevation' then 'chevron-up'
+            when 'hr' then 'heart'
             when 'intensity' then 'tint'
             when 'pace' then 'dashboard'
+            when 'time' then 'time'
             else throw new Error "Unknown icon type: #{scope.type}"
         elt.addClass "glyphicon-#{iconId}"
     }

@@ -77,6 +77,10 @@
           <span class="sortHandler" ng-click="orderBy('totalDistance.asMeters()')">Distance</span>
           <sorting-ctrl this="totalDistance.asMeters()" selected="{{order}}"></sorting-ctrl>
         </th>
+        <th class="hr-label">
+          <span class="sortHandler" ng-click="orderBy('avgHR')">HR (avg)</span>
+          <sorting-ctrl this="avgHR" selected="{{order}}"></sorting-ctrl>
+        </th>
         <th class="pace-label">
           <span class="sortHandler" ng-click="orderBy('pace.asTimePerKm().asSeconds()')">Pace</span>
           <sorting-ctrl this="pace.asTimePerKm().asSeconds()" selected="{{order}}"></sorting-ctrl>
@@ -124,17 +128,20 @@
           <span class="notes" ng-bind="workout.notes"></span>
         </td>
         <td class="time-label">
-          <workout-time value="workout.totalDuration"></workout-time>
+          <time value="workout.totalDuration"></time>
         </td>
         <td class="distance-label">
-          <workout-distance value="workout.totalDistance"></workout-distance>
+          <distance value="workout.totalDistance"></distance>
+        </td>
+        <td class="hr-label">
+          <hr value="workout.avgHR"></hr>
         </td>
         <td class="pace-label">
-          <workout-pace value="workout.pace"></workout-pace>
+          <pace value="workout.pace"></pace>
         </td>
         <td class="elevation-label">
-          <workout-elevation value="workout.totalElevation"></workout-elevation>
-          <workout-steepness value="workout.steepness"></workout-steepness>
+          <elevation value="workout.totalElevation"></elevation>
+          <steepness value="workout.steepness"></steepness>
         </td>
 <!--
         <td class="time-gauge">

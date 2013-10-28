@@ -10,6 +10,7 @@ class root.Workout
     @notes = json.notes
     @source = json.source
 
+    @avgHR = json.avgHR
     @totalCalories = json.totalCalories # TODO(koper) Create a type for calories
     @totalDistance = new Distance {meters: json.totalDistance}
     @totalDuration = new Time {seconds: json.totalDuration}
