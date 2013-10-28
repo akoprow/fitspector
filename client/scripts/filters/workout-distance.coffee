@@ -3,6 +3,7 @@
 class WorkoutDistance
   constructor: ->
     return (distance, format) ->
+      return '' if not distance?
       switch format
         when 'meters'
           distance.asMeters().toFixed(1)

@@ -4,6 +4,7 @@ class WorkoutTime
   constructor: ->
     # If short display: mm:ss, otherwise hh:mm
     return (time, format) ->
+      return '' if not time?
       [h, l] = switch format
         when 'short'
           [time.minutes(), time.seconds()]

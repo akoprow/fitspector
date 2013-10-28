@@ -8,9 +8,9 @@ class root.Distance
   constructor: (args) ->
     switch
       when args.hasOwnProperty 'meters'
-        @meters = args.meters
+        @meters = args.meters || 0
       when args.hasOwnProperty 'km'
-        @meters = args.km * METERS_IN_KILOMETER
+        @meters = (args.km || 0) * METERS_IN_KILOMETER
       else
         throw new Error 'Unknown unit when constructing an instance of Distance'
 

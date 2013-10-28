@@ -1,4 +1,4 @@
-<span class="workout-pace" ng-hide="value.isZero()">
+<span class="workout-pace" ng-show="value">
   <icon ng-hide="noIcon" type="pace"></icon>
   <span ng-bind="value.asTimePerKm() | workoutTime: 'short'"></span> <span class="unit">min/km</span>
 </span>

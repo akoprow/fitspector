@@ -15,12 +15,16 @@ class root.Workout
     @totalDuration = new Time {seconds: json.totalDuration}
     @totalElevation = new Distance {meters: json.totalElevation}
 
-    if not @totalDistance.isZero()
+    if @totalDistance.isZero()
+      @pace = null
+    else
       @pace = new Pace
         time: @totalDuration,
         distance: @totalDistance
 
-    if not @totalDistance.isZero() and not @totalElevation.isZero()
+    if @totalDistance.isZero() || @totalElevation.isZero()
+      @steepness = null
+    else
       # Steepness in meters/km
       @steepness = new Distance
         meters: @totalElevation.asMeters() / @totalDistance.asKilometers()
