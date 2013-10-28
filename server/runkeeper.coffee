@@ -122,13 +122,23 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
   activityDetailsConfig = runKeeper.api.activityDetails data.uri
   runKeeper.get accessToken, activityDetailsConfig, (err, response) ->
     # TODO(koper) Handle errors...
+    noteLines = response.notes?.match /^.*((\r\n|\n|\r)|$)/gm
+    noteLines ?= []
+    labels = []
+    if noteLines.length > 0 and string(_.last noteLines).startsWith '#'
+      lastLine = noteLines.pop()
+      labels = lastLine.match /\#([\w-]+)/g
+      # Drop leading '#' from labels.
+      labels = _(labels).map (s) -> string(s).chompLeft('#').toString()
+
     workout =
       source:
         runKeeper: response.activity
       exerciseType: runKeeperWorkoutType(response.type)
       startTime: response['start_time']
-      notes: response.notes
+      notes: noteLines.join '\n'
       avgHR: response['average_heart_rate']
+      labels: labels
 
       totalCalories: response['total_calories']
       totalDistance: response['total_distance']
