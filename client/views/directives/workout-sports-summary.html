@@ -1,0 +1,36 @@
+<div class="sport-summary">
+  <table>
+    <tr class="icon">
+      <th>
+        <div class="btn-group">
+          <button type="button"
+                  class="btn btn-xs btn-primary"
+                  ng-repeat="type in allSummaryTypes"
+                  ng-class="{active: summaryType == type.id}"
+                  ng-click="setSportSummaryType(type)"
+                  ng-bind="type.name">
+          </button>
+        </div>
+      </th>
+      <td class="data">
+        <div class="unfilter" ng-show="sportFilter != 'all'">(Click again to clear the filter)</div>
+      </td>
+    </tr>
+    <tr class="data-row sessions">
+      <th><span class="text">Sessions <icon type="sessions"></icon></th>
+      <td class="data"></td>
+    </tr>
+    <tr class="data-row time">
+      <th><span class="text">Time <icon type="time"></icon></th>
+      <td class="data"></td>
+    </tr>
+    <tr class="data-row distance">
+      <th><span class="text">Distance <icon type="distance"></icon></th>
+      <td class="data"></td>
+    </tr>
+    <tr class="data-row elevation">
+      <th><span class="text">Elevation gain <icon type="elevation"><icon></th>
+      <td class="data"></td>
+    </tr>
+  </table>
+</div>

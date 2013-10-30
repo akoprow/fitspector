@@ -6,6 +6,7 @@
 'use strict'
 
 Firebase = require 'firebase'
+logger = require './utils/logger'
 
 ####################################################################################################
 
@@ -49,6 +50,11 @@ getUserProfile = (userId, done, error) ->
 
 ####################################################################################################
 
+logLogin = (userId) ->
+  (mkUserProfileRef userId).update {lastLogin: new Date()}
+
+####################################################################################################
+
 updateUserProfile = (userId, profile) ->
   (mkUserProfileRef userId).update profile
 
@@ -58,4 +64,6 @@ module.exports =
   addWorkout: addWorkout
   getAllUserWorkouts: getAllUserWorkouts
   getUserProfile: getUserProfile
+  logLogin: logLogin
   updateUserProfile: updateUserProfile
+

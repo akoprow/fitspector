@@ -180,6 +180,7 @@ createRunKeeperUser = (userId, token, done) ->
     return done err if err
     return done 'Missing user profile' if not profile?
     user = User.fromRunKeeperProfile profile, userId
+    user.joinedAt = new Date()
 
     Storage.updateUserProfile userId, user
     logger.warn 'Created new user profile: %j', user
@@ -195,6 +196,8 @@ loadRunKeeperUser = (userId, done, token) ->
   finishLoading = (err, res) ->
     # Invoke the callback
     done err, res
+    # Mark login
+    Storage.logLogin userId
     # and then asynchronously load all user's workouts
     loadAllWorkouts userId, token if token? # provided we have the token
 
