@@ -1,5 +1,4 @@
 <div class="sport-summary">
-  {{sports | json}}
   <table>
     <tr class="icon">
       <th>
@@ -14,7 +13,9 @@
         </div>
       </th>
       <td class="data">
-        <div class="unfilter" ng-show="sportFilter != 'all'">(Click again to clear the filter)</div>
+        <div class="unfilter" ng-show="sportFilter != 'all'">
+          (Click again to clear the filter)
+        </div>
       </td>
     </tr>
     <tr class="data-row sessions">
