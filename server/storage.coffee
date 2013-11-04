@@ -28,6 +28,9 @@ mkUserWorkoutRef = (userId, workoutId) ->
 mkUserProfileRef = (userId) ->
   (mkUserRef userId).child('profile')
 
+mkUserSettingsRef = (userId) ->
+  (mkUserRef userId).child('userSettings')
+
 ####################################################################################################
 
 getAllUserWorkouts = (userId, done, error) ->
@@ -49,6 +52,13 @@ getUserProfile = (userId, done, error) ->
 
 ####################################################################################################
 
+getUserSettings = (userId, done, error) ->
+  success (settings) -> done settings.val()
+  failure = -> error()
+  (mkUserSettingsRef userId).once 'value', success, failure
+
+####################################################################################################
+
 updateUserProfile = (userId, profile) ->
   (mkUserProfileRef userId).update profile
 
@@ -59,3 +69,4 @@ module.exports =
   getAllUserWorkouts: getAllUserWorkouts
   getUserProfile: getUserProfile
   updateUserProfile: updateUserProfile
+  getUserSettings: getUserSettings
