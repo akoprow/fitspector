@@ -16,23 +16,34 @@
         <div class="unfilter" ng-show="sportFilter != 'all'">
           (Click again to clear the filter)
         </div>
+        <td class="data" ng-repeat="(sportId, _) in sports">
+          <sport-icon sport-id="sportId"></sport-icon>
+        </td>
       </td>
     </tr>
     <tr class="data-row sessions">
       <th><span class="text">Sessions <icon type="sessions"></icon></th>
-      <td class="data"></td>
+      <td class="data" ng-repeat="sport in sports">
+        <span ng-bind="sport.sessions"></span>
+      </td>
     </tr>
     <tr class="data-row time">
       <th><span class="text">Time <icon type="time"></icon></th>
-      <td class="data"></td>
+      <td class="data" ng-repeat="sport in sports">
+        <time no-icon="true" value="sport.totalDuration"></time>
+      </td>
     </tr>
     <tr class="data-row distance">
       <th><span class="text">Distance <icon type="distance"></icon></th>
-      <td class="data"></td>
+      <td class="data" ng-repeat="sport in sports">
+        <distance no-icon="true" value="sport.totalDistance"></distance>
+      </td>
     </tr>
     <tr class="data-row elevation">
       <th><span class="text">Elevation gain <icon type="elevation"><icon></th>
-      <td class="data"></td>
+      <td class="data" ng-repeat="sport in sports">
+        <elevation no-icon="true" value="sport.totalElevation"></elevation>
+      </td>
     </tr>
   </table>
 </div>
