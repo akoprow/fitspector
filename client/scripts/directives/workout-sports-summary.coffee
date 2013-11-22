@@ -1,5 +1,7 @@
 'use strict'
 
+ELEMENT_WIDTH = 60
+
 class WorkoutSportsSummaryDirective
   constructor: ->
     return {
@@ -23,6 +25,9 @@ class WorkoutSportsSummaryDirective
         recompute scope
         scope.$watch 'workouts', (_) -> recompute scope
         scope.$watch 'sportFilter', (_) -> recompute scope
+
+        scope.place = (index) ->
+          left: "#{index * ELEMENT_WIDTH}px"
     }
 
 

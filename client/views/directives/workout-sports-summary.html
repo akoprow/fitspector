@@ -16,33 +16,41 @@
         <div class="unfilter" ng-show="sportFilter != 'all'">
           (Click again to clear the filter)
         </div>
-        <td class="data" ng-repeat="(sportId, _) in sports">
+        <span class="value" ng-repeat="(sportId, _) in sports" ng-style="place($index)">
           <sport-icon sport-id="sportId"></sport-icon>
-        </td>
+        </span>
       </td>
     </tr>
     <tr class="data-row sessions">
       <th><span class="text">Sessions <icon type="sessions"></icon></th>
-      <td class="data" ng-repeat="sport in sports">
-        <span ng-bind="sport.sessions"></span>
+      <td class="data">
+        <span class="value" ng-repeat="sport in sports" ng-style="place($index)">
+          <span ng-bind="sport.sessions"></span><span class="unit"> x</span>
+        </span>
       </td>
     </tr>
     <tr class="data-row time">
       <th><span class="text">Time <icon type="time"></icon></th>
-      <td class="data" ng-repeat="sport in sports">
-        <time no-icon="true" value="sport.totalDuration"></time>
+      <td class="data">
+        <span class="value" ng-repeat="sport in sports" ng-style="place($index)">
+          <time no-icon="true" value="sport.totalDuration"></time>
+        </span>
       </td>
     </tr>
     <tr class="data-row distance">
       <th><span class="text">Distance <icon type="distance"></icon></th>
-      <td class="data" ng-repeat="sport in sports">
-        <distance no-icon="true" value="sport.totalDistance"></distance>
+      <td class="data">
+        <span class="value" ng-repeat="sport in sports" ng-style="place($index)">
+          <distance no-icon="true" value="sport.totalDistance"></distance>
+        </span>
       </td>
     </tr>
     <tr class="data-row elevation">
       <th><span class="text">Elevation gain <icon type="elevation"><icon></th>
-      <td class="data" ng-repeat="sport in sports">
-        <elevation no-icon="true" value="sport.totalElevation"></elevation>
+      <td class="data">
+        <span class="value" ng-repeat="sport in sports" ng-style="place($index)">
+          <elevation no-icon="true" value="sport.totalElevation"></elevation>
+        </span>
       </td>
     </tr>
   </table>
