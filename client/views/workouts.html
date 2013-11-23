@@ -74,7 +74,8 @@
 
     <ul class="list-group">
       <li class="list-group-item">
-        <workout-sports-summary workouts="workouts | filter: q">
+        <!-- TODO(koper) The '| filter: q' should be applied to the expression below, but it triggers endless digest cycles... -->
+        <workout-sports-summary workouts="workouts">
         </workout-sports-summary>
       </li>
     </ul>
