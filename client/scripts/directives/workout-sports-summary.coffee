@@ -2,6 +2,14 @@
 
 ELEMENT_WIDTH = 60
 
+
+# Empty controller for highlighting table columns.
+class WorkoutSportsSummaryDirectiveController
+  constructor: ->
+
+angular.module('fitspector').controller 'WorkoutSportsSummaryDirectiveController', [WorkoutSportsSummaryDirectiveController]
+
+
 class WorkoutSportsSummaryDirective
   constructor: ->
     return {
