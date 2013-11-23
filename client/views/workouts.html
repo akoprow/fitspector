@@ -137,7 +137,8 @@
           No workouts in the selected time period.
         </td>
       </tr>
-      <tr ng-repeat="workout in workouts | filter: q | orderBy: order" class="sport-{{workout.exerciseType}}">
+      <tr ng-repeat="workout in workouts | filter: q | orderBy: order"
+          class="animate-workout-list sport-{{workout.exerciseType}}">
         <td class="date">
           <div ng-bind="workout.startTime | date"></div>
           <div ng-bind="workout.startTime | time"></div>
