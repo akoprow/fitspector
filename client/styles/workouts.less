@@ -147,25 +147,26 @@
   }
 }
 
+.transition(@duration: 0.2s, @ease: ease-out) {
+  -webkit-transition: all @duration @ease;
+  -moz-transition: all @duration @ease;
+  -o-transition: all @duration @ease;
+  transition: all @duration @ease;
+}
+
 .animate-workout-list {
-  &.ng-move,
   &.ng-enter,
   &.ng-leave {
-    -webkit-transition: all linear 0.3s;
-    transition: all linear 0.3s;
+    .transition(0.2s, linear)
   }
 
   &.ng-leave.ng-leave-active,
-  &.ng-move,
   &.ng-enter {
     opacity: 0;
-    max-height: 0;
   }
 
   &.ng-leave,
-  &.ng-move.ng-move-active,
   &.ng-enter.ng-enter-active {
     opacity: 1;
-    max-height: 60px;
   }
 }
