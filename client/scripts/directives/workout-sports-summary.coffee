@@ -58,13 +58,20 @@ angular.module('fitspector').directive 'workoutSportsSummary', [WorkoutSportsSum
 
 
 class WorkoutSportsSummaryAnimation
+  getPosition = (element) ->
+    index = element.scope().$index;
+    return {
+      left: index * ELEMENT_WIDTH
+    }
+
   constructor: ->
     return {
+      enter: (element, done) ->
+        jQuery(element).attr(getPosition element)
+        done()
+
       move: (element, done) ->
-        index = jQuery(element).index()
-        props =
-          left: index * ELEMENT_WIDTH
-        jQuery(element).animate props, done
+        jQuery(element).animate(getPosition element, done)
     }
 
 
