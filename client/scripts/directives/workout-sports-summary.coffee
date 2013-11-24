@@ -33,9 +33,6 @@ class WorkoutSportsSummaryDirective
         recompute scope
         scope.$watch 'workouts', (_) -> recompute scope
         scope.$watch 'sportFilter', (_) -> recompute scope
-
-        scope.place = (index) ->
-          left: "#{index * ELEMENT_WIDTH}px"
     }
 
 
@@ -58,3 +55,17 @@ recompute = (scope) ->
 
 
 angular.module('fitspector').directive 'workoutSportsSummary', [WorkoutSportsSummaryDirective]
+
+
+class WorkoutSportsSummaryAnimation
+  constructor: ->
+    return {
+      move: (element, done) ->
+        index = jQuery(element).index()
+        props =
+          left: index * ELEMENT_WIDTH
+        jQuery(element).animate props, done
+    }
+
+
+angular.module('fitspector').animation '.sport-summary-value', [WorkoutSportsSummaryAnimation]

@@ -21,8 +21,7 @@
         <span ng-repeat="(sportId, _) in sports"
               ng-mouseover="Col.active = $index"
               ng-mouseout="Col.active = -1"
-              ng-style="place($index)"
-              class="value">
+              class="sport-summary-value">
           <sport-icon sport-id="sportId"></sport-icon>
         </span>
       </td>
@@ -34,10 +33,9 @@
       </th>
       <td class="data">
         <span ng-repeat="(sportId, sport) in sports"
-              ng-style="place($index)"
               ng-mouseover="Col.active = $index"
               ng-mouseout="Col.active = -1"
-              class="value"
+              class="sport-summary-value"
               ng-class="{ 'bg-for-{{sportId}}': Col.active == $index }">
           <span ng-switch="metric">
             <span ng-switch-when="sessions">

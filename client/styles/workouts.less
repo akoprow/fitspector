@@ -145,21 +145,21 @@
       .workout-list-row(@sport-wtr-color);
     }
   }
-}
 
-.animate-workout-list {
-  &.ng-enter,
-  &.ng-leave {
-    .transition(0.2s, linear)
-  }
+  .animate-workout-list {
+    &.ng-enter,
+    &.ng-leave {
+      .transition(@transition-time, linear)
+    }
 
-  &.ng-leave.ng-leave-active,
-  &.ng-enter {
-    opacity: 0;
-  }
+    &.ng-leave.ng-leave-active,
+    &.ng-enter {
+      opacity: 0;
+    }
 
-  &.ng-leave,
-  &.ng-enter.ng-enter-active {
-    opacity: 1;
+    &.ng-leave,
+    &.ng-enter.ng-enter-active {
+      opacity: 1;
+    }
   }
 }
