@@ -18,45 +18,47 @@
         <div class="unfilter" ng-show="sportFilter != 'all'">
           (Click again to clear the filter)
         </div>
-        <span class="value" ng-repeat="(sportId, _) in sports" ng-style="place($index)"
-              ng-mouseover="Col.active = $index" ng-mouseout="Col.active = -1">
+        <span ng-repeat="(sportId, _) in sports"
+              ng-mouseover="Col.active = $index"
+              ng-mouseout="Col.active = -1"
+              ng-style="place($index)"
+              class="value">
           <sport-icon sport-id="sportId"></sport-icon>
         </span>
       </td>
     </tr>
-    <tr class="data-row sessions">
-      <th><span class="text">Sessions <icon type="sessions"></icon></th>
+    <tr ng-repeat="metric in ['sessions', 'time', 'distance', 'elevation']"
+        class="data-row" ng-class="metric">
+      <th>
+        <span class="text"><span ng-bind="metric"></span> <icon type="{{metric}}"></icon>
+      </th>
       <td class="data">
-        <span class="value" ng-repeat="(sportId, sport) in sports" ng-style="place($index)"
-              ng-class="{ 'bg-for-{{sportId}}': Col.active == $index }" ng-mouseover="Col.active = $index" ng-mouseout="Col.active = -1">
-          <span ng-bind="sport.sessions"></span><span class="unit"> x</span>
-        </span>
-      </td>
-    </tr>
-    <tr class="data-row time">
-      <th><span class="text">Time <icon type="time"></icon></th>
-      <td class="data">
-        <span class="value" ng-repeat="(sportId, sport) in sports" ng-style="place($index)"
-              ng-class="{ 'bg-for-{{sportId}}': Col.active == $index }" ng-mouseover="Col.active = $index" ng-mouseout="Col.active = -1">
-          <time no-icon="true" value="sport.totalDuration"></time>
-        </span>
-      </td>
-    </tr>
-    <tr class="data-row distance">
-      <th><span class="text">Distance <icon type="distance"></icon></th>
-      <td class="data">
-        <span class="value" ng-repeat="(sportId, sport) in sports" ng-style="place($index)"
-              ng-class="{ 'bg-for-{{sportId}}': Col.active == $index }" ng-mouseover="Col.active = $index" ng-mouseout="Col.active = -1">
-          <distance no-icon="true" value="sport.totalDistance"></distance>
-        </span>
-      </td>
-    </tr>
-    <tr class="data-row elevation">
-      <th><span class="text">Elevation gain <icon type="elevation"><icon></th>
-      <td class="data">
-        <span class="value" ng-repeat="(sportId, sport) in sports" ng-style="place($index)"
-              ng-class="{ 'bg-for-{{sportId}}': Col.active == $index }" ng-mouseover="Col.active = $index" ng-mouseout="Col.active = -1">
-          <elevation no-icon="true" value="sport.totalElevation"></elevation>
+        <span ng-repeat="(sportId, sport) in sports"
+              ng-style="place($index)"
+              ng-mouseover="Col.active = $index"
+              ng-mouseout="Col.active = -1"
+              class="value"
+              ng-class="{ 'bg-for-{{sportId}}': Col.active == $index }">
+          <span ng-switch="metric">
+            <span ng-switch-when="sessions">
+              <span ng-bind="sport.sessions"></span><span class="unit"> x</span>
+            </span>
+            <time
+               ng-switch-when="time"
+               no-icon="true"
+               value="sport.totalDuration">
+            </time>
+            <distance
+               ng-switch-when="distance"
+               no-icon="true"
+               value="sport.totalDistance">
+            </distance>
+            <elevation
+               ng-switch-when="elevation"
+               no-icon="true"
+               value="sport.totalElevation">
+            </elevation>
+          </span>
         </span>
       </td>
     </tr>
