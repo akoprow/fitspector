@@ -2,9 +2,9 @@
 
 class WorkoutsCtrl
   constructor: (DataService, $scope, $rootScope) ->
+
     # ----- Gauges -----
     # TODO(koper) Make this dependant on user data.
-    # TODO(koper) Make better constructors {hours: 2}, {km: 20}
     $scope.maxGaugeTime = new Time {hours: 2}
     $scope.maxGaugeDistance = new Distance {km: 20}
 
@@ -45,18 +45,28 @@ class WorkoutsCtrl
           time.add 'weeks', delta
       adjustTime time
 
-    $scope.setMode = (newMode) ->
+    $scope.setMode = (newMode) =>
       $scope.mode = newMode
       adjustTime $scope.timeStart
+      while ($scope.timeStart.isAfter @timeRangeEnd)
+        $scope.prev()
+      while ($scope.timeEnd().isBefore @timeRangeBeg)
+        $scope.next()
       updateTimeDesc()
 
     $scope.next = ->
       timeMove 1, $scope.timeStart
       updateTimeDesc()
 
+    $scope.nextDisabled = =>
+      return (timeMove 1, $scope.timeStart.clone()).isAfter @timeRangeEnd
+
     $scope.prev = ->
       timeMove -1, $scope.timeStart
       updateTimeDesc()
+
+    $scope.prevDisabled = =>
+      return (timeMove -1, $scope.timeEnd()).isBefore @timeRangeBeg
 
     $scope.goNow = ->
       $scope.timeStart = moment()
@@ -71,11 +81,15 @@ class WorkoutsCtrl
 
     # ----- List of workouts (passing filters) -----
 
-    recomputeWorkouts = ->
+    recomputeWorkouts = =>
+      @timeRangeEnd = moment()
+      @timeRangeBeg = moment()
+
       timeBeg = $scope.timeStart
       timeEnd = $scope.timeEnd()
 
-      withinTimeRange = (workout) ->
+      withinTimeRange = (workout) =>
+        @timeRangeBeg = workout.startTime if workout.startTime.isBefore @timeRangeBeg
         (workout.startTime.isBefore timeEnd) &&
           ((workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg))
       $scope.workouts = _($rootScope.allWorkouts).filter withinTimeRange
