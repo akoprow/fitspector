@@ -1,7 +1,5 @@
 'use strict';
 
-settings = require('./userSettings').UserSettings
-
 root = exports ? this
 
 class root.User
@@ -11,4 +9,4 @@ class root.User
     isMale: profile.gender is 'M'
     birthday: new Date(profile.birthday)
     smallImgUrl: profile['medium_picture'] || ''
-    settings: settings.defaultSettings()
+    settings: new UserSettings

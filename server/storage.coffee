@@ -28,8 +28,8 @@ mkUserWorkoutRef = (userId, workoutId) ->
 mkUserProfileRef = (userId) ->
   (mkUserRef userId).child('profile')
 
-mkUserSettingsRef = (userId) ->
-  (mkUserRef userId).child('userSettings')
+tingsRef = (userId) ->
+  (mkUserRef userId).child('settings')
 
 ####################################################################################################
 
@@ -53,7 +53,7 @@ getUserProfile = (userId, done, error) ->
 ####################################################################################################
 
 getUserSettings = (userId, done, error) ->
-  success (settings) -> done settings.val()
+  success = (settings) -> done settings.val()
   failure = -> error()
   (mkUserSettingsRef userId).once 'value', success, failure
 
