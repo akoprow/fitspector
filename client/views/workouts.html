@@ -106,13 +106,16 @@
           <sorting-ctrl this="avgHR" selected="{{order}}"></sorting-ctrl>
         </th>
         <th class="pace-label">
-          <span class="sortHandler" ng-click="orderBy('pace.asTimePerKm().asSeconds()')">Pace</span>
+          <span class="sortHandler" ng-click="orderBy('pace.asTimePerKm().asSeconds()')">Pace (avg)</span>
           <sorting-ctrl this="pace.asTimePerKm().asSeconds()" selected="{{order}}"></sorting-ctrl>
         </th>
         <th class="elevation-label">
           <span class="sortHandler" ng-click="orderBy('totalElevation.asMeters()')">Elevation</span>
           <sorting-ctrl this="totalElevation.asMeters()" selected="{{order}}"></sorting-ctrl>
-          <div>(Steepness)</div>
+          <div class="sortHandler" ng-click="orderBy('steepness.asMeters()')">
+            (Steepness)
+            <sorting-ctrl this="steepness.asMeters()" selected="{{order}}"></sorting-ctrl>
+          </div>
         </th>
 <!--
         <th class="time-gauge">
