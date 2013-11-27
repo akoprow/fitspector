@@ -299,7 +299,6 @@ module.exports = (grunt) ->
       dev: [
         'less'
         'preprocess'
-        'coffee:all'
         'sprite'
       ]
       test: [
@@ -315,6 +314,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'server', [
     'env:dev'
     'copy'
+    'coffee:all'
     'concurrent:dev'
     'express:fitspector'
     'watch'
@@ -324,6 +324,7 @@ module.exports = (grunt) ->
     'env:prod'
     'clean:dist'
     'copy'
+    'coffee:all'
     'concurrent:dev'
     'useminPrepare'
     'copy:dist'

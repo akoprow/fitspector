@@ -28,7 +28,7 @@ mkUserWorkoutRef = (userId, workoutId) ->
 mkUserProfileRef = (userId) ->
   (mkUserRef userId).child('profile')
 
-tingsRef = (userId) ->
+mkUserSettingsRef = (userId) ->
   (mkUserRef userId).child('settings')
 
 ####################################################################################################
