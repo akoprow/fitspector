@@ -163,6 +163,9 @@
         </td>
         <td class="hr-label">
           <hr value="workout.avgHR"></hr>
+          <workout-gauge-hr zones="workout.hrZones"
+                            max-gauge-time="maxGaugeTime">
+          </workout-gauge-hr>
         </td>
         <td class="pace-label">
           <pace value="workout.pace"></pace>
@@ -173,7 +176,7 @@
         </td>
 <!--
         <td class="time-gauge">
-          <workout-time-gauge time="workout.time" max-gauge-time="maxGaugeTime"></workout-time-gauge>
+
         </td>
         <td class="distance-gauge">
           <workout-distance-gauge distance="workout.distance" max-gauge-distance="maxGaugeDistance"></workout-distance-gauge>
