@@ -19,3 +19,11 @@ class root.Zones
   getTotal: ->
     @total = _(@zones).reduce @Unit.plus, @Unit.zero unless @total
     @total
+
+  # TODO(koper) This should eventually go away and be replaced by real zones.
+  @splitIntoRandomZones: (max, Unit) ->
+    split = _.range(6).map -> Math.random()
+    plus = (memo, num) -> memo + num
+    total = split.reduce plus, 0
+    zones = _.map split, (v) -> Unit.fraction max, (v / total)
+    return new Zones(zones, Unit)

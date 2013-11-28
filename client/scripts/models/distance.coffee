@@ -26,6 +26,9 @@ class root.Distance
   @ratio: (t0, t1) ->
     t0.meters / t1.meters
 
+  @fraction: (d0, f) ->
+    new Distance {meters: d0.meters * f}
+
   isZero: -> @meters == 0
 
   asKilometers: -> @meters / METERS_IN_KILOMETER

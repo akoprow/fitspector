@@ -4,7 +4,7 @@ class WorkoutsCtrl
   constructor: (DataService, $scope, $rootScope) ->
 
     # ----- Gauges -----
-    # TODO(koper) Make this dependant on user data.
+    # TODO(koper) Take this from user settings?
     $scope.maxGaugeTime = new Time {hours: 2}
     $scope.maxGaugeDistance = new Distance {km: 20}
 
