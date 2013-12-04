@@ -97,13 +97,13 @@
           <span class="sortHandler" ng-click="orderBy('totalDuration.asSeconds()')">Time</span>
           <sorting-ctrl this="totalDuration.asSeconds()" selected="{{order}}"></sorting-ctrl>
         </th>
-        <th class="distance-label">
-          <span class="sortHandler" ng-click="orderBy('totalDistance.asMeters()')">Distance</span>
-          <sorting-ctrl this="totalDistance.asMeters()" selected="{{order}}"></sorting-ctrl>
-        </th>
         <th class="hr-label">
           <span class="sortHandler" ng-click="orderBy('avgHR')">HR (avg)</span>
           <sorting-ctrl this="avgHR" selected="{{order}}"></sorting-ctrl>
+        </th>
+        <th class="distance-label">
+          <span class="sortHandler" ng-click="orderBy('totalDistance.asMeters()')">Distance</span>
+          <sorting-ctrl this="totalDistance.asMeters()" selected="{{order}}"></sorting-ctrl>
         </th>
         <th class="pace-label">
           <span class="sortHandler" ng-click="orderBy('pace.asTimePerKm().asSeconds()')">Pace (avg)</span>
@@ -142,27 +142,23 @@
           <span ng-repeat="label in workout.labels" class="label label-primary" ng-bind="label"></span>
           <span class="notes" ng-bind="workout.notes"></span>
         </td>
-        <td class="time-label">
+        <td class="time-and-hr" colspan="2">
           <time value="workout.totalDuration"></time>
-        </td>
-        <td class="distance-label">
-          <distance value="workout.totalDistance"></distance>
-        </td>
-        <td class="hr-label">
           <hr value="workout.avgHR"></hr>
           <workout-gauge type="hr"
                          zones="workout.hrZones"
                          gauge-max="maxGaugeTime">
           </workout-gauge>
         </td>
-        <td class="pace-label">
+        <td class="distance-and-pace" colspan="2">
+          <distance value="workout.totalDistance"></distance>
           <pace value="workout.pace"></pace>
           <workout-gauge type="pace"
                          zones="workout.paceZones"
                          gauge-max="maxGaugeDistance">
           </workout-gauge>
         </td>
-        <td class="elevation-label">
+        <td>
           <elevation value="workout.totalElevation"></elevation>
           <steepness value="workout.steepness"></steepness>
         </td>

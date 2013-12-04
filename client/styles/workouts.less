@@ -24,33 +24,45 @@
     margin-top: 20px;
     table-layout: fixed;
 
-    th.date,
-    td.date,
-    th.sport,
-    td.sport,
-    th.time-gauge,
-    th.distance-gauge,
-    th.elevation-gauge {
+    th {
       text-align: center;
     }
-    td {
+
+    th, td {
       vertical-align: middle;
+
+      &.time-and-hr,
+      &.distance-and-pace {
+        vertical-align: top;
+      }
+
+      &.date,
+      &.sport {
+        text-align: center;
+      }
+
+      &.date {
+        width: @col-date-width;
+      }
+      &.sport {
+        width: @col-sport-icon-width;
+      }
+      &.notes-and-labels {
+        width: @col-notes-width;
+      }
+      &.time-label,
+      &.distance-label,
+      &.hr-label,
+      &.elevation-label,
+      &.pace-label {
+        width: @col-metric-width;
+        padding-right: 0;
+      }
+      &.details {
+        width: @col-details-width;
+      }
     }
 
-    th.date,
-    td.date {
-      width: @col-date-width;
-    }
-
-    th.sport,
-    td.sport {
-      width: @col-sport-icon-width;
-    }
-
-    th.notes-and-labels,
-    td.notes-and-labels {
-      width: @col-notes-width;
-    }
     td.notes-and-labels {
       font-size: 90%;
 
@@ -66,20 +78,19 @@
       }
     }
 
+    td.time-and-hr .workout-time,
+    td.time-and-hr .workout-hr,
+    td.distance-and-pace .workout-distance,
+    td.distance-and-pace .workout-pace {
+      width: 49%;
+      display: inline-block;
+      text-align: center;
+    }
+
     .time-gauge .progress,
     .distance-gauge .progress,
     .elevation-gauge .progress {
       opacity: .75;
-      margin-bottom: 0 !important;
-    }
-
-    .time-label,
-    .distance-label,
-    .hr-label,
-    .elevation-label,
-    .pace-label {
-      width: @col-metric-width;
-      padding-right: 0;
     }
 
     .workout-steepness {
@@ -89,19 +100,6 @@
       font-size: 90%;
     }
 
-/*
-    .time-gauge,
-    .distance-gauge,
-    .elevation-gauge {
-      width: @gauge-cols-width;
-      padding-left: 0 !important;
-    }
-*/
-
-    th.details,
-    td.details {
-      width: @col-details-width;
-    }
     td.details .btn {
       visibility: hidden;
     }
