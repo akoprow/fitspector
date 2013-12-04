@@ -6,6 +6,7 @@ class root.Zones
   constructor: (@zones, @Unit) ->
 
   zonePercent: (i) ->
+    return "0%" if not @zones[i]
     zone = @zones[i]
     allZones = @getTotal()
     percent = 100 * @Unit.ratio zone, allZones
