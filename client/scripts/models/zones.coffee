@@ -17,6 +17,13 @@ class root.Zones
     ratio = 1 if ratio > 1
     "#{100 * ratio}%"
 
+  gaugeMultiplicator: (gaugeRange) ->
+    ratio = @Unit.ratio @getTotal(), gaugeRange
+    if ratio >= 1.1
+      ratio.toFixed 1
+    else
+      null
+
   getTotal: ->
     @total = _(@zones).reduce @Unit.plus, @Unit.zero unless @total
     @total

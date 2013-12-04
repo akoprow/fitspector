@@ -5,5 +5,7 @@
          class="progress-bar progress-bar-z{{i}}">
     </div>
   </div>
-  <span class="label label-default">2.0x</span>
+  <span ng-show="zones.gaugeMultiplicator(gaugeMax)" class="label label-default">
+    {{zones.gaugeMultiplicator(gaugeMax)}}x
+  </span>
 </div>
