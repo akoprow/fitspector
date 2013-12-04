@@ -8,6 +8,10 @@ class WorkoutsCtrl
     $scope.maxGaugeTime = new Time {hours: 2}
     $scope.maxGaugeDistance = new Distance {km: 20}
 
+    # ----- Gauge displaying type -----
+
+    $scope.gaugeMode = 'both'
+
     # ----- Time navigation -----
 
     # TODO(koper) Extract this into a time-selection service/controller?

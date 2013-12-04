@@ -32,6 +32,23 @@
             Week
           </button>
         </div>
+        <div class="btn-group">
+          <button class="btn btn-primary"
+                  ng-class="{active: gaugeMode == 'numbers'}"
+                  ng-click="gaugeMode = 'numbers'">
+            Numbers
+          </button>
+          <button class="btn btn-primary"
+                  ng-class="{active: gaugeMode == 'gauges'}"
+                  ng-click="gaugeMode = 'gauges'">
+            Gauges
+          </button>
+          <button class="btn btn-primary"
+                  ng-class="{active: gaugeMode == 'both'}"
+                  ng-click="gaugeMode = 'both'">
+            Both
+          </button>
+        </div>
         <div class="col-lg-3">
           <form class="form-inline">
             <div class="form-group">
@@ -142,20 +159,22 @@
           <span ng-repeat="label in workout.labels" class="label label-primary" ng-bind="label"></span>
           <span class="notes" ng-bind="workout.notes"></span>
         </td>
-        <td class="time-and-hr" colspan="2">
-          <time value="workout.totalDuration"></time>
-          <hr value="workout.avgHR"></hr>
-          <workout-gauge type="hr"
-                         zones="workout.hrZones"
-                         gauge-max="maxGaugeTime">
+        <td class="time-and-hr" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}">
+          <span ng-show="gaugeMode != 'gauges'">
+            <time value="workout.totalDuration"></time>
+            <hr value="workout.avgHR"></hr>
+          </span>
+          <workout-gauge ng-show="gaugeMode != 'numbers'" type="hr"
+                         zones="workout.hrZones" gauge-max="maxGaugeTime">
           </workout-gauge>
         </td>
-        <td class="distance-and-pace" colspan="2">
-          <distance value="workout.totalDistance"></distance>
-          <pace value="workout.pace"></pace>
-          <workout-gauge type="pace"
-                         zones="workout.paceZones"
-                         gauge-max="maxGaugeDistance">
+        <td class="distance-and-pace" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}">
+          <span ng-show="gaugeMode != 'gauges'">
+            <distance value="workout.totalDistance"></distance>
+            <pace value="workout.pace"></pace>
+          </span>
+          <workout-gauge ng-show="gaugeMode != 'numbers'" type="pace"
+                         zones="workout.paceZones" gauge-max="maxGaugeDistance">
           </workout-gauge>
         </td>
         <td>
