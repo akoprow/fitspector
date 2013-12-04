@@ -1,4 +1,4 @@
-<div class="progress {{type}}" ng-style="{width: zones.gaugePercent(gaugeMax)}">
+<div ng-show="zones" class="progress {{type}}" ng-style="{width: zones.gaugePercent(gaugeMax)}">
   <div ng-repeat="i in [0, 1, 2, 3, 4, 5, 6]"
        ng-style="{width: zones.zonePercent(i)}"
        class="progress-bar progress-bar-z{{i}}">
