@@ -1,12 +1,15 @@
 'use strict'
 
+# TODO(koper) Find a more fool-proof way to share code between the server and the browser.
+moment = if window? then window.moment else require 'moment'
+
 root = exports ? this
 
 HOURS_IN_A_DAY = 24
 
 class root.Time
   constructor: (args) ->
-    @t = moment().duration args
+    @t = moment.duration args
 
   @plus: (t0, t1) ->
     new Time {seconds: t0.t.asSeconds() + t1.t.asSeconds()}
