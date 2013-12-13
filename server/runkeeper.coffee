@@ -14,9 +14,11 @@ passport = require 'passport'
 request = require 'request'
 string = require 'string'
 _ = require 'underscore'
+
 RunKeeperStrategy = require('passport-runkeeper').Strategy
 User = require('../client/scripts/models/user').User
 Storage = require('./storage')
+exerciseZones = require('./exerciseZones')
 
 ####################################################################################################
 
@@ -139,6 +141,8 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
       notes: noteLines.join '\n'
       avgHR: response['average_heart_rate']
       labels: labels
+
+      hrZones: exerciseZones.computeHrZones response['heart_rate']
 
       totalCalories: response['total_calories']
       totalDistance: response['total_distance']

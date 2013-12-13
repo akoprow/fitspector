@@ -12,7 +12,8 @@
     "underscore": "~1.5.2",
     "passport": "~0.1.17",
     "passport-runkeeper": "~0.1.2",
-    "restify": "~2.6.0"
+    "restify": "~2.6.0",
+    "moment": "~2.4.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

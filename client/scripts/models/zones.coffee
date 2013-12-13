@@ -28,6 +28,10 @@ class root.Zones
     @total = _(@zones).reduce @Unit.plus, @Unit.zero unless @total
     @total
 
+  # Returns a version of the object that is appropriate for serialization.
+  serialize: ->
+    @zones
+
   # TODO(koper) This should eventually go away and be replaced by real zones.
   @splitIntoRandomZones: (max, Unit) ->
     split = _.range(6).map -> Math.random()

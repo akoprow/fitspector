@@ -159,7 +159,7 @@
           <span ng-repeat="label in workout.labels" class="label label-primary" ng-bind="label"></span>
           <span class="notes" ng-bind="workout.notes"></span>
         </td>
-        <td class="time-and-hr" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}">
+        <td class="time-and-hr" colspan="2">
           <span ng-show="gaugeMode != 'gauges'">
             <time value="workout.totalDuration"></time>
             <hr value="workout.avgHR"></hr>
