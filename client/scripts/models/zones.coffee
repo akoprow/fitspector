@@ -28,6 +28,9 @@ class root.Zones
     @total = _(@zones).reduce @Unit.plus, @Unit.zero unless @total
     @total
 
+  addToZone: (i, value) ->
+    @zones[i] = @Unit.plus @zones[i], value
+
   # Returns a version of the object that is appropriate for serialization.
   serialize: ->
     @zones

@@ -35,8 +35,14 @@ hrZoneBoundaries = [45, 35, 25, 15]
 # @return Zones object representing give data classified into zones.
 computeZones = (Unit, rawData, zero, metric, classifier) ->
   zones = new Zones([], Unit)
-  # TODO(koper) Implement...
-  zones
+
+  process = (acc, data) ->
+    {value, acc} = metric data, acc
+    zones.addToZone (classifier data), value
+    return acc
+
+  _.reduce(rawData, process, zero)
+  return zones
 
 ####################################################################################################
 
