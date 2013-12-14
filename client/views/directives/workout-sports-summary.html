@@ -21,7 +21,8 @@
         <span ng-repeat="(sportId, _) in sports"
               ng-mouseover="Col.active = $index"
               ng-mouseout="Col.active = -1"
-              class="sport-summary-value">
+              class="sport-summary-value"
+              ng-style="{ 'left': elementWidth * $index }">
           <sport-icon sport-id="sportId"></sport-icon>
         </span>
       </td>
@@ -36,7 +37,8 @@
               ng-mouseover="Col.active = $index"
               ng-mouseout="Col.active = -1"
               class="sport-summary-value"
-              ng-class="{ 'bg-for-{{sportId}}': Col.active == $index }">
+              ng-class="{ 'bg-for-{{sportId}}': Col.active == $index }"
+              ng-style="{ 'left': elementWidth * $index }">
           <span ng-switch="metric">
             <span ng-switch-when="sessions">
               <span ng-bind="sport.sessions"></span><span class="unit"> x</span>

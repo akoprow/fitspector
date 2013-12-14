@@ -33,6 +33,8 @@ class WorkoutSportsSummaryDirective
         recompute scope
         scope.$watch 'workouts', (_) -> recompute scope
         scope.$watch 'sportFilter', (_) -> recompute scope
+
+        scope.elementWidth = ELEMENT_WIDTH
     }
 
 
@@ -75,4 +77,4 @@ class WorkoutSportsSummaryAnimation
     }
 
 
-angular.module('fitspector').animation '.sport-summary-value', [WorkoutSportsSummaryAnimation]
+#angular.module('fitspector').animation '.sport-summary-value', [WorkoutSportsSummaryAnimation]
