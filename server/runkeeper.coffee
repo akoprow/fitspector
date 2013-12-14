@@ -14,11 +14,13 @@ passport = require 'passport'
 request = require 'request'
 string = require 'string'
 _ = require 'underscore'
-
 RunKeeperStrategy = require('passport-runkeeper').Strategy
+
 User = require('../client/scripts/models/user').User
 Storage = require('./storage')
-exerciseZones = require('./exerciseZones')
+ExerciseZones = require('./exerciseZones')
+Time = require('../client/scripts/models/time').Time
+Zones = require('../client/scripts/models/zones').Zones
 
 ####################################################################################################
 
@@ -147,8 +149,12 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
       totalDuration: response.duration
       totalElevation: response.climb
 
-    if response['heart_rate']
-      workout.hrZones = exerciseZones.computeHrZones response['heart_rate']
+    if response['heart_rate'].length
+      workout.hrZones = ExerciseZones.computeHrZones response['heart_rate']
+    else if response.duration
+      zones = new Zones(Time)
+      zones.addToZone Zones.UNKNOWN_ZONE, new Time {seconds: response.duration}
+      workout.hrZones = zones.serialize()
 
     # Delete undefined properties (Firebase does not like them)
     for own key, value of workout
