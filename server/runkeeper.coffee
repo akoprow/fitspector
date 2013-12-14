@@ -142,12 +142,13 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
       avgHR: response['average_heart_rate']
       labels: labels
 
-      hrZones: exerciseZones.computeHrZones response['heart_rate']
-
       totalCalories: response['total_calories']
       totalDistance: response['total_distance']
       totalDuration: response.duration
       totalElevation: response.climb
+
+    if response['heart_rate']
+      workout.hrZones = exerciseZones.computeHrZones response['heart_rate']
 
     # Delete undefined properties (Firebase does not like them)
     for own key, value of workout

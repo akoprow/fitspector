@@ -16,7 +16,9 @@ Zones = require('../client/scripts/models/zones').Zones
 # TODO(koper) Those constants should be made into user-specific settings.
 maxHR = 187
 
-hrZoneBoundaries = [0.5, 0.6, 0.7, 0.8, 0.9]
+# TODO(koper) Should this be configurable?
+# Based on the Zoladz method: http://en.wikipedia.org/wiki/Heart_rate
+hrZoneBoundaries = [45, 35, 25, 15]
 
 ####################################################################################################
 
@@ -40,8 +42,12 @@ computeZones = (Unit, rawData, zero, metric, classifier) ->
 
 numericalZoneClassifier = (boundaries) ->
   (value) ->
-    # TODO(koper) Implement...
-    0
+    switch value
+      when value > boundaries[3] then Zones.MAXIMUM_ZONE
+      when value > boundaries[2] then Zones.HARD_ZONE
+      when value > boundaries[1] then Zones.MODERATE_ZONE
+      when value > boundaries[0] then Zones.LIGHT_ZONE
+      else Zones.VERY_LIGHT_ZONE
 
 ####################################################################################################
 
@@ -53,7 +59,7 @@ computeHrZones = (hrData) ->
     }
 
   hrZoneClassifier = ->
-    boundaries = _.map hrZoneBoundaries, (percent) -> maxHR * percent
+    boundaries = _.map hrZoneBoundaries, (adjuster) -> maxHR - adjuster
     numericalZoneClassifier boundaries
 
   zones = computeZones Time, hrData, 0, timeMetric, hrZoneClassifier()
