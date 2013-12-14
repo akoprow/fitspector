@@ -17,8 +17,9 @@ class root.Workout
     @totalElevation = new Distance {meters: json.totalElevation}
     @labels = json.labels
 
-    @hrZones = Zones.splitIntoRandomZones @totalDuration, Time if @avgHR
-    @paceZones = Zones.splitIntoRandomZones @totalDistance, Distance if @totalDistance
+    @hrZones = Zones.deserialize Time, json.hrZones if json.hrZones
+    if @totalDistance
+      @paceZones = new Zones(Distance).setRandomZones @totalDistance
 
     if @totalDistance.isZero()
       @pace = null

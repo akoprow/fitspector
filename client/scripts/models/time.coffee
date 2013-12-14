@@ -35,3 +35,8 @@ class root.Time
     new Time {seconds: @asSeconds() - t.asSeconds()}
 
   value: -> @asSeconds()
+
+  serialize: -> @value().toFixed(0)
+
+  @deserialize: (value) ->
+    new Time {seconds: value}

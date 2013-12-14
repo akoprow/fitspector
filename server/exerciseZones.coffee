@@ -5,6 +5,7 @@
 ####################################################################################################
 'use strict'
 
+logger = require './utils/logger'
 moment = require 'moment'
 _ = require 'underscore'
 
@@ -34,7 +35,7 @@ hrZoneBoundaries = [45, 35, 25, 15]
 #     A function that given a raw data element gives the index of the zone it corresponds to.
 # @return Zones object representing give data classified into zones.
 computeZones = (Unit, rawData, zero, metric, classifier) ->
-  zones = new Zones([], Unit)
+  zones = new Zones(Unit)
 
   process = (acc, data) ->
     {value, acc} = metric data, acc
@@ -46,13 +47,14 @@ computeZones = (Unit, rawData, zero, metric, classifier) ->
 
 ####################################################################################################
 
-numericalZoneClassifier = (boundaries) ->
+numericalZoneClassifier = (boundaries, toNumber) ->
   (value) ->
-    switch value
-      when value > boundaries[3] then Zones.MAXIMUM_ZONE
-      when value > boundaries[2] then Zones.HARD_ZONE
-      when value > boundaries[1] then Zones.MODERATE_ZONE
-      when value > boundaries[0] then Zones.LIGHT_ZONE
+    num = toNumber value
+    switch
+      when num > boundaries[3] then Zones.MAXIMUM_ZONE
+      when num > boundaries[2] then Zones.HARD_ZONE
+      when num > boundaries[1] then Zones.MODERATE_ZONE
+      when num > boundaries[0] then Zones.LIGHT_ZONE
       else Zones.VERY_LIGHT_ZONE
 
 ####################################################################################################
@@ -66,7 +68,7 @@ computeHrZones = (hrData) ->
 
   hrZoneClassifier = ->
     boundaries = _.map hrZoneBoundaries, (adjuster) -> maxHR - adjuster
-    numericalZoneClassifier boundaries
+    numericalZoneClassifier boundaries, (data) -> data['heart_rate']
 
   zones = computeZones Time, hrData, 0, timeMetric, hrZoneClassifier()
   return zones.serialize()
