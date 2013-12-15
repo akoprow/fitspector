@@ -9,17 +9,43 @@ logger = require './utils/logger'
 moment = require 'moment'
 _ = require 'underscore'
 
+Distance = require('../client/scripts/models/distance').Distance
 Time = require('../client/scripts/models/time').Time
 Zones = require('../client/scripts/models/zones').Zones
 
 ####################################################################################################
 
 # TODO(koper) Those constants should be made into user-specific settings.
+# Maximal heart rate (unit: bpm)
 maxHR = 187
+
+# Functional Threshold Pace (FTP) (unit: km/h)
+# http://www.joefrielsblog.com/2010/05/quick-guide-to-training-with-heart-rate-power-and-pace.html
+runningFunctionalThresholdPace = 14.6
 
 # TODO(koper) Should this be configurable?
 # Based on the Zoladz method: http://en.wikipedia.org/wiki/Heart_rate
+# Boundaries expressed in the difference from HRmax.
 hrZoneBoundaries = [45, 35, 25, 15]
+
+# Based on Friel's zones:
+#   http://www.joefrielsblog.com/2010/05/quick-guide-to-training-with-heart-rate-power-and-pace.html
+#
+# Zone 1 Slower than 129% of FTPa
+# Zone 2 114% to 129% of FTPa
+# Zone 3 106% to 113% of FTPa
+# Zone 4 99% to 105% of FTPa
+# Zone 5a 97% to 100% of FTPa
+# Zone 5b 90% to 96% of FTPa
+# Zone 5c Faster than 90% of FTPa
+#
+# ZONE           maximal    hard     medium     low      minimal   no_effort
+# FTPa min/km     <100%   99%-105%  106%-113%  114%-129% 130%-145%   <145%
+# FTPa km/h       >100%   95%-101%   88%-94%    78%-88%   69%-77%
+# FTPa fitnett:   >100%      95%       88%        78%      69%
+#
+# Boundaries expressed in % of FTP.
+runningPaceZoneBoundaries = [69, 78, 88, 95]
 
 ####################################################################################################
 
@@ -38,8 +64,9 @@ computeZones = (Unit, rawData, zero, metric, classifier) ->
   zones = new Zones(Unit)
 
   process = (acc, data) ->
+    zone = classifier data, acc
     {value, acc} = metric data, acc
-    zones.addToZone (classifier data), value
+    zones.addToZone zone, value
     return acc
 
   _.reduce(rawData, process, zero)
@@ -48,8 +75,8 @@ computeZones = (Unit, rawData, zero, metric, classifier) ->
 ####################################################################################################
 
 numericalZoneClassifier = (boundaries, toNumber) ->
-  (value) ->
-    num = toNumber value
+  (value, acc) ->
+    num = toNumber value, acc
     switch
       when num > boundaries[3] then Zones.MAXIMUM_ZONE
       when num > boundaries[2] then Zones.HARD_ZONE
@@ -60,10 +87,10 @@ numericalZoneClassifier = (boundaries, toNumber) ->
 ####################################################################################################
 
 computeHrZones = (hrData) ->
-  timeMetric = (hrDataPoint, acc) ->
+  timeMetric = (data, acc) ->
     return {
-      value: new Time {seconds: hrDataPoint.timestamp - acc}
-      acc: hrDataPoint.timestamp
+      value: new Time {seconds: data.timestamp - acc}
+      acc: data.timestamp
     }
 
   hrZoneClassifier = ->
@@ -75,5 +102,26 @@ computeHrZones = (hrData) ->
 
 ####################################################################################################
 
+computeRunningPaceZones = (distanceData) ->
+  distanceMetric = (data, acc) ->
+    return {
+      value: new Distance {meters: data.distance - acc.distance}
+      acc: data
+    }
+
+  paceZoneClassifier = ->
+    boundaries = _.map runningPaceZoneBoundaries, (multiplier) -> runningFunctionalThresholdPace * multiplier / 100
+    computeSpeed = (data, acc) ->
+      timeDelta = (data.timestamp - acc.timestamp) / Time.SECONDS_IN_AN_HOUR
+      distanceDelta = (data.distance - acc.distance) / Distance.METERS_IN_KILOMETER
+      distanceDelta / timeDelta
+    numericalZoneClassifier boundaries, computeSpeed
+
+  zones = computeZones Distance, distanceData, {timestamp: 0, distance: 0}, distanceMetric, paceZoneClassifier()
+  return zones.serialize()
+
+####################################################################################################
+
 module.exports =
   computeHrZones: computeHrZones
+  computeRunningPaceZones: computeRunningPaceZones

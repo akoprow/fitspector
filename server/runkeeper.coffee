@@ -16,11 +16,13 @@ string = require 'string'
 _ = require 'underscore'
 RunKeeperStrategy = require('passport-runkeeper').Strategy
 
+Distance = require('../client/scripts/models/distance').Distance
+Time = require('../client/scripts/models/time').Time
 User = require('../client/scripts/models/user').User
+Zones = require('../client/scripts/models/zones').Zones
+
 Storage = require('./storage')
 ExerciseZones = require('./exerciseZones')
-Time = require('../client/scripts/models/time').Time
-Zones = require('../client/scripts/models/zones').Zones
 
 ####################################################################################################
 
@@ -149,12 +151,20 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
       totalDuration: response.duration
       totalElevation: response.climb
 
+    mkUnknownZone = (Unit, value) ->
+      zones = new Zones(Unit)
+      zones.addToZone Zones.UNKNOWN_ZONE, value
+      return zones.serialize()
+
     if response['heart_rate'].length
       workout.hrZones = ExerciseZones.computeHrZones response['heart_rate']
-    else if response.duration
-      zones = new Zones(Time)
-      zones.addToZone Zones.UNKNOWN_ZONE, new Time {seconds: response.duration}
-      workout.hrZones = zones.serialize()
+    else if workout.totalDuration
+      workout.hrZones = mkUnknownZone Time, new Time {seconds: workout.totalDuration}
+
+    if response.distance.length and workout.exerciseType == 'run'
+      workout.paceZones = ExerciseZones.computeRunningPaceZones response.distance
+    else if workout.totalDistance
+      workout.paceZones = mkUnknownZone Distance, new Distance {meters: workout.totalDistance}
 
     # Delete undefined properties (Firebase does not like them)
     for own key, value of workout

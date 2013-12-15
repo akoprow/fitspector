@@ -5,8 +5,6 @@ moment = if window? then window.moment else require 'moment'
 
 root = exports ? this
 
-HOURS_IN_A_DAY = 24
-
 class root.Time
   constructor: (args) ->
     @t = moment.duration args
@@ -25,11 +23,12 @@ class root.Time
 
   isZero: -> @t.asSeconds() == 0
 
-  hours: -> @t.hours() + HOURS_IN_A_DAY * @t.days()
+  hours: -> @t.hours() + Time.HOURS_IN_A_DAY * @t.days()
   minutes: -> @t.minutes()
   seconds: -> @t.seconds()
 
   asSeconds: -> @t.asSeconds()
+  asHours: -> @t.asHours()
 
   subtract: (t) ->
     new Time {seconds: @asSeconds() - t.asSeconds()}
@@ -40,3 +39,7 @@ class root.Time
 
   @deserialize: (value) ->
     new Time {seconds: value}
+
+  @SECONDS_IN_AN_HOUR = 60 * 60
+
+  @HOURS_IN_A_DAY = 24

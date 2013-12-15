@@ -2,15 +2,13 @@
 
 root = exports ? this
 
-METERS_IN_KILOMETER = 1000
-
 class root.Distance
   constructor: (args) ->
     switch
       when args.hasOwnProperty 'meters'
         @meters = args.meters || 0
       when args.hasOwnProperty 'km'
-        @meters = (args.km || 0) * METERS_IN_KILOMETER
+        @meters = (args.km || 0) * Distance.METERS_IN_KILOMETER
       else
         throw new Error 'Unknown unit when constructing an instance of Distance'
 
@@ -31,7 +29,7 @@ class root.Distance
 
   isZero: -> @meters == 0
 
-  asKilometers: -> @meters / METERS_IN_KILOMETER
+  asKilometers: -> @meters / Distance.METERS_IN_KILOMETER
 
   asMeters: -> @meters
 
@@ -39,3 +37,10 @@ class root.Distance
     new Distance {meters: @value() - d.value()}
 
   value: -> @asMeters()
+
+  serialize: -> @meters.toFixed(0)
+
+  @deserialize: (value) ->
+    new Distance {meters: value}
+
+  @METERS_IN_KILOMETER = 1000
