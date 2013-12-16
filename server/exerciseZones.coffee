@@ -34,18 +34,18 @@ hrZoneBoundaries = [45, 35, 25, 15]
 # Zone 1 Slower than 129% of FTPa
 # Zone 2 114% to 129% of FTPa
 # Zone 3 106% to 113% of FTPa
-# Zone 4 99% to 105% of FTPa
+# Zone 4 101% to 105% of FTPa
 # Zone 5a 97% to 100% of FTPa
 # Zone 5b 90% to 96% of FTPa
 # Zone 5c Faster than 90% of FTPa
 #
-# ZONE           maximal    hard     medium     low      minimal   no_effort
-# FTPa min/km     <100%   99%-105%  106%-113%  114%-129% 130%-145%   <145%
-# FTPa km/h       >100%   95%-101%   88%-94%    78%-88%   69%-77%
-# FTPa fitnett:   >100%      95%       88%        78%      69%
+# 
+# ZONE           maximum    hard     moderate    light   very light
+# FTPa min/km     <100%   101-105%   106-113%   114-129%   >129%
+# FTPa km/h       >100%      95%       88%        78%
 #
 # Boundaries expressed in % of FTP.
-runningPaceZoneBoundaries = [69, 78, 88, 95]
+runningPaceZoneBoundaries = [78, 88, 95, 100]
 
 ####################################################################################################
 
@@ -114,7 +114,8 @@ computeRunningPaceZones = (distanceData) ->
     computeSpeed = (data, acc) ->
       timeDelta = (data.timestamp - acc.timestamp) / Time.SECONDS_IN_AN_HOUR
       distanceDelta = (data.distance - acc.distance) / Distance.METERS_IN_KILOMETER
-      distanceDelta / timeDelta
+      speed = distanceDelta / timeDelta
+      speed
     numericalZoneClassifier boundaries, computeSpeed
 
   zones = computeZones Distance, distanceData, {timestamp: 0, distance: 0}, distanceMetric, paceZoneClassifier()

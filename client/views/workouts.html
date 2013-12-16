@@ -166,8 +166,10 @@
             <time value="workout.totalDuration"></time>
             <hr value="workout.avgHR"></hr>
           </span>
-          <workout-gauge ng-show="gaugeMode != 'numbers'" type="hr"
-                         zones="workout.hrZones" gauge-max="maxGaugeTime">
+          <workout-gauge ng-show="gaugeMode != 'numbers' && workout.hrZones"
+                         type="hr"
+                         zones="workout.hrZones"
+                         gauge-max="maxGaugeTime">
           </workout-gauge>
         </td>
         <td class="distance-and-pace" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}">
@@ -175,8 +177,10 @@
             <distance value="workout.totalDistance"></distance>
             <pace value="workout.pace"></pace>
           </span>
-          <workout-gauge ng-show="gaugeMode != 'numbers'" type="pace"
-                         zones="workout.paceZones" gauge-max="maxGaugeDistance">
+          <workout-gauge ng-show="gaugeMode != 'numbers' && workout.paceZones"
+                         type="pace"
+                         zones="workout.paceZones"
+                         gauge-max="maxGaugeDistance">
           </workout-gauge>
         </td>
         <td>

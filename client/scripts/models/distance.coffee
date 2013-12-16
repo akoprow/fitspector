@@ -11,6 +11,7 @@ class root.Distance
         @meters = (args.km || 0) * Distance.METERS_IN_KILOMETER
       else
         throw new Error 'Unknown unit when constructing an instance of Distance'
+    @meters = Number(@meters)  # in case args had numerical-strings
 
   @plus: (d0, d1) ->
     new Distance {meters: d0.meters + d1.meters}

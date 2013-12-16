@@ -44,19 +44,15 @@ class root.Zones
 
   @deserialize: (Unit, json) ->
     zones = new Zones(Unit)
-    _(@ALL_ZONES).each (zone) -> zones.addToZone zone, Unit.deserialize json[zone]
+    deserializeZone = (zone) ->
+      zones.addToZone zone, Unit.deserialize json[zone] if json[zone]
+    _(@ALL_ZONES).each deserializeZone
     return zones
-
-  # TODO(koper) This should eventually go away and be replaced by real zones.
-  setRandomZones: (max) ->
-    split = _(@ALL_ZONES).map -> Math.random()
-    plus = (memo, num) -> memo + num
-    total = split.reduce plus, 0
-    @zones = _.map split, (v) -> @Unit.fraction max, (v / total)
 
   # Based on Polar sport zones for running:
   # http://www.polar.com/us-en/training_with_polar/training_articles/maximize_performance/running/polar_sport_zones_for_running
   @UNKNOWN_ZONE = 0
+
   @VERY_LIGHT_ZONE = 1
   @LIGHT_ZONE = 2
   @MODERATE_ZONE = 3
@@ -64,3 +60,10 @@ class root.Zones
   @MAXIMUM_ZONE = 5
 
   @ALL_ZONES = [ @UNKNOWN_ZONE, @VERY_LIGHT_ZONE, @LIGHT_ZONE, @MODERATE_ZONE, @HARD_ZONE, @MAXIMUM_ZONE ]
+
+  # Zone interpretation for elevation gain.
+  @STEEP_DOWNHILL = 1
+  @DOWNHILL = 2
+  @FLAT = 3
+  @UPHILL = 4
+  @STEEP_UPHILL = 5
