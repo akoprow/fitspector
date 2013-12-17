@@ -4,10 +4,16 @@ class WorkoutDistance
   constructor: ->
     return (distance, format) ->
       return '' if not distance?
-      switch format
-        when 'meters'
-          distance.asMeters().toFixed(1)
-        else
-          distance.asKilometers().toFixed(1)
+      value =
+        switch format
+          when 'meters'
+            distance.asMeters()
+          else
+            distance.asKilometers()
+      if value >= 10
+        value.toFixed 0
+      else
+        value.toFixed 1
+
 
 angular.module('fitspector').filter 'workoutDistance', [WorkoutDistance]
