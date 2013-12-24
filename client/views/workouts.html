@@ -131,10 +131,10 @@
         <th class="elevation-label">
           <span class="sortHandler" ng-click="orderBy('totalElevation.asMeters()')">Elevation</span>
           <sorting-ctrl this="totalElevation.asMeters()" selected="{{order}}"></sorting-ctrl>
-          <div class="sortHandler" ng-click="orderBy('steepness.asMeters()')">
-            (Steepness)
-            <sorting-ctrl this="steepness.asMeters()" selected="{{order}}"></sorting-ctrl>
-          </div>
+        </th>
+        <th class="steepness-label">
+          <span class="sortHandler" ng-click="orderBy('steepness.asMeters()')">Steepness</span>
+          <sorting-ctrl this="steepness.asMeters()" selected="{{order}}"></sorting-ctrl>
         </th>
 <!--
         <th class="icons">
@@ -183,9 +183,16 @@
                          gauge-max="maxGaugeDistance">
           </workout-gauge>
         </td>
-        <td>
-          <elevation value="workout.totalElevation"></elevation>
-          <steepness value="workout.steepness"></steepness>
+        <td class="elevation" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}">
+          <span ng-show="gaugeMode != 'gauges'">
+            <elevation value="workout.totalElevation"></elevation>
+            <steepness value="workout.steepness"></steepness>
+          </span>
+          <workout-gauge ng-show="gaugeMode != 'numbers' && workout.elevationZones"
+                         type="elevation"
+                         zones="workout.elevationZones"
+                         gauge-max="maxGaugeDistance">
+          </workout-gauge>
         </td>
 <!--
         <td class="icons">
@@ -195,7 +202,7 @@
 -->
         <td class="details">
           <a ng-show="workout.detailsUrl()" class="btn btn-primary btn-sm" ng-href="{{workout.detailsUrl()}}" target="_blank">
-            <span class="glyphicon glyphicon-zoom-in"></span> details
+            <span class="glyphicon glyphicon-zoom-in"></span>
           </a>
         </td>
       </tr>

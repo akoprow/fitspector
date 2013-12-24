@@ -3,10 +3,10 @@
 @col-date-width: 110px;
 @col-sport-icon-width: 60px;
 @col-notes-width: 200px;
-@col-details-width: 85px;
+@col-details-width: 50px;
 @col-metric-width: 110px;
 
-@col-notes-width: @screen-width - (@col-date-width + @col-sport-icon-width + @col-details-width + 5*@col-metric-width);
+@col-notes-width: @screen-width - (@col-date-width + @col-sport-icon-width + @col-details-width + 6*@col-metric-width);
 
 @table-rows-sport-color-hover-fadeout: 85%;
 @table-rows-sport-color-fadeout: 97%;
@@ -38,7 +38,8 @@
       height: 70px;
 
       &.time-and-hr,
-      &.distance-and-pace {
+      &.distance-and-pace,
+      &.elevation {
         &.gauge-with-numbers {
           vertical-align: top;
         }
@@ -61,8 +62,9 @@
       &.time-label,
       &.distance-label,
       &.hr-label,
+      &.pace-label,
       &.elevation-label,
-      &.pace-label {
+      &.steepness-label {
         width: @col-metric-width;
         padding-right: 0;
       }
@@ -89,7 +91,9 @@
     td.time-and-hr .workout-time,
     td.time-and-hr .workout-hr,
     td.distance-and-pace .workout-distance,
-    td.distance-and-pace .workout-pace {
+    td.distance-and-pace .workout-pace,
+    td.elevation .workout-elevation,
+    td.elevation .workout-steepness {
       width: 49%;
       display: inline-block;
       text-align: center;
@@ -99,13 +103,6 @@
     .distance-gauge .progress,
     .elevation-gauge .progress {
       opacity: .75;
-    }
-
-    .workout-steepness {
-      &:before { content: '(' }
-      &:after { content: ')' }
-      display: block;
-      font-size: 90%;
     }
 
     td.details .btn {
