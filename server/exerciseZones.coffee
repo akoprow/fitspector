@@ -49,34 +49,8 @@ runningPaceZoneBoundaries = [78, 88, 95, 100]
 
 ####################################################################################################
 
-# Classifies data into zones.
-#
-# @param Unit A class representing zone units.
-# @param {Array.<D>} rawData Array of measurements
-# @param {T} zero Starting element for folding over raw data.
-# @param {function(D, T) : {value: Unit, acc: D} metric
-#     A function that given a raw data element and an accumulator returns an object containing new
-#     value of the accumulator as well as the value associated with that measurements.
-# @param {function(D) : number} classifier
-#     A function that given a raw data element gives the index of the zone it corresponds to.
-# @return Zones object representing give data classified into zones.
-computeZones = (Unit, rawData, zero, metric, classifier) ->
-  zones = new Zones(Unit)
-
-  process = (acc, data) ->
-    zone = classifier data, acc
-    {value, acc} = metric data, acc
-    zones.addToZone zone, value
-    return acc
-
-  _.reduce(rawData, process, zero)
-  return zones
-
-####################################################################################################
-
-numericalZoneClassifier = (boundaries, toNumber) ->
-  (value, acc) ->
-    num = toNumber value, acc
+numericalZoneClassifier = (boundaries) ->
+  (num) ->
     switch
       when num > boundaries[3] then Zones.MAXIMUM_ZONE
       when num > boundaries[2] then Zones.HARD_ZONE
@@ -87,38 +61,46 @@ numericalZoneClassifier = (boundaries, toNumber) ->
 ####################################################################################################
 
 computeHrZones = (hrData) ->
-  timeMetric = (data, acc) ->
-    return {
-      value: new Time {seconds: data.timestamp - acc}
-      acc: data.timestamp
-    }
+  hrSeries = []
+  timeSeries = []
 
-  hrZoneClassifier = ->
-    boundaries = _.map hrZoneBoundaries, (adjuster) -> maxHR - adjuster
-    numericalZoneClassifier boundaries, (data) -> data['heart_rate']
+  processHrEntry = (time, entry) ->
+    timeSeries.push(new Time {seconds: entry.timestamp - time})
+    hrSeries.push entry['heart_rate']
+    return entry.timestamp
+  _.reduce hrData, processHrEntry, 0
 
-  zones = computeZones Time, hrData, 0, timeMetric, hrZoneClassifier()
+  zoneBoundaries = _.map hrZoneBoundaries, (adjuster) -> maxHR - adjuster
+  hrZoneClassifier = numericalZoneClassifier zoneBoundaries
+
+  zones = new Zones(Time)
+  for hr, i in hrSeries
+    zones.addToZone (hrZoneClassifier hr), timeSeries[i]
+
   return zones.serialize()
 
 ####################################################################################################
 
 computeRunningPaceZones = (distanceData) ->
-  distanceMetric = (data, acc) ->
-    return {
-      value: new Distance {meters: data.distance - acc.distance}
-      acc: data
-    }
+  speedSeries = []
+  distanceSeries = []
 
-  paceZoneClassifier = ->
-    boundaries = _.map runningPaceZoneBoundaries, (multiplier) -> runningFunctionalThresholdPace * multiplier / 100
-    computeSpeed = (data, acc) ->
-      timeDelta = (data.timestamp - acc.timestamp) / Time.SECONDS_IN_AN_HOUR
-      distanceDelta = (data.distance - acc.distance) / Distance.METERS_IN_KILOMETER
-      speed = distanceDelta / timeDelta
-      speed
-    numericalZoneClassifier boundaries, computeSpeed
+  processDistanceEntry = (acc, entry) ->
+    timeDelta = (entry.timestamp - acc.timestamp) / Time.SECONDS_IN_AN_HOUR
+    distanceDelta = (entry.distance - acc.distance) / Distance.METERS_IN_KILOMETER
+    speed = distanceDelta / timeDelta
+    speedSeries.push speed
+    distanceSeries.push(new Distance {km: distanceDelta})
+    return entry
+  _.reduce distanceData, processDistanceEntry, {timestamp: 0, distance: 0}
 
-  zones = computeZones Distance, distanceData, {timestamp: 0, distance: 0}, distanceMetric, paceZoneClassifier()
+  zoneBoundaries = _.map runningPaceZoneBoundaries, (multiplier) -> runningFunctionalThresholdPace * multiplier / 100
+  paceZoneClassifier = numericalZoneClassifier zoneBoundaries
+
+  zones = new Zones(Distance)
+  for speed, i in speedSeries
+    zones.addToZone (paceZoneClassifier speed), distanceSeries[i]
+
   return zones.serialize()
 
 ####################################################################################################
