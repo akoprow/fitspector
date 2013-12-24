@@ -5,6 +5,7 @@
 ####################################################################################################
 'use strict'
 
+filters = require 'filters'
 logger = require './utils/logger'
 moment = require 'moment'
 _ = require 'underscore'
@@ -97,6 +98,8 @@ computeRunningPaceZones = (distanceData) ->
   zoneBoundaries = _.map runningPaceZoneBoundaries, (multiplier) -> runningFunctionalThresholdPace * multiplier / 100
   paceZoneClassifier = numericalZoneClassifier zoneBoundaries
 
+  # Apply smoothing (rolling average over 5 samples) to the speed measurements.
+  speedSeries = filters.average speedSeries, 5
   zones = new Zones(Distance)
   for speed, i in speedSeries
     zones.addToZone (paceZoneClassifier speed), distanceSeries[i]

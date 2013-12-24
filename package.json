@@ -13,7 +13,8 @@
     "passport": "~0.1.17",
     "passport-runkeeper": "~0.1.2",
     "restify": "~2.6.0",
-    "moment": "~2.4.0"
+    "moment": "~2.4.0",
+    "filters": "~1.0.5"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
