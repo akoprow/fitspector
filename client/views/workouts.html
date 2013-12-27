@@ -161,8 +161,10 @@
           <span ng-repeat="label in workout.labels" class="label label-primary" ng-bind="label"></span>
           <span class="notes" ng-bind="workout.notes"></span>
         </td>
-        <td class="time-and-hr" colspan="2">
-          <span ng-show="gaugeMode != 'gauges'">
+        <td class="time-and-hr" colspan="2"
+            ng-mouseover="hover = 'hr' + workout.id"
+            ng-mouseout="hover = ''">
+          <span ng-style="{visibility: gaugeMode != 'gauges' || hover == 'hr' + workout.id ? 'visible' : 'hidden'}">
             <time value="workout.totalDuration"></time>
             <hr value="workout.avgHR"></hr>
           </span>
@@ -172,8 +174,10 @@
                          gauge-max="maxGaugeTime">
           </workout-gauge>
         </td>
-        <td class="distance-and-pace" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}">
-          <span ng-show="gaugeMode != 'gauges'">
+        <td class="distance-and-pace" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}"
+            ng-mouseover="hover = 'distance' + workout.id"
+            ng-mouseout="hover = ''">
+          <span ng-style="{visibility: gaugeMode != 'gauges' || hover == 'distance' + workout.id ? 'visible' : 'hidden'}">
             <distance value="workout.totalDistance"></distance>
             <pace value="workout.pace"></pace>
           </span>
@@ -183,8 +187,10 @@
                          gauge-max="maxGaugeDistance">
           </workout-gauge>
         </td>
-        <td class="elevation" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}">
-          <span ng-show="gaugeMode != 'gauges'">
+        <td class="elevation" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}"
+            ng-mouseover="hover = 'elevation' + workout.id"
+            ng-mouseout="hover = ''">
+          <span ng-style="{visibility: gaugeMode != 'gauges' || hover == 'elevation' + workout.id ? 'visible' : 'hidden'}">
             <elevation value="workout.totalElevation"></elevation>
             <steepness value="workout.steepness"></steepness>
           </span>
