@@ -30,9 +30,6 @@
     .progress-bar-z5 {
       .progress-bar-styles(@hr-zone-5-color);
     }
-    .progress-bar-z6 {
-      .progress-bar-styles(@hr-zone-6-color);
-    }
   }
 
   &.pace {
@@ -54,8 +51,26 @@
     .progress-bar-z5 {
       .progress-bar-styles(@pace-zone-5-color);
     }
-    .progress-bar-z6 {
-      .progress-bar-styles(@pace-zone-6-color);
+  }
+
+  &.elevation {
+    .label {
+      background-color: @elevation-zone-4-color;
+    }
+    .progress-bar-z1 {
+      .progress-bar-styles(@elevation-zone-1-color);
+    }
+    .progress-bar-z2 {
+      .progress-bar-styles(@elevation-zone-2-color);
+    }
+    .progress-bar-z3 {
+      .progress-bar-styles(@elevation-zone-3-color);
+    }
+    .progress-bar-z4 {
+      .progress-bar-styles(@elevation-zone-4-color);
+    }
+    .progress-bar-z5 {
+      .progress-bar-styles(@elevation-zone-5-color);
     }
   }
 

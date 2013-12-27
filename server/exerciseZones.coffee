@@ -48,7 +48,7 @@ hrZoneBoundaries = [45, 35, 25, 15]
 # Boundaries expressed in % of FTP.
 runningPaceZoneBoundaries = [78, 88, 95, 100]
 
-elevationZoneBoundaries = [-8, -4, 4, 8]
+elevationZoneBoundaries = [-9, -3, 3, 9]
 
 ####################################################################################################
 
@@ -135,7 +135,6 @@ computeElevationZones = (distanceData, elevationData) ->
   for distance, i in distanceSeries
     elevationChange = elevationSeries[i]
     grade = 100 * elevationChange / distance
-    logger.info "Grade :\n", grade, ', zone: ', (elevationZoneClassifier grade), ', distance: ', distance
     zones.addToZone (elevationZoneClassifier grade), new Distance {meters: distance}
 
   return zones.serialize()
