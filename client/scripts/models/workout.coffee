@@ -19,6 +19,7 @@ class root.Workout
 
     @hrZones = Zones.deserialize Time, json.hrZones if json.hrZones
     @paceZones = Zones.deserialize Distance, json.paceZones if json.paceZones
+    @elevationZones = Zones.deserialize Distance, json.elevationZones if json.elevationZones
 
     if @totalDistance.isZero()
       @pace = null

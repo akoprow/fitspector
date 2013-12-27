@@ -48,6 +48,8 @@ hrZoneBoundaries = [45, 35, 25, 15]
 # Boundaries expressed in % of FTP.
 runningPaceZoneBoundaries = [78, 88, 95, 100]
 
+elevationZoneBoundaries = [-8, -4, 4, 8]
+
 ####################################################################################################
 
 numericalZoneClassifier = (boundaries) ->
@@ -100,6 +102,7 @@ computeRunningPaceZones = (distanceData) ->
 
   # Apply smoothing (rolling average over 5 samples) to the speed measurements.
   speedSeries = filters.average speedSeries, 5
+
   zones = new Zones(Distance)
   for speed, i in speedSeries
     zones.addToZone (paceZoneClassifier speed), distanceSeries[i]
@@ -108,6 +111,38 @@ computeRunningPaceZones = (distanceData) ->
 
 ####################################################################################################
 
+computeElevationZones = (distanceData, elevationData) ->
+  distanceSeries = []
+  elevationSeries = []
+
+  processElevationEntry = (acc, entry) ->
+    elevationSeries.push (entry.altitude - acc)
+    return entry.altitude
+  _.reduce elevationData, processElevationEntry, elevationData[0].altitude
+
+  processDistanceEntry = (acc, entry) ->
+    distanceSeries.push (entry.distance - acc)
+    return entry.distance
+  _.reduce distanceData, processDistanceEntry, 0
+
+  if distanceSeries.length != elevationSeries.length
+    logger.warn "Lengths of distance/elevation series do not match (distance: #{distanceSeries.length}, elevation: #{elevationSeries.length}"
+    return null
+
+  elevationZoneClassifier = numericalZoneClassifier elevationZoneBoundaries
+  zones = new Zones(Distance)
+
+  for distance, i in distanceSeries
+    elevationChange = elevationSeries[i]
+    grade = 100 * elevationChange / distance
+    logger.info "Grade :\n", grade, ', zone: ', (elevationZoneClassifier grade), ', distance: ', distance
+    zones.addToZone (elevationZoneClassifier grade), new Distance {meters: distance}
+
+  return zones.serialize()
+
+####################################################################################################
+
 module.exports =
   computeHrZones: computeHrZones
   computeRunningPaceZones: computeRunningPaceZones
+  computeElevationZones: computeElevationZones

@@ -166,6 +166,11 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
     else if workout.totalDistance
       workout.paceZones = mkUnknownZone Distance, new Distance {meters: workout.totalDistance}
 
+    if response.path.length and response.distance.length
+      workout.elevationZones = ExerciseZones.computeElevationZones response.distance, response.path
+    else if workout.totalDistance
+      workout.elevationZones = mkUnknownZone Distance, new Distance {meters: workout.totalDistance}
+
     # Delete undefined properties (Firebase does not like them)
     for own key, value of workout
       if not value?
