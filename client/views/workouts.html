@@ -168,11 +168,12 @@
             <time value="workout.totalDuration"></time>
             <hr value="workout.avgHR"></hr>
           </span>
-          <workout-gauge ng-show="gaugeMode != 'numbers' && workout.hrZones"
-                         type="hr"
-                         zones="workout.hrZones"
-                         gauge-max="maxGaugeTime">
-          </workout-gauge>
+          <span ng-show="gaugeMode != 'numbers' && workout.hrZones">
+            <workout-gauge type="hr"
+                           zones="workout.hrZones"
+                           gauge-max="maxGaugeTime">
+            </workout-gauge>
+          </span>
         </td>
         <td class="distance-and-pace" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}"
             ng-mouseover="hover = 'distance' + workout.id"
@@ -181,11 +182,12 @@
             <distance value="workout.totalDistance"></distance>
             <pace value="workout.pace"></pace>
           </span>
-          <workout-gauge ng-show="gaugeMode != 'numbers' && workout.paceZones"
-                         type="pace"
-                         zones="workout.paceZones"
-                         gauge-max="maxGaugeDistance">
-          </workout-gauge>
+          <span ng-show="gaugeMode != 'numbers' && workout.paceZones">
+            <workout-gauge type="pace"
+                           zones="workout.paceZones"
+                           gauge-max="maxGaugeDistance">
+            </workout-gauge>
+          </span>
         </td>
         <td class="elevation" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}"
             ng-mouseover="hover = 'elevation' + workout.id"
@@ -194,11 +196,12 @@
             <elevation value="workout.totalElevation"></elevation>
             <steepness value="workout.steepness"></steepness>
           </span>
-          <workout-gauge ng-show="gaugeMode != 'numbers' && workout.elevationZones"
-                         type="elevation"
-                         zones="workout.elevationZones"
-                         gauge-max="maxGaugeDistance">
-          </workout-gauge>
+          <span ng-show="gaugeMode != 'numbers' && workout.elevationZones">
+            <workout-gauge type="elevation"
+                           zones="workout.elevationZones"
+                           gauge-max="maxGaugeDistance">
+            </workout-gauge>
+          </span>
         </td>
 <!--
         <td class="icons">
