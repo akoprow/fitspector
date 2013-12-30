@@ -226,6 +226,7 @@ module.exports = (grunt) ->
           'angular-cookies/angular-cookies.js'
           'angular-route/angular-route.js'
           'angular-resource/angular-resource.js'
+          'bootstrap/js/alert.js'
           'bootstrap/js/dropdown.js'
           'bootstrap/js/tooltip.js'
           'd3/d3.js'
