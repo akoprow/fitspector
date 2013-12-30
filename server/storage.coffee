@@ -21,16 +21,19 @@ mkUserRef = (userId) ->
   mkFirebaseRef().child('users').child(userId)
 
 mkUserWorkoutsRef = (userId) ->
-  (mkUserRef userId).child('workouts')
+  (mkUserRef userId).child 'workouts'
 
 mkUserWorkoutRef = (userId, workoutId) ->
-  (mkUserRef userId).child('workouts').child(workoutId)
+  (mkUserWorkoutsRef userId).child workoutId
 
 mkUserProfileRef = (userId) ->
-  (mkUserRef userId).child('profile')
+  (mkUserRef userId).child 'profile'
 
 mkUserSettingsRef = (userId) ->
-  (mkUserRef userId).child('settings')
+  (mkUserRef userId).child 'settings'
+
+mkUserImportStatusRef = (userId) ->
+  (mkUserRef userId).child 'importStatus'
 
 ####################################################################################################
 
@@ -69,6 +72,28 @@ updateUserProfile = (userId, profile) ->
 
 ####################################################################################################
 
+# Import status contains the subset of the following fields:
+#   total: total number of items to be imported
+#   imported: how many have been imported so far
+#   done: how many new workouts have been imported
+#
+# Presence of the 'done' field indicates that the import is completed.
+# During import ratio of imported/total indicates completion progress.
+
+setImportCount = (userId, count, cb) ->
+  status =
+    total: count
+    imported: 0
+  (mkUserImportStatusRef userId).set status, cb
+
+markImportItemComplete = (userId) ->
+  (mkUserImportStatusRef userId).child('imported').transaction (value) -> value + 1
+
+importFinished = (userId, total) ->
+  (mkUserImportStatusRef userId).set {done: total}
+
+####################################################################################################
+
 module.exports =
   addWorkout: addWorkout
   getAllUserWorkouts: getAllUserWorkouts
@@ -76,3 +101,7 @@ module.exports =
   logLogin: logLogin
   updateUserProfile: updateUserProfile
   getUserSettings: getUserSettings
+
+  setImportCount: setImportCount
+  markImportItemComplete: markImportItemComplete
+  importFinished: importFinished

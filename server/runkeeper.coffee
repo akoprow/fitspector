@@ -184,18 +184,25 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
 
 loadAllWorkouts = (userId, accessToken) ->
   logger.info 'Fetching all workouts for user: %s', userId
+  Storage.setImportCount userId, 0  # We just mark that import is in progress; proper count set below.
   Storage.getAllUserWorkouts userId, (workouts) ->
     runKeeper.get accessToken, runKeeper.api.userActivities, (err, response) ->
-      logger.info 'Existing workouts: %s, RunKeeper error: %s, RunKeeper response: %s', workouts, err, response
-      addWorkoutMap = _.partial(addWorkout, accessToken, userId, workouts)
-      cb = (err, data) ->
-        if err
-          logger.error 'Error while importing workouts for: %s -> %j', userId, err
-        else
+      Storage.setImportCount userId, response.items.length, (err) ->
+        logger.info 'Existing workouts: %s, RunKeeper error: %s, RunKeeper response: %s', workouts, err, response
+        addWorkoutAux = (data, cb) ->
+          newCb = (err, results) ->
+            Storage.markImportItemComplete userId
+            cb(err, results)
+          addWorkout accessToken, userId, workouts, data, newCb
+        cb = (err, data) ->
           total = _.reduce(data, ((x, y) -> x + y), 0)
-          logger.info 'Imported %d new exercises for %s', total, userId
+          Storage.importFinished userId, total
+          if err
+            logger.error 'Error while importing workouts for: %s -> %j', userId, err
+          else
+            logger.info 'Imported %d new exercises for %s', total, userId
 
-      async.mapLimit response.items, MAX_WORKOUTS_PROCESSED_AT_A_TIME, addWorkoutMap, cb
+        async.mapLimit response.items, MAX_WORKOUTS_PROCESSED_AT_A_TIME, addWorkoutAux, cb
 
 ####################################################################################################
 
