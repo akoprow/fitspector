@@ -36,18 +36,18 @@
         </div>
         <div class="btn-group">
           <button class="btn btn-primary"
-                  ng-class="{active: gaugeMode == 'numbers'}"
-                  ng-click="gaugeMode = 'numbers'">
+                  ng-class="{active: gaugeSettings.mode == 'numbers'}"
+                  ng-click="gaugeSettings.mode = 'numbers'">
             Numbers
           </button>
           <button class="btn btn-primary"
-                  ng-class="{active: gaugeMode == 'gauges'}"
-                  ng-click="gaugeMode = 'gauges'">
+                  ng-class="{active: gaugeSettings.mode == 'gauges'}"
+                  ng-click="gaugeSettings.mode = 'gauges'">
             Gauges
           </button>
           <button class="btn btn-primary"
-                  ng-class="{active: gaugeMode == 'both'}"
-                  ng-click="gaugeMode = 'both'">
+                  ng-class="{active: gaugeSettings.mode == 'both'}"
+                  ng-click="gaugeSettings.mode = 'both'">
             Both
           </button>
         </div>
@@ -149,7 +149,9 @@
         </td>
       </tr>
       <tr ng-repeat="workout in workouts | filter: q | orderBy: order"
-          class="animate-workout-list sport-{{workout.exerciseType}}">
+          class="animate-workout-list sport-{{workout.exerciseType}}"
+          ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
+          ng-mouseout="gaugeSettings.selectedWorkout = ''">
         <td class="date">
           <div ng-bind="workout.startTime | date"></div>
           <div ng-bind="workout.startTime | time"></div>
@@ -161,42 +163,36 @@
           <span ng-repeat="label in workout.labels" class="label label-primary" ng-bind="label"></span>
           <span class="notes" ng-bind="workout.notes"></span>
         </td>
-        <td class="time-and-hr" colspan="2"
-            ng-mouseover="hover = 'hr' + workout.id"
-            ng-mouseout="hover = ''">
-          <span ng-style="{visibility: gaugeMode != 'gauges' || hover == 'hr' + workout.id ? 'visible' : 'hidden'}">
+        <td class="time-and-hr" colspan="2">
+          <span ng-style="{visibility: gaugeSettings.mode != 'gauges' || gaugeSettings.selectedWorkout == workout.id ? 'visible' : 'hidden'}">
             <time value="workout.totalDuration"></time>
             <hr value="workout.avgHR"></hr>
           </span>
-          <span ng-show="gaugeMode != 'numbers' && workout.hrZones">
+          <span ng-show="gaugeSettings.mode != 'numbers' && workout.hrZones">
             <workout-gauge type="hr"
                            zones="workout.hrZones"
                            gauge-max="maxGaugeTime">
             </workout-gauge>
           </span>
         </td>
-        <td class="distance-and-pace" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}"
-            ng-mouseover="hover = 'distance' + workout.id"
-            ng-mouseout="hover = ''">
-          <span ng-style="{visibility: gaugeMode != 'gauges' || hover == 'distance' + workout.id ? 'visible' : 'hidden'}">
+        <td class="distance-and-pace" colspan="2" ng-class="{'gauge-with-numbers': gaugeSettings.mode == 'both'}">
+          <span ng-style="{visibility: gaugeSettings.mode != 'gauges' || gaugeSettings.selectedWorkout == workout.id ? 'visible' : 'hidden'}">
             <distance value="workout.totalDistance"></distance>
             <pace value="workout.pace"></pace>
           </span>
-          <span ng-show="gaugeMode != 'numbers' && workout.paceZones">
+          <span ng-show="gaugeSettings.mode != 'numbers' && workout.paceZones">
             <workout-gauge type="pace"
                            zones="workout.paceZones"
                            gauge-max="maxGaugeDistance">
             </workout-gauge>
           </span>
         </td>
-        <td class="elevation" colspan="2" ng-class="{'gauge-with-numbers': gaugeMode == 'both'}"
-            ng-mouseover="hover = 'elevation' + workout.id"
-            ng-mouseout="hover = ''">
-          <span ng-style="{visibility: gaugeMode != 'gauges' || hover == 'elevation' + workout.id ? 'visible' : 'hidden'}">
+        <td class="elevation" colspan="2" ng-class="{'gauge-with-numbers': gaugeSettings.mode == 'both'}">
+          <span ng-style="{visibility: gaugeSettings.mode != 'gauges' || gaugeSettings.selectedWorkout == workout.id ? 'visible' : 'hidden'}">
             <elevation value="workout.totalElevation"></elevation>
             <steepness value="workout.steepness"></steepness>
           </span>
-          <span ng-show="gaugeMode != 'numbers' && workout.elevationZones">
+          <span ng-show="gaugeSettings.mode != 'numbers' && workout.elevationZones">
             <workout-gauge type="elevation"
                            zones="workout.elevationZones"
                            gauge-max="maxGaugeDistance">

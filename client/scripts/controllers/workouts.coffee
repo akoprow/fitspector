@@ -10,7 +10,9 @@ class WorkoutsCtrl
 
     # ----- Gauge displaying type -----
 
-    $scope.gaugeMode = 'both'
+    $scope.gaugeSettings =
+      mode: 'both'
+      selectedWorkout: ''
 
     # ----- Time navigation -----
 

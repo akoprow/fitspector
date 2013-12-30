@@ -128,6 +128,7 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
   activityDetailsConfig = runKeeper.api.activityDetails data.uri
   runKeeper.get accessToken, activityDetailsConfig, (err, response) ->
     # TODO(koper) Handle errors...
+    # Split notes over lines
     noteLines = response.notes?.match /^.*((\r\n|\n|\r)|$)/gm
     noteLines ?= []
     labels = []
