@@ -1,0 +1,14 @@
+<div class="import-status">
+  <div ng-show="importStatus.type == 'inprogress'" class="alert alert-info">
+    Synchronizing your workouts...
+    <div class="progress progress-striped active info">
+      <div class="progress-bar" role="progressbar" aria-valuenow="{{importStatus.imported}}" aria-valuemin="0" aria-valuemax="{{importStatus.total}}" style="width: {{importStatus.importProgress}}%">
+        <span class="sr-only">{{importProgress}}% Complete</span>
+      </div>
+    </div>
+  </div>
+  <div ng-show="importStatus.type == 'finished' && importStatus.done" class="alert alert-success alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    Successfully imported <strong>{{importStatus.done}} workouts</strong>.
+  </div>
+</div>

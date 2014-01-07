@@ -103,7 +103,7 @@ class DataService
     loadUser $rootScope.user if $rootScope.user?
 
     # re-load data on user change
-    $rootScope.$watch 'user', (user) => loadUser user
+    $rootScope.$watch 'user', loadUser
 
     @workoutType = allWorkoutTypes
 
