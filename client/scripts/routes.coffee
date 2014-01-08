@@ -20,7 +20,7 @@ class Routes
         restricted: true
 
       .when '/',
-        templateUrl: 'views/main.html'
+        templateUrl: 'views/home.html'
         
       .otherwise
         redirectTo: '/'
