@@ -17,6 +17,9 @@ FIREBASE_ROOT = 'https://fitspector.firebaseIO.com'
 mkFirebaseRef = ->
   return new Firebase("#{FIREBASE_ROOT}")
 
+mkWhitelistedUsersRef = (userId) ->
+  mkFirebaseRef().child('whitelistedUsers').child(userId)
+
 mkUserRef = (userId) ->
   mkFirebaseRef().child('users').child(userId)
 
@@ -58,6 +61,7 @@ getUserProfile = (userId, done, error) ->
 
 logLogin = (userId) ->
   (mkUserProfileRef userId).update {lastLogin: new Date()}
+
 ####################################################################################################
 
 getUserSettings = (userId, done, error) ->
@@ -94,6 +98,17 @@ importFinished = (userId, total) ->
 
 ####################################################################################################
 
+canCreateUser = (userId, done, error) ->
+  logger.info 'Checking if we can create user: %s', userId
+  success = (user) ->
+    if user.val() then done() else error()
+  failure = ->
+    logger.info 'Login forbidden for: ', user
+    error()
+  (mkWhitelistedUsersRef userId).once 'value', success, failure
+
+####################################################################################################
+
 module.exports =
   addWorkout: addWorkout
   getAllUserWorkouts: getAllUserWorkouts
@@ -101,6 +116,7 @@ module.exports =
   logLogin: logLogin
   updateUserProfile: updateUserProfile
   getUserSettings: getUserSettings
+  canCreateUser: canCreateUser
 
   setImportCount: setImportCount
   markImportItemComplete: markImportItemComplete

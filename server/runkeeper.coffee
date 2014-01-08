@@ -211,6 +211,7 @@ createRunKeeperUser = (userId, token, done) ->
   createUser = (err, profile) ->
     return done err if err
     return done 'Missing user profile' if not profile?
+
     user = User.fromRunKeeperProfile profile, userId
     user.joinedAt = new Date()
 
@@ -218,7 +219,11 @@ createRunKeeperUser = (userId, token, done) ->
     logger.warn 'Created new user profile: %j', user
     done null, user
 
-  runKeeper.get token, runKeeper.api.profile, createUser
+  success = -> runKeeper.get token, runKeeper.api.profile, createUser
+  failure = ->
+    logger.warn 'Unauthorized access: %s', userId
+    done 'Unauthorized access'
+  Storage.canCreateUser userId, success, failure
 
 ####################################################################################################
 
@@ -228,10 +233,12 @@ loadRunKeeperUser = (userId, done, token) ->
   finishLoading = (err, res) ->
     # Invoke the callback
     done err, res
-    # Mark login
-    Storage.logLogin userId
-    # and then asynchronously load all user's workouts
-    loadAllWorkouts userId, token if token? # provided we have the token
+
+    if not err?
+      # Mark login
+      Storage.logLogin userId
+      # and then asynchronously load all user's workouts
+      loadAllWorkouts userId, token if token? # provided we have the token
 
   loadUser = (user) ->
     logger.warn 'user read from DB: %j', user
