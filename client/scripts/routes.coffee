@@ -9,6 +9,9 @@ class Routes
         templateUrl: 'views/login.html'
         controller: 'LoginCtrl'
 
+      .when '/loginFailed',
+        templateUrl: 'views/loginFailed.html'
+
       .when '/workouts',
         templateUrl: 'views/workouts.html'
         controller: 'WorkoutsCtrl'

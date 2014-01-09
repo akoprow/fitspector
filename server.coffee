@@ -63,8 +63,9 @@ passport.deserializeUser deserializeUser
 app.get '/auth/runkeeper', passport.authenticate 'runkeeper'
 
 app.get '/auth/runkeeper/callback',
-  passport.authenticate('runkeeper', { failureRedirect: '/login' }),
-  (req, res) -> res.redirect '/'
+  passport.authenticate 'runkeeper',
+    successRedirect: '/workouts',
+    failureRedirect: '/loginFailed'
 
 app.post '/logout',
   (req, res) ->

@@ -222,7 +222,7 @@ createRunKeeperUser = (userId, token, done) ->
   success = -> runKeeper.get token, runKeeper.api.profile, createUser
   failure = ->
     logger.warn 'Unauthorized access: %s', userId
-    done 'Unauthorized access'
+    done null, false, { message: 'Unauthorized access.' }
   Storage.canCreateUser userId, success, failure
 
 ####################################################################################################
@@ -230,11 +230,11 @@ createRunKeeperUser = (userId, token, done) ->
 # TODO(koper) Token should not be passed as a parameter here.
 loadRunKeeperUser = (userId, done, token) ->
 
-  finishLoading = (err, res) ->
+  finishLoading = (err, user, msg) ->
     # Invoke the callback
-    done err, res
+    done err, user, msg
 
-    if not err?
+    if user
       # Mark login
       Storage.logLogin userId
       # and then asynchronously load all user's workouts
