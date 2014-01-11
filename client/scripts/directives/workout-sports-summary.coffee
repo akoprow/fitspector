@@ -18,6 +18,7 @@ class WorkoutSportsSummaryDirective
       templateUrl: 'views/directives/workout-sports-summary.html'
       scope:
         workouts: '='
+        queryFilter: '='
       link: (scope, elt) ->
         scope.allSummaryTypes = [
           id: 'total'
@@ -31,8 +32,9 @@ class WorkoutSportsSummaryDirective
         scope.sportFilter = 'all'
 
         recompute scope
-        scope.$watch 'workouts', (_) -> recompute scope
-        scope.$watch 'sportFilter', (_) -> recompute scope
+        scope.$watch 'workouts', -> recompute scope
+        scope.$watch 'queryFilter', -> recompute scope
+        scope.$watch 'sportFilter', -> recompute scope
 
         scope.elementWidth = ELEMENT_WIDTH
     }
@@ -53,7 +55,8 @@ recompute = (scope) ->
       totalDuration: update sportData.totalDuration, Time.zero, (t) -> Time.plus t, workout.totalDuration
       totalElevation: update sportData.totalElevation, Distance.zero, (d) -> Distance.plus d, workout.totalElevation
 
-  _(scope.workouts).each processWorkout
+  workouts = scope.$eval 'workouts | filter: queryFilter'
+  _(workouts).each processWorkout
 
 
 angular.module('fitspector').directive 'workoutSportsSummary', [WorkoutSportsSummaryDirective]
