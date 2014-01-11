@@ -4,3 +4,7 @@ node_modules
 .sass-cache
 .tmp
 .bower_components
+
+server
+client
+server.js
