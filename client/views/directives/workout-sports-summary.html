@@ -1,5 +1,5 @@
 <div class="sport-summary" ng-show="workouts">
-  <table ng-controller="WorkoutSportsSummaryDirectiveController as Col">
+  <table>
     <tr class="icon">
       <th>
 <!--
@@ -19,10 +19,11 @@
           (Click again to clear the filter)
         </div>
         <span ng-repeat="(sportId, _) in sports"
-              ng-mouseover="Col.active = $index"
-              ng-mouseout="Col.active = -1"
+              ng-mouseover="setActiveColumn($index)"
+              ng-mouseout="setActiveColumn(-1)"
               class="sport-summary-value"
-              ng-style="{ 'left': elementWidth * $index }">
+              ng-style="{ 'left': elementWidth * $index }"
+              ng-click="setSportFilter(sportId)">
           <sport-icon sport-id="sportId"></sport-icon>
         </span>
       </td>
@@ -34,10 +35,10 @@
       </th>
       <td class="data">
         <span ng-repeat="(sportId, sport) in sports"
-              ng-mouseover="Col.active = $index"
-              ng-mouseout="Col.active = -1"
+              ng-mouseover="setActiveColumn($index)"
+              ng-mouseout="setActiveColumn(-1)"
               class="sport-summary-value"
-              ng-class="{ 'bg-for-{{sportId}}': Col.active == $index }"
+              ng-class="{ 'bg-for-{{sportId}}': activeColumn == $index }"
               ng-style="{ 'left': elementWidth * $index }">
           <span ng-switch="metric">
             <span ng-switch-when="sessions">

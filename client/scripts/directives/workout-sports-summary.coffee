@@ -3,13 +3,6 @@
 ELEMENT_WIDTH = 60
 
 
-# Empty controller for highlighting table columns.
-class WorkoutSportsSummaryDirectiveController
-  constructor: ->
-
-angular.module('fitspector').controller 'WorkoutSportsSummaryDirectiveController', [WorkoutSportsSummaryDirectiveController]
-
-
 class WorkoutSportsSummaryDirective
   constructor: ->
     return {
@@ -20,23 +13,31 @@ class WorkoutSportsSummaryDirective
         workouts: '='
         queryFilter: '='
       link: (scope, elt) ->
-        scope.allSummaryTypes = [
-          id: 'total'
-          name: 'Total'
-        ,
-          id: 'avg'
-          name: 'Weekly avg.'
-        ]
-
-        scope.summaryType = scope.allSummaryTypes[0].id
-        scope.sportFilter = 'all'
-
-        recompute scope
-        scope.$watchCollection 'workouts', -> recompute scope
-        scope.$watch 'queryFilter', -> recompute scope
-        scope.$watch 'sportFilter', -> recompute scope
+#        scope.allSummaryTypes = [
+#          id: 'total'
+#          name: 'Total'
+#        ,
+#          id: 'avg'
+#          name: 'Weekly avg.'
+#        ]
+#        scope.summaryType = scope.allSummaryTypes[0].id
 
         scope.elementWidth = ELEMENT_WIDTH
+
+        scope.$watchCollection 'workouts', -> recompute scope
+
+        scope.$watch 'queryFilter', -> recompute scope
+
+        scope.sportFilter = 'all'
+        scope.setSportFilter = (sport) ->
+          scope.sportFilter = if scope.sportFilter == sport then 'all' else sport
+        scope.$watch 'sportFilter', -> recompute scope
+
+        scope.activeColumn = -1
+        scope.setActiveColumn = (index) ->
+          scope.activeColumn = index
+
+        recompute scope
     }
 
 
@@ -55,8 +56,12 @@ recompute = (scope) ->
       totalDuration: update sportData.totalDuration, Time.zero, (t) -> Time.plus t, workout.totalDuration
       totalElevation: update sportData.totalElevation, Distance.zero, (d) -> Distance.plus d, workout.totalElevation
 
+  sportFilter = scope.sportFilter
   workouts = scope.$eval 'workouts | filter: queryFilter'
-  _(workouts).each processWorkout
+
+  _.chain(workouts)
+    .filter((workout) -> sportFilter == 'all' || workout.exerciseType == sportFilter)
+    .each(processWorkout)
 
 
 angular.module('fitspector').directive 'workoutSportsSummary', [WorkoutSportsSummaryDirective]
