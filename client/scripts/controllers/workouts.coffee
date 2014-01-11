@@ -88,15 +88,25 @@ class WorkoutsCtrl
 
     # ----- List of workouts (passing filters) -----
 
-    updateTimeRange = =>
+    recomputeWorkoutsFilter = =>
       timeBeg = $scope.timeStart
       timeEnd = $scope.timeEnd()
-      DataService.setWorkoutsFilter (workout) ->
-        (workout.startTime.isBefore timeEnd) &&
-          ((workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg))        
+      sportFilter = $scope.sportFilter
 
-    $scope.$watch 'timeStart.valueOf()', updateTimeRange
-    $scope.$watch 'mode', updateTimeRange
+      # TODO(koper) Consider making those into standard filters and moving them to the Data service.
+      DataService.setWorkoutsFilter (workout) ->
+        beforeEnd = workout.startTime.isBefore timeEnd
+        afterStart = (workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg)
+        passingSportFilter = sportFilter == 'all' || workout.exerciseType == sportFilter
+        return beforeEnd && afterStart && passingSportFilter
+
+    $scope.sportFilter = 'all'
+    $scope.setSportFilter = (sport) ->
+      $scope.sportFilter = sport
+    $scope.$watch 'sportFilter', recomputeWorkoutsFilter
+
+    $scope.$watch 'timeStart.valueOf()', recomputeWorkoutsFilter
+    $scope.$watch 'mode', recomputeWorkoutsFilter
 
     DataService.setWorkoutsListener ->
       $scope.$digest()  # Time boundaries might have changed, changing outcomes

@@ -12,6 +12,7 @@ class WorkoutSportsSummaryDirective
       scope:
         workouts: '='
         queryFilter: '='
+        sportFilterListener: '&'
       link: (scope, elt) ->
 #        scope.allSummaryTypes = [
 #          id: 'total'
@@ -31,6 +32,7 @@ class WorkoutSportsSummaryDirective
         scope.sportFilter = 'all'
         scope.setSportFilter = (sport) ->
           scope.sportFilter = if scope.sportFilter == sport then 'all' else sport
+          scope.sportFilterListener {sport: scope.sportFilter}
         scope.$watch 'sportFilter', -> recompute scope
 
         scope.activeColumn = -1
