@@ -86,18 +86,21 @@ allWorkoutTypes =
 class DataService
 
   constructor: ($firebase, $rootScope) ->
-    # sync workouts with DB data
-    processWorkouts = (dbWorkouts) =>
-      $rootScope.allWorkouts = _(dbWorkouts).map (workout, key) -> new Workout(workout, key)
-
     # Loading data for a given user
     loadUser = (user) =>
       if user.id?
         userRef = new Firebase("https://fitspector.firebaseio.com/users").child user.id
         workoutsRef = userRef.child 'workouts'
         workouts = $firebase workoutsRef
+
+        # sync workouts with DB data
+        processWorkouts = ->
+          keys = _(workouts.$getIndex()).filter (key) -> workouts[key]?
+          console.log "Processing: #{keys.length} workouts"
+          $rootScope.allWorkouts = _(keys).map (key) -> new Workout(workouts[key], key)
+
         workouts.$on 'loaded', processWorkouts
-        # workouts.$on 'change', processWorkouts
+        workouts.$on 'change', processWorkouts
 
     # load current user
     loadUser $rootScope.user if $rootScope.user?
