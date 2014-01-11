@@ -100,7 +100,8 @@ class WorkoutsCtrl
           ((workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg))
       $scope.workouts = _($rootScope.allWorkouts).filter withinTimeRange
 
-    $rootScope.$watch 'allWorkouts', recomputeWorkouts
+    recomputeWorkouts()
+    $rootScope.$watchCollection 'allWorkouts', recomputeWorkouts
     $scope.$watch 'timeStart.valueOf()', recomputeWorkouts
     $scope.$watch 'mode', recomputeWorkouts
 
