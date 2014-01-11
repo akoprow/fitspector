@@ -86,31 +86,67 @@ allWorkoutTypes =
 class DataService
 
   constructor: ($rootScope) ->
+    @workoutsListener = ->  # Callback to invoke when workouts change.
+    @selectedWorkoutsListener = ->  # Callback to invoke when selected workouts change.
+    @workoutFilter = (workout) -> true  # Selection filter for workouts.
+
+    reset = =>
+      @firstWorkout = moment()  # Oldest workout of the user.
+      @workouts = []  # All synchronized workouts.
+      @selectedWorkouts = []  # Workouts passing selection filter.
+
     # Loading data for a given user
     loadUser = (user) =>
       # Remove all previous callbacks
-      @workoutsRef.off() if @workoutsRef?
+      workoutsRef.off() if workoutsRef?
 
       if user.id?
-        userRef = new Firebase("https://fitspector.firebaseio.com/users").child user.id
-        @workoutsRef = userRef.child 'workouts'
+        workoutsRef = new Firebase("https://fitspector.firebaseio.com/users").child(user.id).child('workouts')
 
         # sync workouts with DB data
-        $rootScope.allWorkouts = []
-        addWorkout = (workout) ->
-          console.log "Adding workout: #{workout.name()}"
-          $rootScope.allWorkouts.push new Workout(workout.val(), workout.name())
-        @workoutsRef.on 'child_added', addWorkout
+        reset()
+        workoutsRef.on 'child_added', (dbWorkout) =>
+          workout = new Workout(dbWorkout.val(), dbWorkout.name())
+          @workouts.push workout
+          @workoutsListener @workouts
+          if @workoutsFilter workout
+            @selectedWorkouts.push workout
+            @selectedWorkoutsListener @selectedWorkouts
+          # console.log "Added workout: #{dbWorkout.name()}, total workouts: #{@workouts.length}, selected: #{@selectedWorkouts.length}"
+          @firstWorkout = workout.startTime if workout.startTime.isBefore @firstWorkout
 
+    reset()
     # re-load data on user change
     $rootScope.$watch 'user', loadUser
 
     @workoutType = allWorkoutTypes
 
+    return {
+      # Returns an object: {beg: moment, end: moment} defining the time range of user's workouts.
+      getWorkoutsTimeRange: =>
+        return {
+          beg: @firstWorkout
+          end: moment()
+        }
 
-  getSportName: (sportId) ->
-    sportType = allWorkoutTypes[sportId]
-    sportType.name if sportType
+      # Returns all selected workout (i.e. ones passing the registered filter).
+      getSelectedWorkouts: => @selectedWorkouts
 
+      # Registers a callback invoked whenever the list of workouts changes.
+      setWorkoutsListener: (@workoutsListener) =>
+
+      # Registers a callback invoked whenever the list of *selected* workouts changes.
+      setSelectedWorkoutsListener: (@selectedWorkoutsListener) =>
+
+      # Sets a filter for selection of workouts.
+      setWorkoutsFilter: (@workoutsFilter) =>
+         @selectedWorkouts = _(@workouts).filter @workoutsFilter
+         @selectedWorkoutsListener @selectedWorkouts
+
+      getSportName: (sportId) =>
+        sportType = allWorkoutTypes[sportId]
+        sportType.name if sportType
+
+    }
 
 angular.module('fitspector').service 'DataService', ['$rootScope', DataService]

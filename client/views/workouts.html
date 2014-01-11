@@ -148,7 +148,7 @@
           No workouts in the selected time period.
         </td>
       </tr>
-      <tr ng-repeat="workout in workouts | filter: q | orderBy: order"
+      <tr ng-repeat="workout in workouts | filter: q | orderBy: order track by workout.id"
           class="animate-workout-list sport-{{workout.exerciseType}}"
           ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
           ng-mouseout="gaugeSettings.selectedWorkout = ''">

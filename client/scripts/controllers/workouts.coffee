@@ -1,7 +1,7 @@
 'use strict'
 
 class WorkoutsCtrl
-  constructor: (DataService, $scope, $rootScope) ->
+  constructor: (DataService, $scope) ->
 
     # ----- Gauges -----
     # TODO(koper) Take this from user settings?
@@ -54,9 +54,10 @@ class WorkoutsCtrl
     $scope.setMode = (newMode) =>
       $scope.mode = newMode
       adjustTime $scope.timeStart
-      while ($scope.timeStart.isAfter @timeRangeEnd)
+      timeRange = DataService.getWorkoutsTimeRange()
+      while ($scope.timeStart.isAfter timeRange.end)
         $scope.prev()
-      while ($scope.timeEnd().isBefore @timeRangeBeg)
+      while ($scope.timeEnd().isBefore timeRange.beg)
         $scope.next()
       updateTimeDesc()
 
@@ -64,15 +65,15 @@ class WorkoutsCtrl
       timeMove 1, $scope.timeStart
       updateTimeDesc()
 
-    $scope.nextDisabled = =>
-      return (timeMove 1, $scope.timeStart.clone()).isAfter @timeRangeEnd
+    $scope.nextDisabled = ->
+      (timeMove 1, $scope.timeStart.clone()).isAfter DataService.getWorkoutsTimeRange().end
 
     $scope.prev = ->
       timeMove -1, $scope.timeStart
       updateTimeDesc()
 
-    $scope.prevDisabled = =>
-      return (timeMove -1, $scope.timeEnd()).isBefore @timeRangeBeg
+    $scope.prevDisabled = ->
+      (timeMove -1, $scope.timeEnd()).isBefore DataService.getWorkoutsTimeRange().beg
 
     $scope.goNow = ->
       $scope.timeStart = moment()
@@ -87,23 +88,22 @@ class WorkoutsCtrl
 
     # ----- List of workouts (passing filters) -----
 
-    recomputeWorkouts = =>
-      @timeRangeEnd = moment()
-      @timeRangeBeg = moment()
-
+    updateTimeRange = =>
       timeBeg = $scope.timeStart
       timeEnd = $scope.timeEnd()
-
-      withinTimeRange = (workout) =>
-        @timeRangeBeg = workout.startTime if workout.startTime.isBefore @timeRangeBeg
+      DataService.setWorkoutsFilter (workout) ->
         (workout.startTime.isBefore timeEnd) &&
-          ((workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg))
-      $scope.workouts = _($rootScope.allWorkouts).filter withinTimeRange
+          ((workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg))        
 
-    recomputeWorkouts()
-    $rootScope.$watchCollection 'allWorkouts', recomputeWorkouts
-    $scope.$watch 'timeStart.valueOf()', recomputeWorkouts
-    $scope.$watch 'mode', recomputeWorkouts
+    $scope.$watch 'timeStart.valueOf()', updateTimeRange
+    $scope.$watch 'mode', updateTimeRange
+
+    DataService.setWorkoutsListener ->
+      $scope.$digest()  # Time boundaries might have changed, changing outcomes
+                        # of nextDisabled() or prevDisabled()
+
+    DataService.setSelectedWorkoutsListener (workouts) ->
+      $scope.workouts = workouts
 
     # ----- Sorting -----
     $scope.order = '-startTime'
@@ -112,4 +112,5 @@ class WorkoutsCtrl
       newOrderRev = "-#{newOrder}"
       $scope.order = if $scope.order == newOrderRev then newOrder else newOrderRev
 
-angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', '$scope', '$rootScope', WorkoutsCtrl]
+angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', '$scope', WorkoutsCtrl]
+
