@@ -32,7 +32,7 @@ class WorkoutSportsSummaryDirective
         scope.sportFilter = 'all'
 
         recompute scope
-        scope.$watch 'workouts', -> recompute scope
+        scope.$watchCollection 'workouts', -> recompute scope
         scope.$watch 'queryFilter', -> recompute scope
         scope.$watch 'sportFilter', -> recompute scope
 
