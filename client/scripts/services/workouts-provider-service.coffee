@@ -83,7 +83,7 @@ allWorkoutTypes =
 
 
 
-class DataService
+class WorkoutsProviderService
 
   constructor: ($rootScope) ->
     @workoutsListener = ->  # Callback to invoke when workouts change.
@@ -143,10 +143,11 @@ class DataService
          @selectedWorkouts = _(@workouts).filter @workoutsFilter
          @selectedWorkoutsListener @selectedWorkouts
 
+      # TODO(koper) This should be moved somewhere else...
       getSportName: (sportId) =>
         sportType = allWorkoutTypes[sportId]
         sportType.name if sportType
 
     }
 
-angular.module('fitspector').service 'DataService', ['$rootScope', DataService]
+angular.module('fitspector').service 'WorkoutsProviderService', ['$rootScope', WorkoutsProviderService]

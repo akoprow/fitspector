@@ -1,7 +1,7 @@
 'use strict'
 
 class SportIconDirective
-  constructor: (DataService) ->
+  constructor: (WorkoutsProviderService) ->
     return {
       replace: true
       restrict: 'E'
@@ -10,8 +10,8 @@ class SportIconDirective
         sportId: '='
       link: ($scope) ->
         setName = ->
-          $scope.sportName = DataService.getSportName $scope.sportId
+          $scope.sportName = WorkoutsProviderService.getSportName $scope.sportId
         $scope.$watch 'sportId', setName
     }
 
-angular.module('fitspector').directive 'sportIcon', ['DataService', SportIconDirective]
+angular.module('fitspector').directive 'sportIcon', ['WorkoutsProviderService', SportIconDirective]

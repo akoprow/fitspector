@@ -1,7 +1,7 @@
 'use strict'
 
 class WorkoutsCtrl
-  constructor: (DataService, $scope) ->
+  constructor: (WorkoutsProviderService, $scope) ->
 
     # ----- Gauges -----
     # TODO(koper) Take this from user settings?
@@ -54,7 +54,7 @@ class WorkoutsCtrl
     $scope.setMode = (newMode) =>
       $scope.mode = newMode
       adjustTime $scope.timeStart
-      timeRange = DataService.getWorkoutsTimeRange()
+      timeRange = WorkoutsProviderService.getWorkoutsTimeRange()
       while ($scope.timeStart.isAfter timeRange.end)
         $scope.prev()
       while ($scope.timeEnd().isBefore timeRange.beg)
@@ -66,14 +66,14 @@ class WorkoutsCtrl
       updateTimeDesc()
 
     $scope.nextDisabled = ->
-      (timeMove 1, $scope.timeStart.clone()).isAfter DataService.getWorkoutsTimeRange().end
+      (timeMove 1, $scope.timeStart.clone()).isAfter WorkoutsProviderService.getWorkoutsTimeRange().end
 
     $scope.prev = ->
       timeMove -1, $scope.timeStart
       updateTimeDesc()
 
     $scope.prevDisabled = ->
-      (timeMove -1, $scope.timeEnd()).isBefore DataService.getWorkoutsTimeRange().beg
+      (timeMove -1, $scope.timeEnd()).isBefore WorkoutsProviderService.getWorkoutsTimeRange().beg
 
     $scope.goNow = ->
       $scope.timeStart = moment()
@@ -94,7 +94,7 @@ class WorkoutsCtrl
       sportFilter = $scope.sportFilter
 
       # TODO(koper) Consider making those into standard filters and moving them to the Data service.
-      DataService.setWorkoutsFilter (workout) ->
+      WorkoutsProviderService.setWorkoutsFilter (workout) ->
         beforeEnd = workout.startTime.isBefore timeEnd
         afterStart = (workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg)
         passingSportFilter = sportFilter == 'all' || workout.exerciseType == sportFilter
@@ -108,11 +108,11 @@ class WorkoutsCtrl
     $scope.$watch 'timeStart.valueOf()', recomputeWorkoutsFilter
     $scope.$watch 'mode', recomputeWorkoutsFilter
 
-    DataService.setWorkoutsListener ->
+    WorkoutsProviderService.setWorkoutsListener ->
       $scope.$digest()  # Time boundaries might have changed, changing outcomes
                         # of nextDisabled() or prevDisabled()
 
-    DataService.setSelectedWorkoutsListener (workouts) ->
+    WorkoutsProviderService.setSelectedWorkoutsListener (workouts) ->
       $scope.workouts = workouts
 
     # ----- Sorting -----
@@ -122,5 +122,5 @@ class WorkoutsCtrl
       newOrderRev = "-#{newOrder}"
       $scope.order = if $scope.order == newOrderRev then newOrder else newOrderRev
 
-angular.module('fitspector').controller 'WorkoutsCtrl', ['DataService', '$scope', WorkoutsCtrl]
+angular.module('fitspector').controller 'WorkoutsCtrl', ['WorkoutsProviderService', '$scope', WorkoutsCtrl]
 
