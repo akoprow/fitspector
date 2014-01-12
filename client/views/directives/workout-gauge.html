@@ -1,14 +1,14 @@
-<div class="gauge {{type}}">
-  <div class="progress" ng-style="{'width': zones.gaugePercent(gaugeMax)}">
-    <div ng-repeat="i in [0, 1, 2, 3, 4, 5, 6]"
-         ng-style="{'width': zones.zonePercent(i)}"
-         class="progress-bar progress-bar-z{{i}}">
+<div bindonce="type" bo-class="'gauge ' + type">
+  <div class="progress" bo-style="{'width': zones.gaugePercent(gaugeMax)}">
+    <div bindonce ng-repeat="i in [0, 1, 2, 3, 4, 5, 6]"
+         bo-style="{'width': zones.zonePercent(i)}"
+         bo-class="'progress-bar progress-bar-z' + i">
     </div>
   </div>
   <div class="multiplier">
-    <span ng-show="zones.gaugeMultiplicator(gaugeMax)"
+    <span bo-show="zones.gaugeMultiplicator(gaugeMax)"
           class="label label-default">
-        <span ng-bind="zones.gaugeMultiplicator(gaugeMax)"></span>x
+        <span bo-text="zones.gaugeMultiplicator(gaugeMax)"></span>x
     </span>
   </div>
 </div>
