@@ -5,5 +5,6 @@ angular.module('fitspector', [
   'ngCookies'
   'ngRoute'
   'firebase'
+  'pasvaz.bindonce'
 ]).run ->
   $(".alert").alert()

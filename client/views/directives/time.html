@@ -1,4 +1,4 @@
-<span class="workout-time" ng-hide="value.isZero()">
-  <icon ng-hide="noIcon" type="time"></icon>
-  <span ng-bind="value | workoutTime"></span>
+<span class="workout-time" bindonce="value" bo-hide="value.isZero()">
+  <icon bo-hide="noIcon" type="time"></icon>
+  <span bo-text="value | workoutTime"></span>
 </span>

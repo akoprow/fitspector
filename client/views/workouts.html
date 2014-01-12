@@ -1,5 +1,5 @@
 <div class="workouts">
-  <number-watchers></number-watchers>
+  <!--<number-watchers></number-watchers>-->
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Your workouts</h3>
@@ -148,20 +148,20 @@
           No workouts in the selected time period.
         </td>
       </tr>
-      <tr ng-repeat="workout in workouts | filter: q | orderBy: order track by workout.id"
+      <tr bindonce ng-repeat="workout in workouts | filter: q | orderBy: order track by workout.id"
           class="animate-workout-list sport-{{workout.exerciseType}}"
           ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
           ng-mouseout="gaugeSettings.selectedWorkout = ''">
         <td class="date">
-          <div ng-bind="workout.startTime | date"></div>
-          <div ng-bind="workout.startTime | time"></div>
+          <div bo-text="workout.startTime | date"></div>
+          <div bo-text="workout.startTime | time"></div>
         </td>
         <td class="sport">
           <sport-icon sport-id="workout.exerciseType"></sport-icon>
         </td>
         <td class="notes-and-labels">
-          <span ng-repeat="label in workout.labels" class="label label-primary" ng-bind="label"></span>
-          <span class="notes" ng-bind="workout.notes"></span>
+          <span bindonce ng-repeat="label in workout.labels" class="label label-primary" bo-text="label"></span>
+          <span class="notes" bo-text="workout.notes"></span>
         </td>
         <td class="time-and-hr" colspan="2">
           <span ng-style="{visibility: gaugeSettings.mode != 'gauges' || gaugeSettings.selectedWorkout == workout.id ? 'visible' : 'hidden'}">
@@ -206,7 +206,7 @@
         </td>
 -->
         <td class="details">
-          <a ng-show="workout.detailsUrl()" class="btn btn-primary btn-sm" ng-href="{{workout.detailsUrl()}}" target="_blank">
+          <a bindonce="workout" bo-show="workout.detailsUrl()" class="btn btn-primary btn-sm" bo-href="workout.detailsUrl()" target="_blank">
             <span class="glyphicon glyphicon-zoom-in"></span>
           </a>
         </td>

@@ -1,4 +1,4 @@
-<span class="workout-intensity" ng-hide="intensity.isZero()">
-  <icon ng-hide="noIcon" type="intensity"></icon>
-  <span ng-bind="value | workoutIntensity"></span><span class="unit"> pts</span>
+<span class="workout-intensity" bindonce="intensity" bo-hide="intensity.isZero()">
+  <icon bo-hide="noIcon" type="intensity"></icon>
+  <span bo-text="value | workoutIntensity"></span><span class="unit"> pts</span>
 </span>
