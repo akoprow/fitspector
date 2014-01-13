@@ -1,5 +1,7 @@
 'use strict'
 
+WORKOUTS_PAGE_SIZE = 30
+
 class WorkoutsCtrl
   constructor: (WorkoutsProviderService, $scope) ->
 
@@ -88,7 +90,13 @@ class WorkoutsCtrl
 
     # ----- List of workouts (passing filters) -----
 
+    $scope.infiniteScrollingPosition = 0
+
+    $scope.scrollWorkouts = =>
+      $scope.infiniteScrollingPosition += WORKOUTS_PAGE_SIZE
+
     recomputeWorkoutsFilter = =>
+      $scope.infiniteScrollingPosition = WORKOUTS_PAGE_SIZE
       timeBeg = $scope.timeStart
       timeEnd = $scope.timeEnd()
       sportFilter = $scope.sportFilter
