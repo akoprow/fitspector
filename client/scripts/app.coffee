@@ -6,5 +6,6 @@ angular.module('fitspector', [
   'ngRoute'
   'firebase'
   'pasvaz.bindonce'
+  'infinite-scroll'
 ]).run ->
   $(".alert").alert()

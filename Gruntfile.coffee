@@ -231,6 +231,7 @@ module.exports = (grunt) ->
           'd3/d3.js'
           'momentjs/moment.js'
           'underscore/underscore.js'
+          'ngInfiniteScroll/ng-infinite-scroll.js'
 
           'bootstrap/dist/fonts/*'
           'bootstrap/dist/css/bootstrap.css'
