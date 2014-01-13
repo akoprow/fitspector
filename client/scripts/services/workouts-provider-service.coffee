@@ -85,23 +85,27 @@ allWorkoutTypes =
 
 class WorkoutsProviderService
 
-  constructor: ($rootScope) ->
+  constructor: (AuthService, DataProviderService) ->
     @workoutsListener = ->  # Callback to invoke when workouts change.
     @selectedWorkoutsListener = ->  # Callback to invoke when selected workouts change.
     @workoutFilter = (workout) -> true  # Selection filter for workouts.
 
+    @workoutType = allWorkoutTypes
+
+    # Reset user workouts data.
     reset = =>
       @firstWorkout = moment()  # Oldest workout of the user.
       @workouts = []  # All synchronized workouts.
       @selectedWorkouts = []  # Workouts passing selection filter.
+    reset()
 
-    # Loading data for a given user
-    loadUser = (user) =>
+    # Loading data for a given user.
+    changeUser = (user) =>
       # Remove all previous callbacks
       workoutsRef.off() if workoutsRef?
 
       if user.id?
-        workoutsRef = new Firebase("https://fitspector.firebaseio.com/users").child(user.id).child('workouts')
+        workoutsRef = DataProviderService.getFirebaseRoot().child('users').child(user.id).child('workouts')
 
         # sync workouts with DB data
         reset()
@@ -114,12 +118,7 @@ class WorkoutsProviderService
             @selectedWorkoutsListener @selectedWorkouts
           # console.log "Added workout: #{dbWorkout.name()}, total workouts: #{@workouts.length}, selected: #{@selectedWorkouts.length}"
           @firstWorkout = workout.startTime if workout.startTime.isBefore @firstWorkout
-
-    reset()
-    # re-load data on user change
-    $rootScope.$watch 'user', loadUser
-
-    @workoutType = allWorkoutTypes
+    AuthService.registerUserChangeListener changeUser
 
     return {
       # Returns an object: {beg: moment, end: moment} defining the time range of user's workouts.
@@ -150,4 +149,4 @@ class WorkoutsProviderService
 
     }
 
-angular.module('fitspector').service 'WorkoutsProviderService', ['$rootScope', WorkoutsProviderService]
+angular.module('fitspector').service 'WorkoutsProviderService', ['AuthService', 'DataProviderService', WorkoutsProviderService]

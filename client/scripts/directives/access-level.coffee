@@ -1,7 +1,7 @@
 'use strict'
 
 class AccessLevelDirective
-  constructor: ($rootScope, AuthService) ->
+  constructor: (AuthService) ->
     return {
       replace: true
       restrict: 'A'
@@ -9,7 +9,7 @@ class AccessLevelDirective
         originalDisplay = element.css 'display'
         accessLevel = attrs.accessLevel
 
-        update = (user) ->
+        changeUser = (user) ->
           visible =
             switch accessLevel
               # TODO(koper) This is fragile; find a better way to distinguish between different user classes.
@@ -17,9 +17,8 @@ class AccessLevelDirective
               when 'user' then AuthService.isLoggedIn()
           element.css 'display', if visible then originalDisplay else 'none'
 
-        $rootScope.$on 'userChanged', (e, user) -> update user
-        update AuthService.getUser()
+        AuthService.registerUserChangeListener changeUser
     }
 
 
-angular.module('fitspector').directive 'accessLevel', ['$rootScope', 'AuthService', AccessLevelDirective]
+angular.module('fitspector').directive 'accessLevel', ['AuthService', AccessLevelDirective]
