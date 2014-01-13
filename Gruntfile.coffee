@@ -49,7 +49,7 @@ module.exports = (grunt) ->
         tasks: ['copy:less', 'less']
       coffee:
         files: '<%= yeoman.client %>/scripts/{,*/}*.coffee'
-        tasks: ['copy:coffee', 'preprocess:coffee', 'coffee:all']
+        tasks: ['copy:coffee', 'coffee:all', 'preprocess:js']
       html:
         files: '<%= yeoman.client %>/**/*.html'
         tasks: ['copy:html']
@@ -172,7 +172,7 @@ module.exports = (grunt) ->
     preprocess:
       options:
         inline: true
-      coffee:
+      js:
         src: ['<%= yeoman.tmp %>/<%= yeoman.client %>/scripts/services/data-provider-service.js']
 
     sprite:
