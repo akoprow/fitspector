@@ -49,10 +49,10 @@ module.exports = (grunt) ->
         tasks: ['copy:less', 'less']
       coffee:
         files: '<%= yeoman.client %>/scripts/{,*/}*.coffee'
-        tasks: ['copy:coffee', 'coffee:all']
+        tasks: ['copy:coffee', 'preprocess:coffee', 'coffee:all']
       html:
         files: '<%= yeoman.client %>/**/*.html'
-        tasks: ['copy:html', 'preprocess']
+        tasks: ['copy:html']
       express:
         files: [
           '<%= yeoman.tmp %>/server.js'
@@ -170,12 +170,10 @@ module.exports = (grunt) ->
         ]
 
     preprocess:
-      all:
-        src: []
-        options:
-          inline: true,
-          context:
-            DEBUG: false
+      options:
+        inline: true
+      coffee:
+        src: ['<%= yeoman.tmp %>/<%= yeoman.client %>/scripts/services/data-provider-service.js']
 
     sprite:
       sportIcons:
@@ -300,8 +298,8 @@ module.exports = (grunt) ->
     concurrent:
       dev: [
         'less'
-        'preprocess'
         'sprite'
+        'preprocess'
       ]
       test: [
         'coffee'
