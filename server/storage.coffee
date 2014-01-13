@@ -10,7 +10,7 @@ logger = require './utils/logger'
 
 ####################################################################################################
 
-FIREBASE_ROOT = 'https://fitspector.firebaseIO.com'
+FIREBASE_ROOT = process.env.FIREBASE_ROOT || throw new Error 'Missing FIREBASE_ROOT'
 
 ####################################################################################################
 
