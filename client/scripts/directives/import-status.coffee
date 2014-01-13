@@ -1,14 +1,17 @@
 'use strict'
 
 class ImportStatusDirective
-  constructor: ($firebase, $rootScope) ->
+  constructor: ($firebase, AuthService, DataProviderService) ->
     return {
       replace: true
       restrict: 'E'
       templateUrl: 'views/directives/import-status.html'
       scope: {}
       link: ($scope) ->
-        update = ->
+        importStatusRef = null
+        dbImportStatus = null
+
+        updateStatus = ->
           return if !dbImportStatus?
           if dbImportStatus.done?
             $scope.importStatus =
@@ -21,11 +24,17 @@ class ImportStatusDirective
               total: dbImportStatus.total
               importProgress: 100 * dbImportStatus.imported / dbImportStatus.total
 
-        userRef = new Firebase("https://fitspector.firebaseio.com/users").child $rootScope.user.id
-        importStatusRef = userRef.child 'importStatus'
-        dbImportStatus = $firebase importStatusRef
-        dbImportStatus.$on 'loaded', update
-        dbImportStatus.$on 'change', update
+        changeUser = (user) ->
+          $scope.importStatus = {}
+          importStatusRef.off() if importStatusRef?
+          if user.guest then return
+
+          importStatusRef = DataProviderService.getFirebaseRoot().child('users').child(user.id).child('importStatus')
+          dbImportStatus = $firebase importStatusRef
+          dbImportStatus.$on 'loaded', updateStatus
+          dbImportStatus.$on 'change', updateStatus
+
+        AuthService.registerUserChangeListener changeUser
     }
 
-angular.module('fitspector').directive 'importStatus', ['$firebase', '$rootScope', ImportStatusDirective]
+angular.module('fitspector').directive 'importStatus', ['$firebase', 'AuthService', 'DataProviderService', ImportStatusDirective]
