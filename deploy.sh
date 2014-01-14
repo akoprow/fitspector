@@ -9,7 +9,7 @@ default_username="Adam Koprowski"
 default_email="Adam.Koprowski@gmail.com"
 
 #repository to deploy to. must be readable and writable.
-repo=staging-heroku
+repo=origin
 
 if [[ $1 = "-v" || $1 = "--verbose" ]]; then
 	verbose=true
