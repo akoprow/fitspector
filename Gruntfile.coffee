@@ -260,6 +260,12 @@ module.exports = (grunt) ->
         ]
         dest: '<%= yeoman.dist %>'
         expand: true
+      # TODO(koper) This is ugly; find a better way to expose client side code for the server.
+      dist_js:
+        cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>/scripts'
+        src: '**/*.js'
+        dest: '<%= yeoman.dist %>/<%= yeoman.client %>/scripts'
+        expand: true
 
     karma:
       unit:
@@ -339,6 +345,7 @@ module.exports = (grunt) ->
     'uglify'
     'rev'
     'usemin'
+    'copy:dist_js'
   ];
 
   grunt.registerTask 'test', [
