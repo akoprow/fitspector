@@ -10,6 +10,7 @@ class root.User
     name: profile.name
     isMale: profile.gender is 'M'
     birthday: new Date(profile.birthday)
-    smallImgUrl: profile['medium_picture'] || ''
+    smallImgUrl: profile['small_picture'] || profile['medium_picture'] || profile['normal_picture'] || ''
     settings: new userSettings.UserSettings()
     token: null
+    runKeeperProfile: profile

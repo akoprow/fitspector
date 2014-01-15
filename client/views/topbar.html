@@ -42,7 +42,8 @@
         </li>
         <li access-level="user">
           <a href="#" class="dropdown-toggle user-toggle" data-toggle="dropdown">
-            <img class="img-rounded" ng-src="{{getUser().smallImgUrl}}" />
+            <img ng-show="getUser().smallImgUrl" class="img-rounded user-icon" ng-src="{{getUser().smallImgUrl}}" />
+            <span ng-hide="getUser().smallImgUrl" class="glyphicon glyphicon-user user-icon"></span>
             <b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
