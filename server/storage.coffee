@@ -101,7 +101,6 @@ importFinished = (userId, total) ->
 ####################################################################################################
 
 canCreateUser = (userId, done, error) ->
-  logger.info 'Checking if we can create user: %s', userId
   success = (user) ->
     if user.val() then done() else error()
   failure = ->

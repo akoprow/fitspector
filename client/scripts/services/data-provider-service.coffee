@@ -14,6 +14,9 @@ class DataProviderService
           if error
             # TODO(koper) Add proper error handling.
             console.log 'Authentication error'
+
+      logout: ->
+        getFirebaseRoot().unauth()
     }
 
 
