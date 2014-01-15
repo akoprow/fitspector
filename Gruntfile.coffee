@@ -302,27 +302,13 @@ module.exports = (grunt) ->
             removeScriptTypeAttributes: true
             removeStyleLinkTypeAttributes: true
 
-    concurrent:
-      dev: [
-        'less'
-        'sprite'
-        'preprocess'
-      ]
-      test: [
-        'coffee'
-      ]
-      dist: [
-        'imagemin'
-        'svgmin'
-        'htmlmin'
-        'less'
-      ]
-
   grunt.registerTask 'server', [
     'env:dev'
     'copy'
     'coffee:all'
-    'concurrent:dev'
+    'sprite'
+    'less'
+    'preprocess'
     'express:fitspector'
     'watch'
   ];
@@ -332,10 +318,14 @@ module.exports = (grunt) ->
     'clean:dist'
     'copy'
     'coffee:all'
-    'concurrent:dev'
     'useminPrepare'
     'copy:dist'
-    'concurrent:dist'
+    'sprite'
+    'less'
+    'preprocess'
+    'imagemin'
+    'svgmin'
+    'htmlmin'
     'ngtemplates'
     'autoprefixer'
     'concat'
