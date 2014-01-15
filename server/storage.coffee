@@ -6,11 +6,13 @@
 'use strict'
 
 Firebase = require 'firebase'
+FirebaseTokenGenerator = require 'firebase-token-generator'
 logger = require './utils/logger'
 
 ####################################################################################################
 
 FIREBASE_ROOT = process.env.FIREBASE_ROOT || throw new Error 'Missing FIREBASE_ROOT'
+FIREBASE_SECRET = process.env.FIREBASE_SECRET || throw new Error 'Missing FIREBASE_SECRET'
 
 ####################################################################################################
 
@@ -109,6 +111,14 @@ canCreateUser = (userId, done, error) ->
 
 ####################################################################################################
 
+tokenGenerator = new FirebaseTokenGenerator FIREBASE_SECRET
+
+generateFirebaseToken = (userId) ->
+  return tokenGenerator.createToken
+    userId: userId
+
+####################################################################################################
+
 module.exports =
   addWorkout: addWorkout
   getAllUserWorkouts: getAllUserWorkouts
@@ -117,6 +127,7 @@ module.exports =
   updateUserProfile: updateUserProfile
   getUserSettings: getUserSettings
   canCreateUser: canCreateUser
+  generateFirebaseToken: generateFirebaseToken
 
   setImportCount: setImportCount
   markImportItemComplete: markImportItemComplete
