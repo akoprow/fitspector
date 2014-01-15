@@ -117,6 +117,13 @@ generateFirebaseToken = (userId) ->
   return tokenGenerator.createToken
     userId: userId
 
+# Provide admin access for the backend.
+adminToken = tokenGenerator.createToken {}, {admin: true}
+mkFirebaseRef().auth adminToken, (error) ->
+  if error
+    logger.error "Failed authenticate the backend with Firebase, #{error}"
+    process.exit 1
+
 ####################################################################################################
 
 module.exports =
