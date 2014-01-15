@@ -235,6 +235,9 @@ createRunKeeperUser = (userId, token, done) ->
 loadRunKeeperUser = (userId, done, token) ->
 
   finishLoading = (err, user, msg) ->
+    if user
+      user.token = Storage.generateFirebaseToken user.id
+
     # Invoke the callback
     done err, user, msg
 

@@ -12,3 +12,4 @@ class root.User
     birthday: new Date(profile.birthday)
     smallImgUrl: profile['medium_picture'] || ''
     settings: new userSettings.UserSettings()
+    token: null

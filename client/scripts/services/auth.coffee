@@ -4,11 +4,17 @@ class AuthService
   GUEST = { guest: true }
   userChangeListeners = []
 
-  constructor: ($cookieStore, @$http) ->
+  constructor: ($cookieStore, $http, DataProviderService) ->
     userChangeListeners = []
 
     changeUser = (user) =>
       @user = user
+
+      # Authenticate user against data storage.
+      if !user.guest
+        DataProviderService.auth user.token
+
+      # Invoke all listeners for user change.
       _(userChangeListeners).each (listener) -> listener(user)
 
     # Restore user data from the cookie.
@@ -29,10 +35,10 @@ class AuthService
         @user.name?
 
       logout: (callback) =>
-        (@$http.post '/logout').success =>
+        ($http.post '/logout').success =>
           changeUser GUEST
           callback()
     }
 
 
-angular.module('fitspector').service 'AuthService', ['$cookieStore', '$http', AuthService]
+angular.module('fitspector').service 'AuthService', ['$cookieStore', '$http', 'DataProviderService', AuthService]
