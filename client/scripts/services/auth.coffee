@@ -4,7 +4,7 @@ class AuthService
   GUEST = { guest: true }
   userChangeListeners = []
 
-  constructor: ($cookieStore, $http, DataProviderService) ->
+  constructor: ($cookieStore, $http, $location, DataProviderService) ->
     userChangeListeners = []
 
     changeUser = (user) =>
@@ -35,10 +35,12 @@ class AuthService
         @user.name?
 
       logout: (callback) =>
+        changeUser GUEST
+        DataProviderService.logout()
+        $location.path '/'
         ($http.post '/logout').success =>
-          changeUser GUEST
           callback()
     }
 
 
-angular.module('fitspector').service 'AuthService', ['$cookieStore', '$http', 'DataProviderService', AuthService]
+angular.module('fitspector').service 'AuthService', ['$cookieStore', '$http', '$location', 'DataProviderService', AuthService]
