@@ -12,6 +12,10 @@ class Routes
       .when '/loginFailed',
         templateUrl: 'views/loginFailed.html'
 
+      .when '/settings',
+        templateUrl: 'views/settings.html'
+        controller: 'SettingsCtrl'
+
       .when '/workouts',
         templateUrl: 'views/workouts.html'
         controller: 'WorkoutsCtrl'
