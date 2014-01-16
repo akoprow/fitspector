@@ -1,3 +1,18 @@
-<div>
-  User settings
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <ul class="nav nav-pills nav-stacked">
+        <li ng-repeat="tab in tabs"
+            ng-class="{'active': selectedTabId == tab.id}">
+          <a href="#" ng-click="goTo(tab.id)" ng-bind="tab.title"></a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-9">
+      <div class="well" ng-show="selectedTabId == tab.id" ng-repeat="tab in tabs">
+        <h2 ng-bind="tab.title"></h2>
+        <ng-include src="tab.url"></ng-include>
+      </div>
+    </div>
+  </div>
 </div>
