@@ -25,6 +25,8 @@ maxHR = 187
 runningFunctionalThresholdPace = 14.6
 
 # TODO(koper) Should this be configurable?
+# TODO(koper) This s fragile as it needs to be synchronized with values in client/scripts/controllers/my-performance.coffee
+# 
 # Based on the Zoladz method: http://en.wikipedia.org/wiki/Heart_rate
 # Boundaries expressed in the difference from HRmax.
 hrZoneBoundaries = [45, 35, 25, 15]

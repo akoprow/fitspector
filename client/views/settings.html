@@ -10,7 +10,6 @@
     </div>
     <div class="col-md-9">
       <div class="well" ng-show="selectedTabId == tab.id" ng-repeat="tab in tabs">
-        <h2 ng-bind="tab.title"></h2>
         <ng-include src="tab.url"></ng-include>
       </div>
     </div>

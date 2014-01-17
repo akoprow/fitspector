@@ -77,6 +77,9 @@
     <!-- build:js scripts/scripts.js -->
     <script src="scripts/app.js"></script>
 
+    <!-- --------------------------------------- Models ---------------------------------------- -->
+    <script src="scripts/models/workout.js"></script>
+
     <!-- units -->
     <script src="scripts/models/distance.js"></script>
     <script src="scripts/models/intensity.js"></script>
@@ -84,15 +87,12 @@
     <script src="scripts/models/pace.js"></script>
     <script src="scripts/models/zones.js"></script>
 
-    <!-- models -->
-    <script src="scripts/models/workout.js"></script>
-
-    <!-- services -->
+    <!-- --------------------------------------- Services -------------------------------------- -->
     <script src="scripts/services/auth.js"></script>
     <script src="scripts/services/data-provider-service.js"></script>
     <script src="scripts/services/workouts-provider-service.js"></script>
 
-    <!-- directives -->
+    <!-- ------------------------------------- Directives -------------------------------------- -->
     <script src="scripts/directives/access-level.js"></script>
     <script src="scripts/directives/icon.js"></script>
     <script src="scripts/directives/sorting-ctrl.js"></script>
@@ -115,7 +115,7 @@
     <!-- development directives; TODO(koper) Should not be included in production. -->
     <script src="scripts/directives/number-watchers.js"></script>
 
-    <!-- filters -->
+    <!-- --------------------------------------- Filters --------------------------------------- -->
     <script src="scripts/filters/date.js"></script>
     <script src="scripts/filters/time.js"></script>
     <script src="scripts/filters/workout-distance.js"></script>
@@ -123,14 +123,17 @@
     <script src="scripts/filters/workout-intensity.js"></script>
     <script src="scripts/filters/workout-time.js"></script>
 
-    <!-- controllers -->
+    <!-- ------------------------------------- Controllers ------------------------------------- -->
     <script src="scripts/controllers/compare.js"></script>
     <script src="scripts/controllers/login.js"></script>
     <script src="scripts/controllers/navigation.js"></script>
-    <script src="scripts/controllers/settings.js"></script>
     <script src="scripts/controllers/workouts.js"></script>
 
-    <!-- app-level settings -->
+    <!-- controllers: settings -->
+    <script src="scripts/controllers/settings.js"></script>
+    <script src="scripts/controllers/my-performance.js"></script>
+
+    <!-- --------------------------------- App-level settings ---------------------------------- -->
     <script src="scripts/init.js"></script>
     <script src="scripts/routes.js"></script>
     <!-- endbuild -->
