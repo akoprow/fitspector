@@ -8,6 +8,7 @@ class WorkoutGaugeDirective
       templateUrl: 'views/directives/workout-gauge.html'
       scope:
         gaugeMax: '='
+        noMultiplier: '@'
         type: '@'
         zones: '='
     }

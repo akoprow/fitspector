@@ -1,32 +1,82 @@
-<form class="form-horizontal" role="form" name="myPerformanceForm" ng-controller="MyPerformanceCtrl">
+<div id="myPerformance" ng-controller="MyPerformanceCtrl">
   <h3>Heart rate zones</h3>
-  <div class="form-group" ng-class="{'has-error': !myPerformanceForm.maxHR.$valid}">
-    <label for="maxHR" class="col-xs-4 control-label">
-      Your maximal heart rate (HRmax)
-    </label>
-    <div class="col-xs-2">
-      <input ng-model="settings.maxHR" name="maxHR" min="100" max="230" required
-             id="maxHR" type="number" class="form-control">
-    </div>
-  </div>
 
-  <p class="text-center">Your computed heart rate zones</p>
-  <div class="row">
-    <p class="col-md-2"></p>
-    <workout-gauge class="col-md-10" type="hr" zones="hrZonesDummyData" gauge-max="hrZonesDummyMax"></workout-gauge>
+  <form class="form-horizontal" role="form">
+    <div class="form-group">
+      <label for="maxHR" class="col-sm-4 control-label">
+        Your maximal heart rate (HRmax)
+      </label>
+      <div class="col-sm-2">
+        <input ng-model="settings.maxHR" name="maxHR" min="100" max="230" required
+               id="maxHR" type="number" class="form-control">
+      </div>
+    </div>
+  </form>
+
+  <div class="row zones figures">
+    <p class="text-right col-md-2">HR zones:</p>
+    <p class="zone col-md-2" ng-repeat="zone in intensity" ng-bind="getHrZoneRange($index)"></p>
   </div>
-  <div class="row">
+  <div class="row zones gauge">
+    <p class="col-md-2"></p>
+    <workout-gauge class="col-md-10" type="hr" zones="hrZonesDummyData" gauge-max="hrZonesDummyMax" no-multiplier="true"></workout-gauge>
+  </div>
+  <div class="row zones labels">
     <p class="text-right col-md-2">Intensity:</p>
     <p class="text-center col-md-2" ng-repeat="zone in intensity" ng-bind="zone"></p>
   </div>
-  <div class="row">
-    <p class="text-right col-md-2">HR range:</p>
-    <p class="text-center col-md-2" ng-repeat="zone in intensity" ng-bind="getHrZoneRange($index)"></p>
+
+  <h3>Pace zones</h3>
+  <form class="form-horizontal" role="form">
+    <div class="form-group">
+      <div class="col-sm-1">
+        <sport-icon sport-id="'run'"></sport-icon>Running
+      </div>
+      <label for="runBestTime" class="col-sm-3 control-label">
+        Recent race time
+      </label>
+      <div class="col-sm-2">
+        <input id="runBestTime" ng-model="settings.runBestTime" name="runBestTime"
+               class="form-control"
+               type="text" required>
+      </div>
+      <div class="col-sm-2">
+        <select ng-model="settings.runBestDistance" name="runBestDistance" required
+               id="runBestDistance" type="text" class="form-control">
+          <option value="5km">5km</option>
+          <option value="10km">10km</option>
+          <option value="half-marathon">half-marathon</option>
+          <option value="marathon">marathon</option>
+        </select>
+      </div>
+    </div>
+  </form>
+
+  <div class="row zones figures">
+    <p class="text-right col-md-2">Running pace:</p>
+    <p class="zone col-md-2" ng-repeat="zone in intensity" ng-bind="getHrZoneRange($index)"></p>
+  </div>
+  <div class="row zones gauge">
+    <p class="col-md-2"></p>
+    <workout-gauge class="col-md-10" type="pace" zones="paceZonesDummyData" gauge-max="paceZonesDummyMax" no-multiplier="true"></workout-gauge>
+  </div>
+  <div class="row zones labels">
+    <p class="text-right col-md-2">Intensity:</p>
+    <p class="text-center col-md-2" ng-repeat="zone in intensity" ng-bind="zone"></p>
   </div>
 
-  <h3>Pace zones: running</h3>
-  <p>...</p>
+  <p><sport-icon sport-id="'bik'"></sport-icon>Cycling</p>
 
-  <h3>Pace zones: cycling</h3>
-  <p>...</p>
+  <div class="row zones figures">
+    <p class="text-right col-md-2">Cycling pace:</p>
+    <p class="zone col-md-2" ng-repeat="zone in intensity" ng-bind="getHrZoneRange($index)"></p>
+  </div>
+  <div class="row zones gauge">
+    <p class="col-md-2"></p>
+    <workout-gauge class="col-md-10" type="pace" zones="paceZonesDummyData" gauge-max="paceZonesDummyMax" no-multiplier="true"></workout-gauge>
+  </div>
+  <div class="row zones labels">
+    <p class="text-right col-md-2">Intensity:</p>
+    <p class="text-center col-md-2" ng-repeat="zone in intensity" ng-bind="zone"></p>
+  </div>
 </form>

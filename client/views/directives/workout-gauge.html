@@ -5,7 +5,7 @@
          bo-class="'progress-bar progress-bar-z' + i">
     </div>
   </div>
-  <div class="multiplier">
+  <div class="multiplier" ng-hide="noMultiplier">
     <span bo-show="zones.gaugeMultiplicator(gaugeMax)"
           class="label label-default">
         <span bo-text="zones.gaugeMultiplicator(gaugeMax)"></span>x

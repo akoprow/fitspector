@@ -88,7 +88,7 @@ class WorkoutsProviderService
   constructor: (AuthService, DataProviderService) ->
     @workoutsListener = ->  # Callback to invoke when workouts change.
     @selectedWorkoutsListener = ->  # Callback to invoke when selected workouts change.
-    @workoutFilter = (workout) -> true  # Selection filter for workouts.
+    @workoutsFilter = (workout) -> true  # Selection filter for workouts.
 
     @workoutType = allWorkoutTypes
 
