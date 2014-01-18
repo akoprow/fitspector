@@ -12,49 +12,84 @@ class WorkoutsCtrl
 
     # ----- Gauge displaying type -----
 
+    $scope.gaugeModes = [
+      id: 'numbers'
+      desc: 'Numbers'
+    ,
+      id: 'gauges'
+      desc: 'Gauges'
+    ,
+      id: 'both'
+      desc: 'Both'
+    ]
+
     $scope.gaugeSettings =
       mode: 'both'
       selectedWorkout: ''
 
     # ----- Time navigation -----
 
+    $scope.timeModes = [
+      id: 'week'
+      desc: 'Week'
+    ,
+      id: 'month'
+      desc: 'Month'
+    ,
+      id: 'year'
+      desc: 'Year'
+    ,
+      id: 'all'
+      desc: 'All'
+    ]
+
     # TODO(koper) Extract this into a time-selection service/controller?
     updateTimeDesc = ->
-      switch $scope.mode
+      switch $scope.timeMode.id
         when 'year'
-          $scope.modeDesc = $scope.timeStart.format('YYYY')
+          $scope.timeMode.desc = $scope.timeStart.format('YYYY')
         when 'month'
-          $scope.modeDesc = $scope.timeStart.format('MMM YYYY')
+          $scope.timeMode.desc = $scope.timeStart.format('MMM YYYY')
         when 'week'
-          $scope.modeDesc = $scope.timeStart.format('W / gggg')
-      $scope.modeFullDesc =
-        if $scope.mode == 'week'
+          $scope.timeMode.desc = $scope.timeStart.format('W / gggg')
+        when 'all'
+          $scope.timeMode.desc = 'All workouts'
+        else
+          throw new Error "Unknown time mode #{$scope.timeMode.id}"
+      $scope.timeMode.fullDesc =
+        if $scope.timeMode.id == 'week'
           timeEnd = $scope.timeEnd().subtract 'days', 1
           "#{$scope.timeStart.format('LL')} — #{timeEnd.format('LL')}"
         else
           ''
 
     adjustTime = (time) ->
-      switch $scope.mode
+      switch $scope.timeMode.id
         when 'year'
           time.startOf 'year'
         when 'month'        
           time.startOf 'month'
         when 'week'
           time.startOf 'week'
+        when 'all'
+          time = WorkoutsProviderService.getWorkoutsTimeRange().beg
+        else throw new Error "Unknown time mode #{$scope.timeMode.id}"
 
     timeMove = (delta, time) ->
-      switch $scope.mode
+      switch $scope.timeMode.id
         when 'year'
           time.add 'years', delta
         when 'month'
           time.add 'months', delta
         when 'week'
           time.add 'weeks', delta
+        when 'all'
+          ;
+        else throw new Error "Unknown time mode #{$scope.timeMode.id}"
       adjustTime time
 
-    $scope.setMode = (newMode) =>
-      $scope.mode = newMode
+    $scope.setTimeMode = (newTimeMode) =>
+      $scope.timeMode = { id: newTimeMode }
       adjustTime $scope.timeStart
       timeRange = WorkoutsProviderService.getWorkoutsTimeRange()
       while ($scope.timeStart.isAfter timeRange.end)
@@ -83,10 +118,14 @@ class WorkoutsCtrl
       updateTimeDesc()
 
     $scope.timeEnd = ->
-       timeMove 1, $scope.timeStart.clone()
+      if $scope.timeMode.id == 'all'
+        WorkoutsProviderService.getWorkoutsTimeRange().end
+      else
+        timeMove 1, $scope.timeStart.clone()
 
+    $scope.timeMode = { id: 'week' }
     $scope.goNow()
-    $scope.setMode 'week'
+    $scope.setTimeMode 'week'
 
     # ----- List of workouts (passing filters) -----
 
@@ -103,10 +142,13 @@ class WorkoutsCtrl
 
       # TODO(koper) Consider making those into standard filters and moving them to the Data service.
       WorkoutsProviderService.setWorkoutsFilter (workout) ->
-        beforeEnd = workout.startTime.isBefore timeEnd
-        afterStart = (workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg)
         passingSportFilter = sportFilter == 'all' || workout.exerciseType == sportFilter
-        return beforeEnd && afterStart && passingSportFilter
+        if $scope.timeMode.id == 'all'
+          passingSportFilter
+        else
+          beforeEnd = workout.startTime.isBefore timeEnd
+          afterStart = (workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg)
+          beforeEnd && afterStart && passingSportFilter
 
     $scope.sportFilter = 'all'
     $scope.setSportFilter = (sport) ->
@@ -114,7 +156,7 @@ class WorkoutsCtrl
     $scope.$watch 'sportFilter', recomputeWorkoutsFilter
 
     $scope.$watch 'timeStart.valueOf()', recomputeWorkoutsFilter
-    $scope.$watch 'mode', recomputeWorkoutsFilter
+    $scope.$watch 'timeMode', recomputeWorkoutsFilter
 
     WorkoutsProviderService.setWorkoutsListener ->
       $scope.$digest()  # Time boundaries might have changed, changing outcomes
@@ -131,4 +173,3 @@ class WorkoutsCtrl
       $scope.order = if $scope.order == newOrderRev then newOrder else newOrderRev
 
 angular.module('fitspector').controller 'WorkoutsCtrl', ['WorkoutsProviderService', '$scope', WorkoutsCtrl]
-
