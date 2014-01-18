@@ -1,4 +1,4 @@
-<span class="workout-elevation" bindonce="value" bo-show="value && !value.isZero()">
-  <icon bo-hide="noIcon" type="elevation"></icon>
-  <span bo-text="value | workoutElevation"></span><span class="unit"> m</span>
+<span class="workout-elevation" ng-show="value && !value.isZero()">
+  <icon ng-hide="noIcon" type="elevation"></icon>
+  <span ng-bind="value | workoutElevation"></span><span class="unit"> m</span>
 </span>

@@ -1,11 +1,11 @@
-<span class="workout-pace" bindonce="value" bo-show="value">
-  <icon bo-hide="noIcon" type="pace"></icon>
+<span class="workout-pace" ng-show="value">
+  <icon ng-hide="noIcon" type="pace"></icon>
   <span ng-show="showPaceAsMinKm">
-    <span bo-text="value.asTimePerKm() | workoutTime: 'short'"></span>
+    <span ng-bind="value.asTimePerKm() | workoutTime: 'short'"></span>
     <span class="unit">min/km</span>
   </span>
   <span ng-hide="showPaceAsMinKm">
-    <span bo-text="value.asKmPerHour() | number: 1"></span>
+    <span ng-bind="value.asKmPerHour() | number: 1"></span>
     <span class="unit">km/h</span>
   </span>
 </span>
