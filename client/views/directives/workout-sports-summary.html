@@ -28,10 +28,11 @@
         </span>
       </td>
     </tr>
-    <tr ng-repeat="metric in ['sessions', 'time', 'distance', 'elevation']"
-        class="data-row" ng-class="metric">
+    <tr bindonce
+        ng-repeat="metric in ['sessions', 'time', 'distance', 'elevation']"
+        class="data-row">
       <th>
-        <span class="text"><span ng-bind="metric"></span> <icon type="{{metric}}"></icon>
+        <span class="text"><span bo-text="metric"></span> <icon type="{{metric}}"></icon>
       </th>
       <td class="data">
         <span ng-repeat="(sportId, sport) in sports"
