@@ -19,36 +19,18 @@
 -->
         <div class="btn-group">
           <button class="btn btn-primary"
-                  ng-class="{active: mode == 'week'}"
-                  ng-click="setMode('week')">
-            Week
-          </button>
-          <button class="btn btn-primary"
-                  ng-class="{active: mode == 'month'}"
-                  ng-click="setMode('month')">
-            Month
-          </button>
-          <button class="btn btn-primary"
-                  ng-class="{active: mode == 'year'}"
-                  ng-click="setMode('year')">
-            Year
+                  ng-repeat="mode in timeModes"
+                  ng-class="{active: timeMode.id == mode.id}"
+                  ng-click="setTimeMode(mode.id)"
+                  ng-bind="mode.desc">
           </button>
         </div>
         <div class="btn-group">
           <button class="btn btn-primary"
-                  ng-class="{active: gaugeSettings.mode == 'numbers'}"
-                  ng-click="gaugeSettings.mode = 'numbers'">
-            Numbers
-          </button>
-          <button class="btn btn-primary"
-                  ng-class="{active: gaugeSettings.mode == 'gauges'}"
-                  ng-click="gaugeSettings.mode = 'gauges'">
-            Gauges
-          </button>
-          <button class="btn btn-primary"
-                  ng-class="{active: gaugeSettings.mode == 'both'}"
-                  ng-click="gaugeSettings.mode = 'both'">
-            Both
+                  ng-repeat="mode in gaugeModes"
+                  ng-class="{active: gaugeSettings.mode == mode.id}"
+                  ng-click="gaugeSettings.mode = mode.id"
+                  ng-bind="mode.desc">
           </button>
         </div>
         <div class="col-lg-3">
@@ -68,7 +50,7 @@
       </div>
     </div>
 
-    <div class="text-center date-selection">
+    <div class="text-center date-selection" ng-hide="timeMode.id == 'all'">
       <div class="btn-group">
         <button type="button"
                 class="btn btn-primary"
@@ -79,7 +61,7 @@
         <button type="button"
                 class="btn btn-primary"
                 ng-click="goNow()"
-                ng-bind="modeDesc">
+                ng-bind="timeMode.desc">
         </button>
         <button type="button"
                 class="btn btn-primary"
@@ -89,7 +71,7 @@
         </button>
       </div>
       <div>
-        <small ng-bind="modeFullDesc"></small>
+        <small ng-bind="timeMode.fullDesc"></small>
       </div>
     </div>
 
