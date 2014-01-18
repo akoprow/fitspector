@@ -19,18 +19,20 @@
 -->
         <div class="btn-group">
           <button class="btn btn-primary"
+                  bindonce
                   ng-repeat="mode in timeModes"
                   ng-class="{active: timeMode.id == mode.id}"
                   ng-click="setTimeMode(mode.id)"
-                  ng-bind="mode.desc">
+                  bo-text="mode.desc">
           </button>
         </div>
         <div class="btn-group">
           <button class="btn btn-primary"
+                  bindonce
                   ng-repeat="mode in gaugeModes"
                   ng-class="{active: gaugeSettings.mode == mode.id}"
                   ng-click="gaugeSettings.mode = mode.id"
-                  ng-bind="mode.desc">
+                  bo-text="mode.desc">
           </button>
         </div>
         <div class="col-lg-3">
