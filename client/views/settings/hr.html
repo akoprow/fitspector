@@ -1,0 +1,30 @@
+<div>
+  <div class="row">
+    <div class="col-md-6">
+      <form class="form-horizontal" name="maxHrForm" role="form" ng-class="{'has-error': !maxHrForm.$valid}">
+        <div class="form-group">
+          <label for="maxHR" class="col-md-8 control-label">
+            Your maximal heart rate (HRmax)
+          </label>
+          <div class="col-md-3">
+            <input ng-model="settings.maxHR" name="maxHR" min="100" max="230" required
+                   id="maxHR" type="number" class="form-control">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row zones figures">
+    <p class="text-right col-md-2">HR zones:</p>
+    <p class="zone col-md-2" ng-repeat="zone in intensity" ng-bind="getHrZoneRange($index)"></p>
+  </div>
+  <div class="row zones gauge">
+    <p class="col-md-2"></p>
+    <workout-gauge class="col-md-10" type="hr" zones="hrZonesDummyData" gauge-max="hrZonesDummyMax" no-multiplier="true"></workout-gauge>
+  </div>
+  <div class="row zones labels">
+    <p class="text-right col-md-2">Intensity:</p>
+    <p class="text-center col-md-2" ng-repeat="zone in intensity" ng-bind="zone"></p>
+  </div>
+</div>

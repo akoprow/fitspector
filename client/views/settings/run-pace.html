@@ -1,0 +1,50 @@
+<div>
+  <div class="row">
+    <div class="col-md-10">
+      <form class="form-horizontal" name="runPerfForm" role="form">
+        <div class="form-group">
+          <div class="col-md-1">
+            <sport-icon sport-id="'run'"></sport-icon>Running
+          </div>
+          <label for="runBestTime" class="text-right col-md-4 control-label">
+            Recent event:
+          </label>
+          <div class="form-group col-md-3"
+               ng-class="{'has-error': !runPerfForm.runBestDistance.$valid}">
+            <select ng-model="settings.runBestDistance" name="runBestDistance" required
+                    id="runBestDistance" type="text" class="form-control">
+              <option ng-repeat="event in runningEvents" value="{{event.value}}" ng-bind="event.desc"></option>
+            </select>
+          </div>
+          <label for="runBestTime" class="col-md-1 control-label">
+            time:
+          </label>
+          <div class="form-group col-md-2"
+               ng-class="{'has-error': !runPerfForm.runBestTime.$valid}">
+            <input id="runBestTime" ng-model="settings.runBestTime" name="runBestTime"
+                   class="form-control" placeholder="h:mm:ss"
+                   type="text" ng-pattern="workoutTimePattern" required>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row zones figures">
+    <p class="text-right col-md-2">Running pace:</p>
+    <p class="zone col-md-2" ng-repeat="zone in intensity" ng-bind="getHrZoneRange($index)"></p>
+  </div>
+  <div class="row zones gauge">
+    <p class="col-md-2"></p>
+    <workout-gauge class="col-md-10"
+                   type="pace"
+                   zones="paceZonesDummyData"
+                   gauge-max="paceZonesDummyMax"
+                   no-multiplier="true">
+    </workout-gauge>
+  </div>
+  <div class="row zones labels">
+    <p class="text-right col-md-2">Intensity:</p>
+    <p class="text-center col-md-2" ng-repeat="zone in intensity" ng-bind="zone"></p>
+  </div>
+</div>
