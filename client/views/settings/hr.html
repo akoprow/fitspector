@@ -1,15 +1,30 @@
 <div>
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-10">
       <form class="form-horizontal" name="maxHrForm" role="form" ng-class="{'has-error': !maxHrForm.$valid}">
         <div class="form-group">
-          <label for="maxHR" class="col-md-8 control-label">
-            Your maximal heart rate (HRmax)
+          <label for="maxHR" class="col-md-6 control-label">
+            Your maximal heart rate (HRmax):
           </label>
-          <div class="col-md-3">
-            <input ng-model="settings.maxHR" name="maxHR" min="100" max="230" required
-                   id="maxHR" type="number" class="form-control">
-          </div>
+          <span ng-hide="hrMaxEdit">
+            <div class="col-md-1">
+              <p class="form-control-static" ng-bind="settings.maxHR"></p>
+            </div>
+            <div class="col-md-2">
+              <button type="button" class="btn btn-primary" ng-click="editHrMax()">Edit</button>
+            </div>
+          </span>
+          <span ng-show="hrMaxEdit">
+            <div class="col-md-2">
+              <input ng-model="settings.maxHR"
+                     name="maxHR" min="100" max="230" required
+                     id="maxHR" type="number" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <button type="button" class="btn btn-success" ng-click="saveHrMax()">Save</button>
+              <button type="button" class="btn btn-default" ng-click="reset()">Cancel</button>
+            </div>
+          </span>
         </div>
       </form>
     </div>

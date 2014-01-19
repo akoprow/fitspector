@@ -2,10 +2,24 @@
 
 class MyPerformanceCtrl
   constructor: ($scope) ->
-    $scope.settings =
+    # ---------------------------------- Settings state management ---------------------------------
+    master =
       maxHR: 190
       runBestDistance: ''
       runBestTime: ''
+
+    $scope.reset = =>
+      $scope.settings = angular.copy master
+      $scope.hrMaxEdit = false
+
+    $scope.editHrMax = =>
+      $scope.hrMaxEdit = true
+
+    $scope.saveHrMax = =>
+      master = angular.copy $scope.settings
+      $scope.hrMaxEdit = false
+
+    $scope.reset()
 
     $scope.intensity = ['Very light', 'Light', 'Moderate', 'Hard', 'Maximum']
 
