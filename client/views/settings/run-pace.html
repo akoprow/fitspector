@@ -6,25 +6,39 @@
           <div class="col-md-1">
             <sport-icon sport-id="'run'"></sport-icon>Running
           </div>
-          <label for="runBestTime" class="text-right col-md-5 control-label">
-            Recent event:
-          </label>
-          <div class="form-group col-md-3"
-               ng-class="{'has-error': !runPerfForm.runBestDistance.$valid}">
-            <select ng-model="settings.runBestDistance" name="runBestDistance" required
-                    id="runBestDistance" type="text" class="form-control">
-              <option ng-repeat="event in runningEvents" value="{{event.value}}" ng-bind="event.desc"></option>
-            </select>
-          </div>
-          <label for="runBestTime" class="col-md-1 control-label">
-            time:
-          </label>
-          <div class="form-group col-md-2"
-               ng-class="{'has-error': !runPerfForm.runBestTime.$valid}">
-            <input id="runBestTime" ng-model="settings.runBestTime" name="runBestTime"
-                   class="form-control" placeholder="h:mm:ss"
-                   type="text" ng-pattern="workoutTimePattern" required>
-          </div>
+          <span ng-hide="runPerf.form.editMode">
+            <div class="col-md-8 text-right">
+              Running pace zones based on
+              <b><time no-icon="true" value="timeFromString(runPerf.form.value.runBestTime)"></time></b>
+              in a
+              <b ng-bind="runPerf.form.value.runBestDistance"></b>
+              race.
+            </div>
+            <div class="col-md-2">
+              <button type="button" class="btn btn-primary" ng-click="runPerf.edit()">Edit</button>
+            </div>
+          </span>
+          <span ng-show="runPerf.form.editMode">
+            <label for="runBestTime" class="text-right col-md-5 control-label">
+              Recent event:
+            </label>
+            <div class="form-group col-md-3"
+                 ng-class="{'has-error': !runPerfForm.runBestDistance.$valid}">
+              <select ng-model="runPerf.form.data.runBestDistance" name="runBestDistance" required
+                      id="runBestDistance" type="text" class="form-control">
+                <option ng-repeat="event in runningEvents" value="{{event.value}}" ng-bind="event.desc"></option>
+              </select>
+            </div>
+            <label for="runBestTime" class="col-md-1 control-label">
+              time:
+            </label>
+            <div class="form-group col-md-2"
+                 ng-class="{'has-error': !runPerfForm.runBestTime.$valid}">
+              <input id="runBestTime" ng-model="runPerf.form.value.runBestTime" name="runBestTime"
+                     class="form-control" placeholder="h:mm:ss"
+                     type="text" ng-pattern="workoutTimePattern" required>
+            </div>
+          </span>
         </div>
       </form>
     </div>

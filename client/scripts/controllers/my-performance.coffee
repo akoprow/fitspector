@@ -5,8 +5,8 @@ class MyPerformanceCtrl
     # ---------------------------------- Settings state management ---------------------------------
     master =
       maxHR: 190
-      runBestDistance: 'marathon'
-      runBestTime: new Time {seconds: 3690}
+      runBestDistance: 42195
+      runBestTime: 3690
 
     # TODO(koper) This should be moved somewhere to utils...
     createEditable = (data) ->
@@ -68,6 +68,29 @@ class MyPerformanceCtrl
       value: '42195'
       desc: 'marathon'
     ]
+
+    secondsToString = (seconds) =>
+      t = new Time {seconds: seconds}
+      res = t.toString()
+      console.log "secondsToString(#{seconds}) = #{res}"
+      return res
+
+    secondsFromString = (s) =>
+      t = new Time(s)
+      res = t.asSeconds()
+      console.log "secondsFromString(#{s}) = #{res}"
+      return res
+
+    $scope.timeFromString = (s) =>
+      new Time {seconds: secondsFromString s}
+
+    $scope.runPerf = createEditable
+      getValue: =>
+        runBestDistance: master.runBestDistance
+        runBestTime: secondsToString master.runBestTime
+      saveValue: (formData) =>
+        master.runBestDistance = formData.runBestDistance
+        master.runBestTime = secondsFromString formData.runBestTime
 
 
 angular.module('fitspector').controller 'MyPerformanceCtrl', ['$scope', MyPerformanceCtrl]

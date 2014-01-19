@@ -37,6 +37,15 @@ class root.Time
 
   serialize: -> @value().toFixed(0)
 
+  toString: ->
+    v = @value()
+    h = Math.floor(v / 3600)
+    v -= 3600 * h
+    m = Math.floor(v / 60)
+    v -= 60 * m
+    s = Math.floor(v)
+    return "#{h}:#{m}:#{s}"
+
   @deserialize: (value) ->
     new Time {seconds: value}
 
