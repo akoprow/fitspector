@@ -5,21 +5,32 @@ class MyPerformanceCtrl
     # ---------------------------------- Settings state management ---------------------------------
     master =
       maxHR: 190
-      runBestDistance: ''
-      runBestTime: ''
+      runBestDistance: 'marathon'
+      runBestTime: new Time {seconds: 3690}
 
-    $scope.reset = =>
-      $scope.settings = angular.copy master
-      $scope.hrMaxEdit = false
+    # TODO(koper) This should be moved somewhere to utils...
+    createEditable = (data) ->
+      form =
+        editMode: false
+        value: data.getValue()
 
-    $scope.editHrMax = =>
-      $scope.hrMaxEdit = true
+      edit = ->
+        form.editMode = true
 
-    $scope.saveHrMax = =>
-      master = angular.copy $scope.settings
-      $scope.hrMaxEdit = false
+      cancel = ->
+        form.value = data.getValue()
+        form.editMode = false
 
-    $scope.reset()
+      save = ->
+        form.editMode = false
+        data.saveValue form.value
+
+      return {
+        form: form
+        edit: edit
+        save: save
+        cancel: cancel
+      }
 
     $scope.intensity = ['Very light', 'Light', 'Moderate', 'Hard', 'Maximum']
 
@@ -30,9 +41,13 @@ class MyPerformanceCtrl
     # TODO(koper) This s fragile as it needs to be synchronized with values in server/exerciseZones.coffee
     hrZoneBoundaries = [45, 35, 25, 15]
 
+    $scope.hrMax = createEditable
+      getValue: => master.maxHR
+      saveValue: (formValue) => master.maxHR = formValue
+
     $scope.getHrZoneRange = (i) ->
-      if i > 3 || isNaN(parseFloat($scope.settings.maxHR)) then return ""
-      return $scope.settings.maxHR - hrZoneBoundaries[i]
+      if i > 3 || isNaN(parseFloat($scope.hrMax.form.value)) then return ""
+      return $scope.hrMax.form.value - hrZoneBoundaries[i]
 
     # ---------------------------------------- Running pace ----------------------------------------
     $scope.paceZonesDummyMax = new Time { meters: 5 }

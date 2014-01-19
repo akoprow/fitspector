@@ -6,23 +6,23 @@
           <label for="maxHR" class="col-md-6 control-label">
             Your maximal heart rate (HRmax):
           </label>
-          <span ng-hide="hrMaxEdit">
+          <span ng-hide="hrMax.form.editMode">
             <div class="col-md-1">
-              <p class="form-control-static" ng-bind="settings.maxHR"></p>
+              <p class="form-control-static" ng-bind="hrMax.form.value"></p>
             </div>
             <div class="col-md-2">
-              <button type="button" class="btn btn-primary" ng-click="editHrMax()">Edit</button>
+              <button type="button" class="btn btn-primary" ng-click="hrMax.edit()">Edit</button>
             </div>
           </span>
-          <span ng-show="hrMaxEdit">
+          <span ng-show="hrMax.form.editMode">
             <div class="col-md-2">
-              <input ng-model="settings.maxHR"
+              <input ng-model="hrMax.form.value"
                      name="maxHR" min="100" max="230" required
                      id="maxHR" type="number" class="form-control">
             </div>
             <div class="col-md-3">
-              <button type="button" class="btn btn-success" ng-click="saveHrMax()">Save</button>
-              <button type="button" class="btn btn-default" ng-click="reset()">Cancel</button>
+              <button type="button" class="btn btn-success" ng-click="hrMax.save()">Save</button>
+              <button type="button" class="btn btn-default" ng-click="hrMax.cancel()">Cancel</button>
             </div>
           </span>
         </div>
@@ -36,7 +36,9 @@
   </div>
   <div class="row zones gauge">
     <p class="col-md-2"></p>
-    <workout-gauge class="col-md-10" type="hr" zones="hrZonesDummyData" gauge-max="hrZonesDummyMax" no-multiplier="true"></workout-gauge>
+    <workout-gauge class="col-md-10" type="hr" zones="hrZonesDummyData"
+                   gauge-max="hrZonesDummyMax" no-multiplier="true">
+    </workout-gauge>
   </div>
   <div class="row zones labels">
     <p class="text-right col-md-2">Intensity:</p>
