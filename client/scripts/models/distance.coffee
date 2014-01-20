@@ -45,3 +45,8 @@ class root.Distance
     new Distance {meters: value}
 
   @METERS_IN_KILOMETER = 1000
+
+  @RACE_DISTANCE_5K = new Distance { km: 5 }
+  @RACE_DISTANCE_10K = new Distance { km: 10 }
+  @RACE_DISTANCE_HALF_MARATHON = new Distance { meters: 21098 }
+  @RACE_DISTANCE_MARATHON = new Distance { meters: 42195 }

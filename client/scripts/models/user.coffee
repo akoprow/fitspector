@@ -1,6 +1,8 @@
 'use strict';
 
 UserSettings = if window? then UserSettings else require('./userSettings').UserSettings
+Distance = if window? then Distance else require('./distance').Distance
+Time = if window? then Distance else require('./time').Time
 _ = if window? then window._ else require 'underscore'
 
 
@@ -32,8 +34,17 @@ HR_ZONE_BOUNDARIES = [45, 35, 25, 15]
 # Boundaries expressed in % of FTP.
 RUNNING_PACE_ZONE_BOUNDARIES = [78, 88, 95, 100]
 
+# For now we estimate FTP by the race result on 5K.  Below are speed factors to
+# be applied to average speeds in races on different distances to convert to
+# such an FTP estimate.
+SPEED_FACTOR_5K = 1.0000
+SPEED_FACTOR_10K = 1.0383
+SPEED_FACTOR_HALF_MARATHON = 1.0971
+SPEED_FACTOR_MARATHON = 1.1545
+
 
 class root.User
+  # TODO(koper) This just seriously sucks; I need a consistent, robust pattern for JSON serialization.
   constructor: (json) ->
     @id = json.id
     @name = json.name
@@ -42,7 +53,7 @@ class root.User
     @performance = json.performance
 
 
-  @jsonUserFromRunKeeperProfile: (profile, userId) ->
+  @jsonUserFromRunKeeperProfile: (profile, userId) =>
     id: userId
     name: profile.name
     isMale: profile.gender is 'M'
@@ -56,11 +67,17 @@ class root.User
   # Computes functional Threshold Pace (FTP) given best race result
   # of type {time: Time, distance: Distance}
   # http://www.joefrielsblog.com/2010/05/quick-guide-to-training-with-heart-rate-power-and-pace.html
-  @computeFunctionalThresholdPace = (bestRace) ->
-    return null   # TODO(koper) Implement...
+  @computeFunctionalThresholdPace = (bestRace) =>
+    raceSpeed = bestRace.distance.asKilometers() / bestRace.time.asHours()
+    return switch bestRace.distance.asMeters()
+      when Distance.RACE_DISTANCE_5K.asMeters() then raceSpeed
+      when Distance.RACE_DISTANCE_10K.asMeters() then raceSpeed * SPEED_FACTOR_10K
+      when Distance.RACE_DISTANCE_HALF_MARATHON.asMeters() then raceSpeed * SPEED_FACTOR_HALF_MARATHON
+      when Distance.RACE_DISTANCE_MARATHON.asMeters() then raceSpeed * SPEED_FACTOR_MARATHON
+      else throw new Error("Unknown race distance of #{bestRace.distance.asMeters()}m. ")
 
 
-  getHrZoneBoundaries: ->
+  getHrZoneBoundaries: =>
     maxHR = @performance?.maxHR
     if maxHR?
       return _.map HR_ZONE_BOUNDARIES, (adjuster) -> maxHR - adjuster
@@ -68,18 +85,18 @@ class root.User
       return null
 
 
-  getElevationZoneBoundaries: ->
+  getElevationZoneBoundaries: =>
     return ELEVATION_ZONE_BOUNDARIES
 
 
-  getRunningPaceZoneBoundaries: ->
+  getRunningPaceZoneBoundaries: =>
     runBestDistance = @performance?.runBestDistance
     runBestTime = @performance?.runBestTime
     if runBestDistance? && runBestTime?
-      ftp = @computeFunctionalThresholdPace {
+      ftp = root.User.computeFunctionalThresholdPace {
         distance: new Distance { meters: runBestDistance }
         time: new Time { seconds: runBestTime }
       }
-      return _.map RUNNING_PACE_ZONE_BOUNDARIES, (multiplier) -> ftp.asKmPerHour() * multiplier / 100
+      return _.map RUNNING_PACE_ZONE_BOUNDARIES, (multiplier) -> ftp * multiplier / 100
     else
       return null
