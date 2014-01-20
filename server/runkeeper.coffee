@@ -113,7 +113,7 @@ isRunKeeperId = (id) ->
 
 ####################################################################################################
 
-addWorkout = (accessToken, userId, workouts, data, cb) ->
+addWorkout = (accessToken, user, workouts, data, cb) ->
   prefix = '/fitnessActivities/'
   unless string(data.uri).startsWith(prefix)
     cb 'Cannot get activity ID from its URI: ' + data.uri
@@ -128,7 +128,7 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
   activityDetailsConfig = runKeeper.api.activityDetails data.uri
   runKeeper.get accessToken, activityDetailsConfig, (err, response) ->
     if err
-      logger.error "Import error for user: #{userId}, error: #{err}"
+      logger.error "Import error for user: #{user.id}, error: #{err}"
       return
 
     # TODO(koper) Handle errors...
@@ -180,31 +180,32 @@ addWorkout = (accessToken, userId, workouts, data, cb) ->
         delete workout[key]
 
     # Note workout ID and save workout data.
-    Storage.addWorkout userId, workoutId, workout
+    Storage.addWorkout user.id, workoutId, workout
     logger.info 'Processed workout %s into: %j', workoutId, workout
     cb null, 1
 
 ####################################################################################################
 
-loadAllWorkouts = (userId, accessToken) ->
-  logger.info 'Fetching all workouts for user: %s', userId
-  Storage.setImportCount userId, 0  # We just mark that import is in progress; proper count set below.
-  Storage.getAllUserWorkouts userId, (workouts) ->
+loadAllWorkouts = (userJson, accessToken) ->
+  user = new User(userJson)
+  logger.info 'Fetching all workouts for user: %s', user.id
+  Storage.setImportCount user.id, 0  # We just mark that import is in progress; proper count set below.
+  Storage.getAllUserWorkouts user.id, (workouts) ->
     runKeeper.get accessToken, runKeeper.api.userActivities, (err, response) ->
-      Storage.setImportCount userId, response.items.length, (err) ->
-        logger.info 'Existing workouts: %s, RunKeeper error: %s, RunKeeper response: %s', workouts, err, response
+      Storage.setImportCount user.id, response.items.length, (err) ->
+        logger.info 'Existing workouts: %j, RunKeeper error: %j, RunKeeper response: %j', workouts, err, response
         addWorkoutAux = (data, cb) ->
           newCb = (err, results) ->
-            Storage.markImportItemComplete userId
+            Storage.markImportItemComplete user.id
             cb(err, results)
-          addWorkout accessToken, userId, workouts, data, newCb
+          addWorkout accessToken, user, workouts, data, newCb
         cb = (err, data) ->
           total = _.reduce(data, ((x, y) -> x + y), 0)
-          Storage.importFinished userId, total
+          Storage.importFinished user.id, total
           if err
-            logger.error 'Error while importing workouts for: %s -> %j', userId, err
+            logger.error 'Error while importing workouts for: %s -> %j', user.id, err
           else
-            logger.info 'Imported %d new exercises for %s', total, userId
+            logger.info 'Imported %d new exercises for %s', total, user.id
 
         async.mapLimit response.items, MAX_WORKOUTS_PROCESSED_AT_A_TIME, addWorkoutAux, cb
 
@@ -216,7 +217,7 @@ createRunKeeperUser = (userId, token, done) ->
     return done err if err
     return done 'Missing user profile' if not profile?
 
-    user = User.fromRunKeeperProfile profile, userId
+    user = User.jsonUserFromRunKeeperProfile profile, userId
     user.joinedAt = new Date()
 
     Storage.updateUserProfile userId, user
@@ -245,7 +246,7 @@ loadRunKeeperUser = (userId, done, token) ->
       # Mark login
       Storage.logLogin userId
       # and then asynchronously load all user's workouts
-      loadAllWorkouts userId, token if token? # provided we have the token
+      loadAllWorkouts user, token if token? # provided we have the token
 
   loadUser = (user) ->
     logger.warn 'user read from DB: %j', user

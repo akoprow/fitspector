@@ -6,16 +6,6 @@ _ = if window? then window._ else require 'underscore'
 
 root = exports ? this
 
-# TODO(koper) This should be taken from user settings.
-# Maximal heart rate (unit: bpm)
-maxHR = 187
-
-# TODO(koper) This should be taken from user settings.
-# Functional Threshold Pace (FTP) (unit: km/h)
-# http://www.joefrielsblog.com/2010/05/quick-guide-to-training-with-heart-rate-power-and-pace.html
-runningFunctionalThresholdPace = 14.6
-
-
 # Boundaries for elevation zones, expressed as grade of the route.
 ELEVATION_ZONE_BOUNDARIES = [-9, -3, 3, 9]
 
@@ -44,7 +34,14 @@ RUNNING_PACE_ZONE_BOUNDARIES = [78, 88, 95, 100]
 
 
 class root.User
-  @fromRunKeeperProfile = (profile, userId) ->
+  constructor: (json) ->
+    @id = json.id
+    @name = json.name
+    @smallImgUrl = json.smallImgUrl
+    @token = json.token
+
+
+  @jsonUserFromRunKeeperProfile: (profile, userId) ->
     id: userId
     name: profile.name
     isMale: profile.gender is 'M'
@@ -54,11 +51,34 @@ class root.User
     token: null
     runKeeperProfile: profile
 
-  @getHrZoneBoundaries = ->
-    return _.map HR_ZONE_BOUNDARIES, (adjuster) -> maxHR - adjuster
 
-  @getElevationZoneBoundaries = ->
+  # Computes functional Threshold Pace (FTP) given best race result
+  # of type {time: Time, distance: Distance}
+  # http://www.joefrielsblog.com/2010/05/quick-guide-to-training-with-heart-rate-power-and-pace.html
+  @computeFunctionalThresholdPace = (bestRace) ->
+    return null   # TODO(koper) Implement...
+
+
+  getHrZoneBoundaries: ->
+    maxHR = @performance?.maxHR
+    if maxHR?
+      return _.map HR_ZONE_BOUNDARIES, (adjuster) -> maxHR - adjuster
+    else
+      return null
+
+
+  getElevationZoneBoundaries: ->
     return ELEVATION_ZONE_BOUNDARIES
 
-  @getRunningPaceZoneBoundaries = ->
-    return _.map RUNNING_PACE_ZONE_BOUNDARIES, (multiplier) -> runningFunctionalThresholdPace * multiplier / 100
+
+  getRunningPaceZoneBoundaries: ->
+    runBestDistance = @performance?.runBestDistance
+    runBestTime = @performance?.runBestTime
+    if runBestDistance? && runBestTime?
+      ftp = @computeFunctionalThresholdPace {
+        distance: new Distance { meters: runBestDistance }
+        time: new Time { seconds: runBestTime }
+      }
+      return _.map RUNNING_PACE_ZONE_BOUNDARIES, (multiplier) -> ftp.asKmPerHour() * multiplier / 100
+    else
+      return null
