@@ -39,6 +39,7 @@ class root.User
     @name = json.name
     @smallImgUrl = json.smallImgUrl
     @token = json.token
+    @performance = json.performance
 
 
   @jsonUserFromRunKeeperProfile: (profile, userId) ->

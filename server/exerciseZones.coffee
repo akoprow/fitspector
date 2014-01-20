@@ -28,7 +28,19 @@ numericalZoneClassifier = (boundaries) ->
 
 ####################################################################################################
 
-computeHrZones = (hrData) ->
+computeHrZones = (args) ->
+  singleZone =
+    if args.totalDuration?
+      Zones.mkUnknownZone Time, new Time {seconds: args.totalDuration}
+    else
+      undefined
+
+  if not args.hrData?.length then return singleZone.serialize()
+
+  zoneBoundaries = args.user.getHrZoneBoundaries()
+  if not zoneBoundaries? then return singleZone.serialize()
+  hrZoneClassifier = numericalZoneClassifier zoneBoundaries
+
   hrSeries = []
   timeSeries = []
 
@@ -36,9 +48,7 @@ computeHrZones = (hrData) ->
     timeSeries.push(new Time {seconds: entry.timestamp - time})
     hrSeries.push entry['heart_rate']
     return entry.timestamp
-  _.reduce hrData, processHrEntry, 0
-
-  hrZoneClassifier = numericalZoneClassifier User.getHrZoneBoundaries()
+  _.reduce args.hrData, processHrEntry, 0
 
   zones = new Zones(Time)
   for hr, i in hrSeries
@@ -48,7 +58,7 @@ computeHrZones = (hrData) ->
 
 ####################################################################################################
 
-computeRunningPaceZones = (distanceData) ->
+computeRunningPaceZones = (user, distanceData) ->
   speedSeries = []
   distanceSeries = []
 
@@ -61,7 +71,9 @@ computeRunningPaceZones = (distanceData) ->
     return entry
   _.reduce distanceData, processDistanceEntry, {timestamp: 0, distance: 0}
 
-  paceZoneClassifier = numericalZoneClassifier User.getRunningPaceZoneBoundaries
+  paceZoneBoundaries = user.getRunningPaceZoneBoundaries()
+  if not paceZoneBoundaries? then return null
+  paceZoneClassifier = numericalZoneClassifier paceZoneBoundaries
 
   # Apply smoothing (rolling average over 5 samples) to the speed measurements.
   speedSeries = filters.average speedSeries, 5
@@ -70,29 +82,46 @@ computeRunningPaceZones = (distanceData) ->
   for speed, i in speedSeries
     zones.addToZone (paceZoneClassifier speed), distanceSeries[i]
 
-  return zones.serialize()
+  return zones
+
+
+computePaceZones = (args) ->
+  zones =
+    if args.distanceData?.length and args.exerciseType == 'run'
+      computeRunningPaceZones args.user, args.distanceData
+    else
+      null
+
+  if zones
+    zones.serialize()
+  else if args.totalDistance
+    Zones.mkUnknownZone(Distance, new Distance {meters: args.totalDistance}).serialize()
+  else
+    undefined
 
 ####################################################################################################
 
-computeElevationZones = (distanceData, elevationData) ->
+computeElevationZones = (args) ->
+  if not args.distanceData?.length || not args.pathData?.length then return undefined
+
   distanceSeries = []
   elevationSeries = []
 
   processElevationEntry = (acc, entry) ->
     elevationSeries.push (entry.altitude - acc)
     return entry.altitude
-  _.reduce elevationData, processElevationEntry, elevationData[0].altitude
+  _.reduce args.pathData, processElevationEntry, args.pathData[0].altitude
 
   processDistanceEntry = (acc, entry) ->
     distanceSeries.push (entry.distance - acc)
     return entry.distance
-  _.reduce distanceData, processDistanceEntry, 0
+  _.reduce args.distanceData, processDistanceEntry, 0
 
   if distanceSeries.length != elevationSeries.length
     logger.warn "Lengths of distance/elevation series do not match (distance: #{distanceSeries.length}, elevation: #{elevationSeries.length}"
-    return null
+    return undefined
 
-  elevationZoneClassifier = numericalZoneClassifier User.getElevationZoneBoundaries()
+  elevationZoneClassifier = numericalZoneClassifier args.user.getElevationZoneBoundaries()
   zones = new Zones(Distance)
 
   for distance, i in distanceSeries
@@ -106,5 +135,5 @@ computeElevationZones = (distanceData, elevationData) ->
 
 module.exports =
   computeHrZones: computeHrZones
-  computeRunningPaceZones: computeRunningPaceZones
+  computePaceZones: computePaceZones
   computeElevationZones: computeElevationZones

@@ -156,23 +156,24 @@ addWorkout = (accessToken, user, workouts, data, cb) ->
       totalDuration: response.duration
       totalElevation: response.climb
 
-    mkUnknownZone = (Unit, value) ->
-      zones = new Zones(Unit)
-      zones.addToZone Zones.UNKNOWN_ZONE, value
-      return zones.serialize()
+    workout.hrZones = ExerciseZones.computeHrZones {
+      user: user
+      totalDuration: workout.totalDuration
+      hrData: response['heart_rate']
+    }
 
-    if response['heart_rate'].length
-      workout.hrZones = ExerciseZones.computeHrZones response['heart_rate']
-    else if workout.totalDuration
-      workout.hrZones = mkUnknownZone Time, new Time {seconds: workout.totalDuration}
+    workout.paceZones = ExerciseZones.computePaceZones {
+      user: user
+      exerciseType: workout.exerciseType
+      totalDistance: workout.totalDistance
+      distanceData: response.distance
+    }
 
-    if response.distance.length and workout.exerciseType == 'run'
-      workout.paceZones = ExerciseZones.computeRunningPaceZones response.distance
-    else if workout.totalDistance
-      workout.paceZones = mkUnknownZone Distance, new Distance {meters: workout.totalDistance}
-
-    if response.path.length and response.distance.length
-      workout.elevationZones = ExerciseZones.computeElevationZones response.distance, response.path
+    workout.elevationZones = ExerciseZones.computeElevationZones {
+      user: user
+      distanceData: response.distance
+      pathData: response.path
+    }
 
     # Delete undefined properties (Firebase does not like them)
     for own key, value of workout

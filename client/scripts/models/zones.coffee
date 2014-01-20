@@ -9,6 +9,11 @@ class root.Zones
   constructor: (@Unit) ->
     @zones = []
 
+  @mkUnknownZone: (Unit, value) ->
+    zones = new Zones(Unit)
+    zones.addToZone Zones.UNKNOWN_ZONE, value
+    return zones
+
   zonePercent: (i) ->
     return "0%" if not @zones[i]
     zone = @zones[i]
