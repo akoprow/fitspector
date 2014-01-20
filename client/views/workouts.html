@@ -78,14 +78,14 @@
     </div>
 
     <ul class="list-group">
-      <li class="list-group-item">
-        <workout-sports-summary workouts="workouts" query-filter="q" sport-filter-listener="setSportFilter(sport)">
-        </workout-sports-summary>
+      <li class="list-group-item" ng-show="workouts">
+        <workouts-summary-by-sport workouts="workouts" query-filter="q" sport-filter-listener="setSportFilter(sport)">
+        </workouts-summary-by-sport>
       </li>
     </ul>
 
     <table class="table workouts-list">
-      <tr>
+      <tr ng-show="workouts">
         <th class="date">
           <span class="sortHandler" ng-click="orderBy('startTime')">Date</span>
           <sorting-ctrl this="startTime" selected="{{order}}"></sorting-ctrl>

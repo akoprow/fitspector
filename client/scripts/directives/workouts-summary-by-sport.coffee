@@ -3,12 +3,12 @@
 ELEMENT_WIDTH = 60
 
 
-class WorkoutSportsSummaryDirective
+class WorkoutsSummaryBySportDirective
   constructor: ->
     return {
       replace: true
       restrict: 'E'
-      templateUrl: 'views/directives/workout-sports-summary.html'
+      templateUrl: 'views/directives/workouts-summary-by-sport.html'
       scope:
         workouts: '='
         queryFilter: '='
@@ -66,7 +66,7 @@ recompute = (scope) ->
     .each(processWorkout)
 
 
-angular.module('fitspector').directive 'workoutSportsSummary', [WorkoutSportsSummaryDirective]
+angular.module('fitspector').directive 'workoutsSummaryBySport', [WorkoutsSummaryBySportDirective]
 
 
 class WorkoutSportsSummaryAnimation
