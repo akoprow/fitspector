@@ -12,43 +12,8 @@ _ = require 'underscore'
 
 Distance = require('../client/scripts/models/distance').Distance
 Time = require('../client/scripts/models/time').Time
+User = require('../client/scripts/models/user').User
 Zones = require('../client/scripts/models/zones').Zones
-
-####################################################################################################
-
-# TODO(koper) Those constants should be made into user-specific settings.
-# Maximal heart rate (unit: bpm)
-maxHR = 187
-
-# Functional Threshold Pace (FTP) (unit: km/h)
-# http://www.joefrielsblog.com/2010/05/quick-guide-to-training-with-heart-rate-power-and-pace.html
-runningFunctionalThresholdPace = 14.6
-
-# TODO(koper) Should this be configurable?
-# Based on the Zoladz method: http://en.wikipedia.org/wiki/Heart_rate
-# Boundaries expressed in the difference from HRmax.
-hrZoneBoundaries = [45, 35, 25, 15]
-
-# Based on Friel's zones:
-#   http://www.joefrielsblog.com/2010/05/quick-guide-to-training-with-heart-rate-power-and-pace.html
-#
-# Zone 1 Slower than 129% of FTPa
-# Zone 2 114% to 129% of FTPa
-# Zone 3 106% to 113% of FTPa
-# Zone 4 101% to 105% of FTPa
-# Zone 5a 97% to 100% of FTPa
-# Zone 5b 90% to 96% of FTPa
-# Zone 5c Faster than 90% of FTPa
-#
-# 
-# ZONE           maximum    hard     moderate    light   very light
-# FTPa min/km     <100%   101-105%   106-113%   114-129%   >129%
-# FTPa km/h       >100%      95%       88%        78%
-#
-# Boundaries expressed in % of FTP.
-runningPaceZoneBoundaries = [78, 88, 95, 100]
-
-elevationZoneBoundaries = [-9, -3, 3, 9]
 
 ####################################################################################################
 
@@ -73,8 +38,7 @@ computeHrZones = (hrData) ->
     return entry.timestamp
   _.reduce hrData, processHrEntry, 0
 
-  zoneBoundaries = _.map hrZoneBoundaries, (adjuster) -> maxHR - adjuster
-  hrZoneClassifier = numericalZoneClassifier zoneBoundaries
+  hrZoneClassifier = numericalZoneClassifier User.getHrZoneBoundaries()
 
   zones = new Zones(Time)
   for hr, i in hrSeries
@@ -97,8 +61,7 @@ computeRunningPaceZones = (distanceData) ->
     return entry
   _.reduce distanceData, processDistanceEntry, {timestamp: 0, distance: 0}
 
-  zoneBoundaries = _.map runningPaceZoneBoundaries, (multiplier) -> runningFunctionalThresholdPace * multiplier / 100
-  paceZoneClassifier = numericalZoneClassifier zoneBoundaries
+  paceZoneClassifier = numericalZoneClassifier User.getRunningPaceZoneBoundaries
 
   # Apply smoothing (rolling average over 5 samples) to the speed measurements.
   speedSeries = filters.average speedSeries, 5
@@ -129,7 +92,7 @@ computeElevationZones = (distanceData, elevationData) ->
     logger.warn "Lengths of distance/elevation series do not match (distance: #{distanceSeries.length}, elevation: #{elevationSeries.length}"
     return null
 
-  elevationZoneClassifier = numericalZoneClassifier elevationZoneBoundaries
+  elevationZoneClassifier = numericalZoneClassifier User.getElevationZoneBoundaries()
   zones = new Zones(Distance)
 
   for distance, i in distanceSeries
