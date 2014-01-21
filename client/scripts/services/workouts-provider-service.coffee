@@ -85,7 +85,7 @@ allWorkoutTypes =
 
 class WorkoutsProviderService
 
-  constructor: (AuthService, DataProviderService) ->
+  constructor: ($rootScope, AuthService, DataProviderService) ->
     @workoutsListener = ->  # Callback to invoke when workouts change.
     @selectedWorkoutsListener = ->  # Callback to invoke when selected workouts change.
     @workoutFilter = (workout) -> true  # Selection filter for workouts.
@@ -118,6 +118,9 @@ class WorkoutsProviderService
             @selectedWorkoutsListener @selectedWorkouts
           # console.log "Added workout: #{dbWorkout.name()}, total workouts: #{@workouts.length}, selected: #{@selectedWorkouts.length}"
           @firstWorkout = workout.startTime if workout.startTime.isBefore @firstWorkout
+          # Some controllers/directives may need updating
+          $rootScope.$digest()
+
     AuthService.registerUserChangeListener changeUser
 
     return {
@@ -128,14 +131,11 @@ class WorkoutsProviderService
           end: moment()
         }
 
+      # Return the list of all workouts.
+      getAllWorkouts: => @workouts
+
       # Returns all selected workout (i.e. ones passing the registered filter).
       getSelectedWorkouts: => @selectedWorkouts
-
-      # Registers a callback invoked whenever the list of workouts changes.
-      setWorkoutsListener: (@workoutsListener) =>
-
-      # Registers a callback invoked whenever the list of *selected* workouts changes.
-      setSelectedWorkoutsListener: (@selectedWorkoutsListener) =>
 
       # Sets a filter for selection of workouts.
       setWorkoutsFilter: (@workoutsFilter) =>
@@ -149,4 +149,4 @@ class WorkoutsProviderService
 
     }
 
-angular.module('fitspector').service 'WorkoutsProviderService', ['AuthService', 'DataProviderService', WorkoutsProviderService]
+angular.module('fitspector').service 'WorkoutsProviderService', ['$rootScope', 'AuthService', 'DataProviderService', WorkoutsProviderService]

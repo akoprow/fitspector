@@ -5,12 +5,10 @@ WORKOUTS_PAGE_SIZE = 30
 class WorkoutsCtrl
   constructor: (WorkoutsProviderService, $scope) ->
 
-    # ----- Gauges -----
+    # ------------------------------------------- Gauges -------------------------------------------
     # TODO(koper) Take this from user settings?
-    $scope.maxGaugeTime = new Time {hours: 2}
-    $scope.maxGaugeDistance = new Distance {km: 20}
-
-    # ----- Gauge displaying type -----
+    $scope.maxGaugeTime = new Time { hours: 2 }
+    $scope.maxGaugeDistance = new Distance { km: 20 }
 
     $scope.gaugeModes = [
       id: 'numbers'
@@ -27,7 +25,7 @@ class WorkoutsCtrl
       mode: 'both'
       selectedWorkout: ''
 
-    # ----- Time navigation -----
+    # --------------------------------------- Time navigation --------------------------------------
 
     $scope.timeModes = [
       id: 'week'
@@ -127,7 +125,7 @@ class WorkoutsCtrl
     $scope.goNow()
     $scope.setTimeMode 'week'
 
-    # ----- List of workouts (passing filters) -----
+    # ----------------------------- List of workouts (passing filters) -----------------------------
 
     $scope.infiniteScrollingPosition = 0
 
@@ -150,20 +148,15 @@ class WorkoutsCtrl
           afterStart = (workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg)
           beforeEnd && afterStart && passingSportFilter
 
-    $scope.sportFilter = 'all'
-    $scope.setSportFilter = (sport) ->
-      $scope.sportFilter = sport
-    $scope.$watch 'sportFilter', recomputeWorkoutsFilter
+    $scope.getWorkouts = =>
+      return WorkoutsProviderService.getSelectedWorkouts()
 
+    $scope.sportFilter = 'all'
+    $scope.setSportFilter = (sport) -> $scope.sportFilter = sport
+
+    $scope.$watch 'sportFilter', recomputeWorkoutsFilter
     $scope.$watch 'timeStart.valueOf()', recomputeWorkoutsFilter
     $scope.$watch 'timeMode', recomputeWorkoutsFilter
-
-    WorkoutsProviderService.setWorkoutsListener ->
-      $scope.$digest()  # Time boundaries might have changed, changing outcomes
-                        # of nextDisabled() or prevDisabled()
-
-    WorkoutsProviderService.setSelectedWorkoutsListener (workouts) ->
-      $scope.workouts = workouts
 
     # ----- Sorting -----
     $scope.order = '-startTime'
@@ -171,5 +164,6 @@ class WorkoutsCtrl
     $scope.orderBy = (newOrder) ->
       newOrderRev = "-#{newOrder}"
       $scope.order = if $scope.order == newOrderRev then newOrder else newOrderRev
+
 
 angular.module('fitspector').controller 'WorkoutsCtrl', ['WorkoutsProviderService', '$scope', WorkoutsCtrl]

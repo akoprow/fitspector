@@ -78,7 +78,7 @@
     </div>
 
     <ul class="list-group">
-      <li class="list-group-item" ng-show="workouts">
+      <li class="list-group-item" ng-show="getWorkouts()">
         <workouts-summary-by-sport workouts="workouts" query-filter="q" sport-filter-listener="setSportFilter(sport)">
         </workouts-summary-by-sport>
       </li>
@@ -131,7 +131,7 @@
           No workouts in the selected time period.
         </td>
       </tr>
-      <tr bindonce ng-repeat="workout in workouts | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
+      <tr bindonce ng-repeat="workout in getWorkouts() | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
           class="animate-workout-list sport-{{workout.exerciseType}}"
           ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
           ng-mouseout="gaugeSettings.selectedWorkout = ''">
