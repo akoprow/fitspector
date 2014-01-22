@@ -43,7 +43,8 @@ class WorkoutsMiniCalendarDirective
           updateYearLabels elt, workoutsRange
           updateMainChart elt, workouts, workoutsRange
 
-        scope.$watchCollection WorkoutsProviderService.getAllWorkouts, update
+        updateChart = _.debounce update, 500
+        scope.$watchCollection WorkoutsProviderService.getAllWorkouts, updateChart
     }
 
 
