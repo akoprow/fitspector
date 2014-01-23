@@ -71,6 +71,7 @@ updateMainChart = (elt, workouts, workoutsRange) ->
   workoutsByMonth = _.chain(workouts)
     .groupBy((workout) -> workout.startTime.clone().startOf('month').valueOf())
     .map((workouts, month) -> { time: Number(month), workouts: workouts })
+    .map((month) -> _.extend month, { total: d3.sum month.workouts, (workout) -> workout.totalDuration.asSeconds() })
     .value()
 
   # Prepare the container.
@@ -81,20 +82,31 @@ updateMainChart = (elt, workouts, workoutsRange) ->
     .selectAll('g.month')
     .data(workoutsByMonth) #XXX, (d) -> d.time)
 
-  # Mapping from months to their position on the X axis
+  # Mapping from months to their position on the X axis.
   pos_x = d3.scale.linear()
     .domain([0, 12])
     .range([0, WIDTH])
-  # Mapping from years to their position on the Y axis
+  # Mapping from years to their position on the Y axis.
   pos_y = d3.scale.linear()
     .domain([workoutsRange.beg.year(), workoutsRange.beg.year() + 1])
     .range([0, HEIGHT_PER_YEAR])
+  # Mapping from workout times to their width on the screen.
+  size_x = d3.scale.linear()
+    .domain([0, d3.max workoutsByMonth, (m) -> m.total])
+    .range([0, WIDTH / 12 - SPACING.years])
 
+#  container.enter()
+#    .append('g')
+#    .classed('month', true)
+#  container
+#    .attr('transform', (d) -> "translate(#{pos_x moment(d.time).month()}, #{pos_y moment(d.time).year()})")
   container.enter()
-    .append('g')
-    .classed('month', true)
+    .append('rect')
   container
-    .attr('transform', (d) -> "translate(#{pos_x moment(d.time).month()}, #{pos_y moment(d.time).year()})")
+    .attr('x', (d) -> pos_x moment(d.time).month())
+    .attr('y', (d) -> pos_y moment(d.time).year())
+    .attr('width', (d) -> size_x d.total)
+    .attr('height', HEIGHT_PER_YEAR - SPACING.years)
   container.exit()
     .remove()
 
