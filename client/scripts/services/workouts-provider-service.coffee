@@ -99,6 +99,20 @@ class WorkoutsProviderService
       @selectedWorkouts = []  # Workouts passing selection filter.
     reset()
 
+    # Inform rest of the app that something has changed.
+    updateViews = _.debounce (-> $rootScope.$digest()), 100
+
+    # Called for every new workout added
+    newWorkout = (dbWorkout) =>
+      workout = new Workout(dbWorkout.val(), dbWorkout.name())
+      @workouts.push workout
+      @workoutsListener @workouts
+      if @workoutsFilter workout
+        @selectedWorkouts.push workout
+        @selectedWorkoutsListener @selectedWorkouts
+      @firstWorkout = workout.startTime if workout.startTime.isBefore @firstWorkout
+      updateViews()
+
     # Loading data for a given user.
     changeUser = (user) =>
       # Remove all previous callbacks
@@ -106,20 +120,9 @@ class WorkoutsProviderService
 
       if user.id?
         workoutsRef = DataProviderService.getFirebaseRoot().child('users').child(user.id).child('workouts')
-
         # sync workouts with DB data
         reset()
-        workoutsRef.on 'child_added', (dbWorkout) =>
-          workout = new Workout(dbWorkout.val(), dbWorkout.name())
-          @workouts.push workout
-          @workoutsListener @workouts
-          if @workoutsFilter workout
-            @selectedWorkouts.push workout
-            @selectedWorkoutsListener @selectedWorkouts
-          # console.log "Added workout: #{dbWorkout.name()}, total workouts: #{@workouts.length}, selected: #{@selectedWorkouts.length}"
-          @firstWorkout = workout.startTime if workout.startTime.isBefore @firstWorkout
-          # Some controllers/directives may need updating
-          $rootScope.$digest()
+        workoutsRef.on 'child_added', newWorkout
 
     AuthService.registerUserChangeListener changeUser
 
