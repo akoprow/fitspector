@@ -108,9 +108,10 @@ updateMainChart = (elt, workouts, workoutsRange) ->
     .domain([workoutsRange.beg.year(), workoutsRange.beg.year() + 1])
     .range([0, HEIGHT_PER_YEAR])
   # Mapping from workout times to their width on the screen.
+  widthPerYear = WIDTH / 12 - SPACING.years
   size_x = d3.scale.linear()
     .domain([0, d3.max workoutsByMonth, (m) -> m.total])
-    .range([0, WIDTH / 12 - SPACING.years])
+    .range([0, widthPerYear])
 
 #  container.enter()
 #    .append('g')
@@ -120,7 +121,7 @@ updateMainChart = (elt, workouts, workoutsRange) ->
   container.enter()
     .append('rect')
   container
-    .attr('x', (d) -> pos_x moment(d.time).month())
+    .attr('x', (d) -> pos_x(moment(d.time).month()) + (widthPerYear - size_x d.total) / 2)
     .attr('y', (d) -> pos_y moment(d.time).year())
     .attr('width', (d) -> size_x d.total)
     .attr('height', HEIGHT_PER_YEAR - SPACING.years)
