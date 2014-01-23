@@ -34,8 +34,6 @@ class WorkoutsMiniCalendarDirective
           numYears = workoutsRange.end.year() - workoutsRange.beg.year() + 1
           return MARGIN.top + numYears * HEIGHT_PER_YEAR
 
-        # TODO(koper) Use debounce or something to avoid update called once per
-        # every single workout update (at startup)
         update = (workouts) ->
           workoutsRange = WorkoutsProviderService.getWorkoutsTimeRange()
           workoutsRange.beg.startOf 'year'
@@ -45,8 +43,7 @@ class WorkoutsMiniCalendarDirective
           updateMonthlyLabels elt
           updateMainChart elt, workouts, workoutsRange
 
-        updateChart = _.debounce update, 500
-        scope.$watchCollection WorkoutsProviderService.getAllWorkouts, updateChart
+        scope.$watchCollection WorkoutsProviderService.getAllWorkouts, update
     }
 
 
