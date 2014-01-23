@@ -10,7 +10,7 @@ HEIGHT_PER_YEAR = 25
 HEIGHT_TEXT_LABEL = 16
 
 # Left margin for year labels and top margin for month labels.
-MARGIN = { top: 20, left: 50 }
+MARGIN = { top: 28, left: 45 }
 
 # Horizontal and vertical spacing between charts for consecutive years.
 SPACING = { years: 3 }
@@ -42,6 +42,7 @@ class WorkoutsMiniCalendarDirective
           workoutsRange.end = moment().startOf 'year'
 
           updateYearLabels elt, workoutsRange
+          updateMonthlyLabels elt
           updateMainChart elt, workouts, workoutsRange
 
         updateChart = _.debounce update, 500
@@ -52,7 +53,7 @@ class WorkoutsMiniCalendarDirective
 updateYearLabels = (elt, workoutsRange) ->
   container = d3
     .select(elt[0])
-    .select('.year-labels')
+    .select('g.year-labels')
     .selectAll('text')
     .data(d3.time.years(workoutsRange.beg, workoutsRange.end), (d) -> moment(d).year())
   container.enter()
@@ -64,6 +65,22 @@ updateYearLabels = (elt, workoutsRange) ->
     .attr('y', (d, i) -> MARGIN.top + (HEIGHT_PER_YEAR - HEIGHT_TEXT_LABEL) / 2 + HEIGHT_PER_YEAR * i)
   container.exit()
     .remove()
+
+
+updateMonthlyLabels = (elt) ->
+  pos_x = d3.scale.linear()
+    .domain([-0.5, 11.5])
+    .range([0, WIDTH])
+  d3.select(elt[0])
+    .select('g.month-labels')
+    .attr('transform', "translate(#{MARGIN.left}, #{(MARGIN.top + HEIGHT_TEXT_LABEL) / 2})")
+    .selectAll('text')
+    .data(d3.range(0, 12))
+  .enter()
+    .append('text')
+    .attr('x', pos_x)
+    .attr('y', 0)
+    .text((d) -> moment().month(d).format('MMMM'))
 
 
 updateMainChart = (elt, workouts, workoutsRange) ->
