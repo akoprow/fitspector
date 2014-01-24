@@ -81,12 +81,29 @@ updateMonthlyLabels = (elt) ->
 
 
 updateMainChart = (elt, workouts, workoutsRange) ->
-  # Compute workouts grouped by months.
+  # Compute workouts grouped by months and then by exerciseType with the following structure:
+  # [{
+  #    time: 1234551273       // Data for the given month
+  #    totalTime: 321341      // Total time in seconds for sports in that month
+  #    sports: [{             // List of sports for which workouts are present in that month
+  #      exerciseType: 'run'  // Type of the exercise
+  #      totalTime: 321341    // Time in seconds for all workouts of that sport
+  #    }]
+  # }]
   workoutsByMonth = _.chain(workouts)
     .groupBy((workout) -> workout.startTime.clone().startOf('month').valueOf())
-    .map((workouts, month) -> { time: Number(month), workouts: workouts })
-    .map((month) -> _.extend month, { total: d3.sum month.workouts, (workout) -> workout.totalDuration.asSeconds() })
-    .value()
+    .map((workouts, month) ->
+      time: Number(month)
+      sports: _.chain(workouts)
+        .groupBy((workout) -> workout.exerciseType)
+        .map((workouts, exerciseType) ->
+          exerciseType: exerciseType
+          totalTime: d3.sum workouts, (workout) -> workout.totalDuration.asSeconds()
+        ).value()
+    )
+    .map((monthlyData) -> _.extend monthlyData,
+      totalTime: d3.sum monthlyData.sports, (monthlySummary) -> monthlySummary.totalTime
+    ).value()
 
   # Random coloring of exercises.
   exerciseColor = d3.scale.category20()
@@ -98,20 +115,22 @@ updateMainChart = (elt, workouts, workoutsRange) ->
     .select('g.monthly-efforts')
     .attr('transform', "translate(#{MARGIN.left}, #{MARGIN.top})")
     .selectAll('g.month')
-    .data(workoutsByMonth) #XXX, (d) -> d.time)
+    .data(workoutsByMonth, (d) -> d.time)
 
   # Mapping from months to their position on the X axis.
   pos_x = d3.scale.linear()
     .domain([0, 12])
     .range([0, WIDTH])
+
   # Mapping from years to their position on the Y axis.
   pos_y = d3.scale.linear()
     .domain([workoutsRange.beg.year(), workoutsRange.beg.year() + 1])
     .range([0, HEIGHT_PER_YEAR])
+
   # Mapping from workout times to their width on the screen.
   widthPerYear = WIDTH / 12 - SPACING.years
   size_x = d3.scale.linear()
-    .domain([0, d3.max workoutsByMonth, (m) -> m.total])
+    .domain([0, d3.max workoutsByMonth, (m) -> m.totalTime])
     .range([0, widthPerYear])
 
   container.enter()
@@ -119,7 +138,7 @@ updateMainChart = (elt, workouts, workoutsRange) ->
     .classed('month', true)
   container
     .attr('transform', (d) ->
-      px = pos_x(moment(d.time).month()) + (widthPerYear - size_x d.total) / 2
+      px = pos_x(moment(d.time).month()) + (widthPerYear - size_x d.totalTime) / 2
       py = pos_y moment(d.time).year()
       "translate(#{px}, #{py})"
     )
@@ -128,18 +147,10 @@ updateMainChart = (elt, workouts, workoutsRange) ->
     .remove()
 
 
-drawMonthlyChart = (size_x, exerciseColor) -> (d) ->
-  timePerExerciseType = _.chain(d.workouts)
-    .groupBy((workout) -> workout.exerciseType)
-    .map((exWorkouts, exerciseType) ->
-      exerciseType: exerciseType,
-      totalTime: d3.sum exWorkouts, (workout) -> workout.totalDuration.asSeconds()
-    )
-    .value()
-
+drawMonthlyChart = (size_x, exerciseColor) -> (data) ->
   d3.select(this)
     .selectAll('rect')
-    .data(stack(timePerExerciseType), (d) -> d.exerciseType)
+    .data(data.sports, (d) -> d.exerciseType)
   .enter()
     .append('rect')
     .attr('width', (d) -> size_x d.totalTime)
