@@ -88,6 +88,10 @@ updateMainChart = (elt, workouts, workoutsRange) ->
     .map((month) -> _.extend month, { total: d3.sum month.workouts, (workout) -> workout.totalDuration.asSeconds() })
     .value()
 
+  # Random coloring of exercises.
+  exerciseColor = d3.scale.category20()
+    .domain(_.map workouts, (workout) -> workout.exerciseType)
+
   # Prepare the container.
   container = d3
     .select(elt[0])
@@ -110,19 +114,37 @@ updateMainChart = (elt, workouts, workoutsRange) ->
     .domain([0, d3.max workoutsByMonth, (m) -> m.total])
     .range([0, widthPerYear])
 
-#  container.enter()
-#    .append('g')
-#    .classed('month', true)
-#  container
-#    .attr('transform', (d) -> "translate(#{pos_x moment(d.time).month()}, #{pos_y moment(d.time).year()})")
   container.enter()
-    .append('rect')
+    .append('g')
+    .classed('month', true)
   container
-    .attr('x', (d) -> pos_x(moment(d.time).month()) + (widthPerYear - size_x d.total) / 2)
-    .attr('y', (d) -> pos_y moment(d.time).year())
-    .attr('width', (d) -> size_x d.total)
-    .attr('height', HEIGHT_PER_YEAR - SPACING.years)
+    .attr('transform', (d) ->
+      px = pos_x(moment(d.time).month()) + (widthPerYear - size_x d.total) / 2
+      py = pos_y moment(d.time).year()
+      "translate(#{px}, #{py})"
+    )
+    .each(drawMonthlyChart size_x, exerciseColor)
   container.exit()
     .remove()
+
+
+drawMonthlyChart = (size_x, exerciseColor) -> (d) ->
+  timePerExerciseType = _.chain(d.workouts)
+    .groupBy((workout) -> workout.exerciseType)
+    .map((exWorkouts, exerciseType) ->
+      exerciseType: exerciseType,
+      totalTime: d3.sum exWorkouts, (workout) -> workout.totalDuration.asSeconds()
+    )
+    .value()
+
+  d3.select(this)
+    .selectAll('rect')
+    .data(stack(timePerExerciseType), (d) -> d.exerciseType)
+  .enter()
+    .append('rect')
+    .attr('width', (d) -> size_x d.totalTime)
+    .attr('height', HEIGHT_PER_YEAR - SPACING.years)
+    .attr('fill', (d) -> exerciseColor d.exerciseType)
+
 
 angular.module('fitspector').directive 'workoutsMiniCalendar', ['WorkoutsProviderService', WorkoutsMiniCalendarDirective]
