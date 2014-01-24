@@ -148,11 +148,17 @@ updateMainChart = (elt, workouts, workoutsRange) ->
 
 
 drawMonthlyChart = (size_x, exerciseColor) -> (data) ->
+  accTime = 0
+  _.each data.sports, (d) ->
+    d.totalAccTime = accTime
+    accTime += d.totalTime
+
   d3.select(this)
     .selectAll('rect')
     .data(data.sports, (d) -> d.exerciseType)
   .enter()
     .append('rect')
+    .attr('x', (d) -> size_x d.totalAccTime)
     .attr('width', (d) -> size_x d.totalTime)
     .attr('height', HEIGHT_PER_YEAR - SPACING.years)
     .attr('fill', (d) -> exerciseColor d.exerciseType)
