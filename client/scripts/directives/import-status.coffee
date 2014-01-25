@@ -13,18 +13,22 @@ class ImportStatusDirective
 
         updateStatus = ->
           return if !dbImportStatus?
-          if dbImportStatus.done?
-            $scope.importStatus =
-              type: 'finished'
-              done: dbImportStatus.done
-          else
-            $scope.importStatus =
-              type: 'inprogress'
-              imported: dbImportStatus.imported
-              total: dbImportStatus.total
-              importProgress: 100 * dbImportStatus.imported / dbImportStatus.total
+          switch
+            when dbImportStatus.done?
+              $scope.importStatus =
+                type: 'finished'
+                done: dbImportStatus.done
+            when dbImportStatus.total?
+              $scope.importStatus =
+                type: 'inprogress'
+                imported: dbImportStatus.imported
+                total: dbImportStatus.total
+                importProgress: 100 * dbImportStatus.imported / dbImportStatus.total
+            else
+              $scope.importStatus =
+                type: 'none'
 
-        changeUser = (user) ->
+        changeUser = (user) =>
           $scope.importStatus = {}
           importStatusRef.off() if importStatusRef?
           if user.guest then return
@@ -34,6 +38,10 @@ class ImportStatusDirective
           dbImportStatus.$on 'loaded', updateStatus
           dbImportStatus.$on 'change', updateStatus
 
+        $scope.close = =>
+          importStatusRef.remove() if importStatusRef?
+
+        # TODO(koper) This should be changed to the way workouts info is propagated.
         AuthService.registerUserChangeListener changeUser
     }
 
