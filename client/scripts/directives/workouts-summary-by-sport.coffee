@@ -31,7 +31,7 @@ class WorkoutsSummaryBySportDirective
 
         scope.sportFilter = 'all'
         scope.setSportFilter = (sport) ->
-          scope.sportFilter = if scope.sportFilter == sport then 'all' else sport
+          scope.sportFilter = if scope.sportFilter == sport.id then 'all' else sport.id
           scope.sportFilterListener {sport: scope.sportFilter}
         scope.$watch 'sportFilter', -> recompute scope
 
@@ -48,11 +48,13 @@ recompute = (scope) ->
   if not scope.workouts?
     return
 
+  # TODO(koper) Re-write using _.groupBy and d3.sum
   processWorkout = (workout) ->
     sportData = sports[workout.exerciseType] || {}
     update = (oldValue, zero, f) -> f (oldValue || zero)
 
-    sports[workout.exerciseType] =
+    sports[workout.exerciseType.id] =
+      exerciseType: workout.exerciseType
       sessions: update sportData.sessions, 0, (s) -> s + 1
       totalDistance: update sportData.totalDistance, Distance.zero, (d) -> Distance.plus d, workout.totalDistance
       totalDuration: update sportData.totalDuration, Time.zero, (t) -> Time.plus t, workout.totalDuration

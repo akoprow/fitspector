@@ -18,13 +18,13 @@
         <a class="unfilter" ng-show="sportFilter != 'all'" ng-click="setSportFilter('all')">
           (Click to show all sports)
         </a>
-        <span ng-repeat="(sportId, _) in sports"
+        <span ng-repeat="sport in sports"
               ng-mouseover="setActiveColumn($index)"
               ng-mouseout="setActiveColumn(-1)"
               class="sport-summary-value"
               ng-style="{ 'left': elementWidth * $index }"
-              ng-click="setSportFilter(sportId)">
-          <sport-icon sport-id="sportId"></sport-icon>
+              ng-click="setSportFilter(sport.exerciseType)">
+          <sport-icon exercise-type="sport.exerciseType"></sport-icon>
         </span>
       </td>
     </tr>
@@ -35,11 +35,11 @@
         <span class="text"><span bo-text="metric"></span> <icon type="{{metric}}"></icon>
       </th>
       <td class="data">
-        <span ng-repeat="(sportId, sport) in sports"
+        <span ng-repeat="sport in sports"
               ng-mouseover="setActiveColumn($index)"
               ng-mouseout="setActiveColumn(-1)"
               class="sport-summary-value"
-              ng-class="{ 'bg-for-{{sportId}}': activeColumn == $index }"
+              ng-class="{ 'bg-for-{{sport.exerciseType.id}}': activeColumn == $index }"
               ng-style="{ 'left': elementWidth * $index }">
           <span ng-switch="metric">
             <span ng-switch-when="sessions">

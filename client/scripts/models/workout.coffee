@@ -6,7 +6,9 @@ class root.Workout
   constructor: (json, @id) ->
     @startTime = moment json.startTime
     # Normalize exerciseType id
-    @exerciseType = json.exerciseType.toLowerCase()
+    exerciseTypeId = json.exerciseType.toLowerCase()
+    @exerciseType = WorkoutType[exerciseTypeId]
+    if !@exerciseType? then throw new Error "Unknown exercise type: #{exerciseTypeId}"
     @notes = json.notes
     @source = json.source
 
