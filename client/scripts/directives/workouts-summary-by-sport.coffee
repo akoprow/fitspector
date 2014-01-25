@@ -44,28 +44,24 @@ class WorkoutsSummaryBySportDirective
 
 
 recompute = (scope) ->
-  sports = scope.sports = {}
   if not scope.workouts?
     return
-
-  # TODO(koper) Re-write using _.groupBy and d3.sum
-  processWorkout = (workout) ->
-    sportData = sports[workout.exerciseType] || {}
-    update = (oldValue, zero, f) -> f (oldValue || zero)
-
-    sports[workout.exerciseType.id] =
-      exerciseType: workout.exerciseType
-      sessions: update sportData.sessions, 0, (s) -> s + 1
-      totalDistance: update sportData.totalDistance, Distance.zero, (d) -> Distance.plus d, workout.totalDistance
-      totalDuration: update sportData.totalDuration, Time.zero, (t) -> Time.plus t, workout.totalDuration
-      totalElevation: update sportData.totalElevation, Distance.zero, (d) -> Distance.plus d, workout.totalElevation
 
   sportFilter = scope.sportFilter
   workouts = scope.$eval 'workouts | filter: queryFilter'
 
-  _.chain(workouts)
+  scope.sports = _.chain(workouts)
     .filter((workout) -> sportFilter == 'all' || workout.exerciseType == sportFilter)
-    .each(processWorkout)
+    .groupBy((workout) -> workout.exerciseType.id)
+    .map((workouts) ->
+      exerciseType: workouts[0].exerciseType
+      sessions: workouts.length
+      totalDistance: new Distance { meters: d3.sum workouts, (workout) -> workout.totalDistance.asMeters() }
+      totalDuration: new Time { seconds: d3.sum workouts, (workout) -> workout.totalDuration.asSeconds() }
+      totalElevation: new Distance { meters: d3.sum workouts, (workout) -> workout.totalElevation.asMeters() }
+    )
+    .values()
+    .value()
 
 
 angular.module('fitspector').directive 'workoutsSummaryBySport', [WorkoutsSummaryBySportDirective]
