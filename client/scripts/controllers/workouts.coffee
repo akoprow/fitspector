@@ -121,9 +121,9 @@ class WorkoutsCtrl
       else
         timeMove 1, $scope.timeStart.clone()
 
-    $scope.timeMode = { id: 'week' }
+    $scope.timeStart = moment()
+    $scope.setTimeMode 'month'
     $scope.goNow()
-    $scope.setTimeMode 'week'
 
     # ----------------------------- List of workouts (passing filters) -----------------------------
 
