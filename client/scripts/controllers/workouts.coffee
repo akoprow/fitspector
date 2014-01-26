@@ -165,5 +165,18 @@ class WorkoutsCtrl
       newOrderRev = "-#{newOrder}"
       $scope.order = if $scope.order == newOrderRev then newOrder else newOrderRev
 
+    # -------------------------------------------- Tour --------------------------------------------
+
+    tourSpec =
+      id: 'workouts tour'
+      steps: [
+        title: 'List of workouts'
+        content: 'This page presents the list of your workouts.<br/>It is fairly flexible and we will now walk you through all the ways to customize what you see.'
+        target: 'help-button'
+        placement: 'left'
+      ]
+
+    $scope.tour = -> hopscotch.startTour tourSpec
+
 
 angular.module('fitspector').controller 'WorkoutsCtrl', ['WorkoutsProviderService', '$scope', WorkoutsCtrl]

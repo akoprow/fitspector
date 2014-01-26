@@ -238,6 +238,7 @@ module.exports = (grunt) ->
           'bootstrap/dist/css/bootstrap.css'
           'bootstrap/dist/css/bootstrap-theme.css'
           'hopscotch/css/hopscotch-0.1.2.css'
+          'hopscotch/img/sprite-green-0.3.png'
         ]
         dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/libs/'
         expand: true
