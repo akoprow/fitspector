@@ -127,7 +127,7 @@ module.exports = (grunt) ->
 # Temporarily we need to give up image revisioning (is it important?) because we cannot easily post-process directives
 # that are concatenated by ngtemplates task.  If we decide we want to revision images it may be worth looking into:
 # https://github.com/wmluke/grunt-inline-angular-templates.
-#            '<%= yeoman.dist %>/<%= yeoman.client %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+#            '<%= yeoman.dist %>/<%= yeoman.client %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
             '<%= yeoman.dist %>/<%= yeoman.client %>/styles/fonts/*'
           ]
 
@@ -146,18 +146,18 @@ module.exports = (grunt) ->
       dist:
         files: [
           expand: true
-          cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>/images'
+          cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>/img'
           src: '{,*/}*.{png,jpg,jpeg}'
-          dest: '<%= yeoman.dist %>/<%= yeoman.client %>/images'
+          dest: '<%= yeoman.dist %>/<%= yeoman.client %>/img'
         ]
 
     svgmin:
       dist:
         files: [
           expand: true
-          cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>/images'
+          cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>/img'
           src: '{,*/}*.svg'
-          dest: '<%= yeoman.dist %>/<%= yeoman.client %>/images'
+          dest: '<%= yeoman.dist %>/<%= yeoman.client %>/img'
         ]
 
     htmlmin:
@@ -177,8 +177,8 @@ module.exports = (grunt) ->
 
     sprite:
       sportIcons:
-        src: '<%= yeoman.client %>/images/sport-icons/*'
-        destImg: '<%= yeoman.tmp %>/<%= yeoman.client %>/images/sport-icons.png'
+        src: '<%= yeoman.client %>/img/sport-icons/*'
+        destImg: '<%= yeoman.tmp %>/<%= yeoman.client %>/img/sport-icons.png'
         destCSS: '<%= yeoman.tmp %>/<%= yeoman.client %>/styles/sport-icons.css'
         algorithm: 'binary-tree'
         cssOpts:
@@ -206,9 +206,9 @@ module.exports = (grunt) ->
         dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/scripts'
         expand: true
       img:
-        cwd: '<%= yeoman.client %>/images'
+        cwd: '<%= yeoman.client %>/img'
         src: ['**/*', '!sport-icons/*']
-        dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/images'
+        dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/img'
         expand: true
       server:
         cwd: '<%= yeoman.server %>'

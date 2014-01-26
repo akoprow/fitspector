@@ -25,7 +25,7 @@ app.configure ->
   app.use express.methodOverride()
   # TODO(koper) Duh, there must be a way of serving just the top-level dir
   app.use '/fonts', express.static(__dirname + '/client/fonts')
-  app.use '/images', express.static(__dirname + '/client/images')
+  app.use '/img', express.static(__dirname + '/client/img')
   app.use '/scripts', express.static(__dirname + '/client/scripts')
   app.use '/styles', express.static(__dirname + '/client/styles')
   app.use '/views', express.static(__dirname + '/client/views')
