@@ -218,7 +218,6 @@ module.exports = (grunt) ->
       libs:
         cwd: '<%= yeoman.bower_components %>/'
         src: [
-          'jquery/jquery.js'
           'angular/angular.js'
           'angular-animate/angular-animate.js'
           'angular-cookies/angular-cookies.js'
@@ -229,13 +228,16 @@ module.exports = (grunt) ->
           'bootstrap/js/dropdown.js'
           'bootstrap/js/tooltip.js'
           'd3/d3.js'
+          'hopscotch/js/hopscotch-0.1.2.js'
+          'jquery/jquery.js'
           'momentjs/moment.js'
-          'underscore/underscore.js'
           'ngInfiniteScroll/ng-infinite-scroll.js'
+          'underscore/underscore.js'
 
           'bootstrap/dist/fonts/*'
           'bootstrap/dist/css/bootstrap.css'
           'bootstrap/dist/css/bootstrap-theme.css'
+          'hopscotch/css/hopscotch-0.1.2.css'
         ]
         dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/libs/'
         expand: true

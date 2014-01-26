@@ -15,7 +15,8 @@
     "angular-resource": "1.2.5",
     "angular-animate": "1.2.5",
     "angular-cookies": "1.2.5",
-    "ngInfiniteScroll": "~1.0.0"
+    "ngInfiniteScroll": "~1.0.0",
+    "hopscotch": "*"
   },
   "devDependencies": {
     "angular-mocks": "1.2.5",
