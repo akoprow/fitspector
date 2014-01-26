@@ -6,7 +6,7 @@
     function DataProviderService() {
       var getFirebaseRoot;
       getFirebaseRoot = function() {
-        return new Firebase('https://fitspector.firebaseio.com/');
+        return new Firebase('https://fitspector-staging.firebaseio.com/');
       };
       return {
         getFirebaseRoot: getFirebaseRoot,
