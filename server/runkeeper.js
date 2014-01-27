@@ -146,6 +146,10 @@
         logger.error("Import error for user: " + user.id + ", error: " + err);
         return;
       }
+      if (!response) {
+        logger.error("Empty detailed workout response for exercise: " + data.uri);
+        return;
+      }
       noteLines = (_ref = response.notes) != null ? _ref.match(/^.*((\r\n|\n|\r)|$)/gm) : void 0;
       if (noteLines == null) {
         noteLines = [];
