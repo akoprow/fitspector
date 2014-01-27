@@ -164,6 +164,8 @@ module.exports = (grunt) ->
       dist:
         files: [
           expand: true
+          # TODO(koper) As of now some whitespace is significant, like between time icon and text; but eventually we want to do the collapsing
+          collapseWhitespace: false
           cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>/'
           src: ['*.html']
           dest: '<%= yeoman.dist %>/<%= yeoman.client %>/'
