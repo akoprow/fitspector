@@ -4,6 +4,7 @@ UserSettings = if window? then UserSettings else require('./userSettings').UserS
 Distance = if window? then Distance else require('./distance').Distance
 Time = if window? then Distance else require('./time').Time
 _ = if window? then window._ else require 'underscore'
+moment = if window? then window.moment else require 'moment'
 
 
 root = exports ? this
@@ -54,14 +55,22 @@ class root.User
 
 
   @jsonUserFromRunKeeperProfile: (profile, userId) =>
-    id: userId
-    name: profile.name
-    isMale: profile.gender is 'M'
-    birthday: new Date(profile.birthday)
-    smallImgUrl: profile['small_picture'] || profile['medium_picture'] || profile['normal_picture'] || ''
-    settings: new UserSettings()
-    token: null
-    runKeeperProfile: profile
+    user =
+      id: userId
+      name: profile.name
+      isMale: profile.gender is 'M'
+      smallImgUrl: profile['small_picture'] || profile['medium_picture'] || profile['normal_picture'] || ''
+      settings: new UserSettings()
+      token: null
+      runKeeperProfile: profile
+
+    if profile.birthday?
+      user.birthday = new Date(profile.birthday)
+      age = moment().diff moment(profile.birthday), 'years'
+      user.performance =
+        maxHR: 220 - age
+
+    return user
 
 
   # Computes functional Threshold Pace (FTP) given best race result
