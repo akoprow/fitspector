@@ -173,7 +173,10 @@ module.exports = (grunt) ->
       options:
         inline: true
       js:
-        src: ['<%= yeoman.tmp %>/<%= yeoman.client %>/scripts/services/data-provider-service.js']
+        src: [
+          '<%= yeoman.tmp %>/<%= yeoman.client %>/scripts/services/data-provider-service.js'
+          '<%= yeoman.tmp %>/newrelic.js'
+        ]
 
     sprite:
       sportIcons:
@@ -242,6 +245,7 @@ module.exports = (grunt) ->
       toplevel:
         src: [
           'server.coffee'
+          'newrelic.coffee'
           'Procfile'
           'package.json'
         ]
@@ -253,6 +257,7 @@ module.exports = (grunt) ->
         cwd: '<%= yeoman.tmp %>'
         src: [
           'server.js'
+          'newrelic.js'
           'package.json'
           'Procfile'
           '<%= yeoman.server %>/**/*.js'
@@ -319,10 +324,10 @@ module.exports = (grunt) ->
     'copy'
     'coffee:all'
     'useminPrepare'
+    'preprocess'
     'copy:dist'
     'sprite'
     'less'
-    'preprocess'
     'imagemin'
     'svgmin'
     'htmlmin'
