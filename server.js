@@ -1,10 +1,12 @@
 (function() {
   'use strict';
-  var app, deserializeUser, express, passport, port, routes, runKeeper, serializeUser;
+  var app, deserializeUser, express, newRelic, passport, port, routes, runKeeper, serializeUser;
 
   express = require('express');
 
   passport = require('passport');
+
+  newRelic = require('newrelic');
 
   routes = require('./server/routes');
 
