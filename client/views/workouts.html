@@ -84,7 +84,7 @@
       </li>
     </ul>
 
-    <table class="table workouts-list">
+<!--
       <tr ng-show="getWorkouts()">
         <th class="date">
           <span class="sortHandler" ng-click="orderBy('startTime')">Date</span>
@@ -119,33 +119,35 @@
           <span class="sortHandler" ng-click="orderBy('steepness.asMeters()')">Steepness</span>
           <sorting-ctrl this="steepness.asMeters()" selected="{{order}}"></sorting-ctrl>
         </th>
-<!--
-        <th class="icons">
-        </th>
--->
         <th class="details">
         </th>
       </tr>
-      <tr ng-hide="workouts">
-        <td colspan="10" class="text-center" ng-hide="getWorkouts()">
-          No workouts in the selected time period.
-        </td>
-      </tr>
-      <tr bindonce ng-repeat="workout in getWorkouts() | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
-          class="animate-workout-list sport-{{workout.exerciseType}}"
-          ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
-          ng-mouseout="gaugeSettings.selectedWorkout = ''">
-        <td class="date">
-          <div bo-text="workout.startTime | date"></div>
+-->
+
+    <div class="text-center" ng-hide="getWorkouts()">
+      No workouts in the selected time period.
+    </div>
+    <div bindonce="workout"
+         ng-repeat="workout in getWorkouts() | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
+         class="row workout sport-{{workout.exerciseType.id}}"
+         ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
+         ng-mouseout="gaugeSettings.selectedWorkout = ''">
+      <div class="col-xs-4">
+        <div class="date">
+          <div bo-text="workout.startTime | date"></div><br/>
           <div bo-text="workout.startTime | time"></div>
-        </td>
-        <td class="sport">
+        </div>
+        <div class="sport-icon">
           <sport-icon exercise-type="workout.exerciseType"></sport-icon>
-        </td>
-        <td class="notes-and-labels">
-          <span bindonce ng-repeat="label in workout.labels" class="label label-primary" bo-text="label"></span>
-          <span class="notes" bo-text="workout.notes"></span>
-        </td>
+        </div>
+        <div class="labels-and-note">
+          <div bindonce ng-repeat="label in workout.labels" class="label label-primary" bo-text="label"></div>
+          <div class="notes" bo-text="workout.notes"></div>
+        </div>
+      </div>
+    </div>
+<!--
+
         <td class="time-and-hr" colspan="2">
           <span ng-style="{visibility: gaugeSettings.mode != 'gauges' || gaugeSettings.selectedWorkout == workout.id ? 'visible' : 'hidden'}">
             <time value="workout.totalDuration"></time>
@@ -182,12 +184,6 @@
             </workout-gauge>
           </span>
         </td>
-<!--
-        <td class="icons">
-          <span class="glyphicon glyphicon-thumbs-up"></span> 3
-          <span class="glyphicon glyphicon-comment"></span> 10
-        </td>
--->
         <td class="details">
           <a bindonce="workout" bo-show="workout.detailsUrl()" class="btn btn-primary btn-sm" bo-href="workout.detailsUrl()" target="_blank"
              rel="tooltip" data-toggle="tooltip" data-delay="500" title="Show workout details in RunKeeper (opens in a new window)">
@@ -196,5 +192,6 @@
         </td>
       </tr>
     </table>
+-->
   </div>
 </div>
