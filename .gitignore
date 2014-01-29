@@ -4,3 +4,5 @@ node_modules
 .sass-cache
 .tmp
 .bower_components
+deploy-prod.sh
+deploy-staging.sh
