@@ -29,10 +29,10 @@
       </td>
     </tr>
     <tr bindonce
-        ng-repeat="metric in ['sessions', 'time', 'distance', 'elevation']"
+        ng-repeat="metric in ['Sessions', 'Time', 'Distance', 'Elevation']"
         class="data-row">
       <th>
-        <span class="text"><span bo-text="metric"></span> <icon type="{{metric}}"></icon>
+        <span class="text"><span bo-text="metric"></span> <icon type="{{metric | lowercase}}"></icon>
       </th>
       <td class="data">
         <span ng-repeat="sport in sports"
@@ -41,7 +41,7 @@
               class="sport-summary-value"
               ng-class="{ 'bg-for-{{sport.exerciseType.id}}': activeColumn == $index }"
               ng-style="{ 'left': elementWidth * $index }">
-          <span ng-switch="metric">
+          <span ng-switch="metric | lowercase">
             <span ng-switch-when="sessions">
               <span ng-bind="sport.sessions"></span><span class="unit"> x</span>
             </span>
