@@ -4,3 +4,8 @@
   -o-transition: all @duration @ease;
   transition: all @duration @ease;
 }
+
+.progress-bar-styles(@color) {
+  #gradient > .vertical(@start-color: @color; @end-color: darken(@color, 10%));
+  background-color: @color;
+}
