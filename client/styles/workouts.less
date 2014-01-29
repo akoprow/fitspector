@@ -1,15 +1,52 @@
-@screen-width: 1100px;
+.workouts {
+  .date-selection {
+    margin-bottom: 10px;
+  }
 
-@col-date-width: 110px;
-@col-sport-icon-width: 60px;
-@col-notes-width: 200px;
-@col-details-width: 50px;
-@col-metric-width: 110px;
+  .workout {
+    .make-row();
+    padding: 5px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 
-@col-notes-width: @screen-width - (@col-date-width + @col-sport-icon-width + @col-details-width + 6*@col-metric-width);
+    div {
+      display: inline-block;
+    }
 
-@table-rows-sport-color-hover-fadeout: 85%;
-@table-rows-sport-color-fadeout: 97%;
+    .workout-info {
+      .make-lg-column(5);
+
+      .date-and-time {
+        text-align: center;
+        vertical-align: middle;
+        width: 80px;
+        margin-left: -5px;
+        .date {
+          display: block;
+        }
+      }
+
+      .sport-icon {
+        padding: 2px;
+        vertical-align: middle;
+      }
+
+      .labels-and-note {
+        vertical-align: top;
+        .label {
+          margin: 1px;
+          display: inline-block;
+        }
+        .notes {
+          display: block;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+}
 
 
 .workout-list-row(@color) {
@@ -19,23 +56,7 @@
   }
 }
 
-
-.workouts {
-  .date-selection {
-    margin-bottom: 10px;
-  }
-
-  .workout {
-    div {
-      display: inline-block;
-    }
-
-    .date {
-      width: 100px;
-      text-align: center;
-    }
-  }
-
+/*
   .xworkouts-list {
     margin-top: 20px;
     table-layout: fixed;
@@ -124,8 +145,8 @@
       visibility: visible;
     }
 
-    /* TODO(koper) This is tedious, isn't there an easier way to achieve that?
-                   If not it may be worth to eventually generate it programatically. */
+    / TODO(koper) This is tedious, isn't there an easier way to achieve that?
+                   If not it may be worth to eventually generate it programatically. /
     tr.sport-run {
       .workout-list-row(@sport-run-color);
     }
@@ -177,4 +198,4 @@
       opacity: 1;
     }
   }
-}
+*/

@@ -1,4 +1,5 @@
 <div class="workouts" infinite-scroll="scrollWorkouts()">
+  <screen-size></screen-size>
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Your workouts</h3>
@@ -84,6 +85,10 @@
       </li>
     </ul>
 
+    <table class="workouts table">
+      <tr class="text-center" ng-hide="getWorkouts()">
+        <td>No workouts in the selected time period.</td>
+      </tr>
 <!--
       <tr ng-show="getWorkouts()">
         <th class="date">
@@ -123,29 +128,30 @@
         </th>
       </tr>
 -->
-
-    <div class="text-center" ng-hide="getWorkouts()">
-      No workouts in the selected time period.
-    </div>
-    <div bindonce="workout"
-         ng-repeat="workout in getWorkouts() | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
-         class="row workout sport-{{workout.exerciseType.id}}"
-         ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
-         ng-mouseout="gaugeSettings.selectedWorkout = ''">
-      <div class="col-xs-4">
-        <div class="date">
-          <div bo-text="workout.startTime | date"></div><br/>
-          <div bo-text="workout.startTime | time"></div>
-        </div>
-        <div class="sport-icon">
-          <sport-icon exercise-type="workout.exerciseType"></sport-icon>
-        </div>
-        <div class="labels-and-note">
-          <div bindonce ng-repeat="label in workout.labels" class="label label-primary" bo-text="label"></div>
-          <div class="notes" bo-text="workout.notes"></div>
-        </div>
-      </div>
-    </div>
+      <tr bindonce="workout"
+          ng-repeat="workout in getWorkouts() | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
+          class="table workout sport-{{workout.exerciseType.id}}"
+          ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
+          ng-mouseout="gaugeSettings.selectedWorkout = ''">
+        <td>
+          <div class="workout-info">
+            <div class="date-and-time">
+              <div class="date" bo-text="workout.startTime | date"></div>
+              <div class="time" bo-text="workout.startTime | time"></div>
+            </div>
+            <div class="sport-icon">
+              <sport-icon exercise-type="workout.exerciseType"></sport-icon>
+            </div>
+            <div class="labels-and-note">
+              <div bindonce ng-repeat="label in workout.labels" class="label label-primary" bo-text="label"></div>
+              <div class="notes" bo-text="workout.notes"></div>
+            </div>
+          </div>
+          <div class="workout-gauges">
+          </div>
+        </td>
+      </tr>
+    </table>
 <!--
 
         <td class="time-and-hr" colspan="2">
