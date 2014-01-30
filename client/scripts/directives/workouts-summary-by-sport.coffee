@@ -63,6 +63,16 @@ recompute = (scope) ->
     .values()
     .value()
 
+  # Add a dummy entry for a sport we filter by, if there are no workouts for that sport.
+  if sportFilter != 'all' && scope.sports.length == 0
+    scope.sports = [
+      exerciseType: WorkoutType[sportFilter]
+      sessions: 0
+      totalDistance: Distance.zero
+      totalDuration: Time.zero
+      totalElevation: Distance.zero
+    ]
+
 
 angular.module('fitspector').directive 'workoutsSummaryBySport', [WorkoutsSummaryBySportDirective]
 

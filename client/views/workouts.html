@@ -78,7 +78,7 @@
     </div>
 
     <ul class="list-group">
-      <li class="list-group-item" ng-show="getWorkouts()">
+      <li class="list-group-item" ng-show="sportFilter != 'all' || getWorkouts()">
         <workouts-summary-by-sport workouts="getWorkouts()" query-filter="q" sport-filter-listener="setSportFilter(exerciseTypeId)">
         </workouts-summary-by-sport>
       </li>
@@ -128,7 +128,9 @@
       </tr>
       <tr ng-hide="workouts">
         <td colspan="10" class="text-center" ng-hide="getWorkouts()">
-          No workouts in the selected time period.
+          No
+          <strong ng-if="sportFilter != 'all'" ng-bind="getFilteredSportName()"></strong>
+          workouts in the selected time period.
         </td>
       </tr>
       <tr bindonce ng-repeat="workout in getWorkouts() | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
@@ -160,7 +162,7 @@
         </td>
         <td class="distance-and-pace" colspan="2" ng-class="{'gauge-with-numbers': gaugeSettings.mode == 'both'}">
           <span ng-style="{visibility: gaugeSettings.mode != 'gauges' || gaugeSettings.selectedWorkout == workout.id ? 'visible' : 'hidden'}">
-            <distance value="workout.totalDistance"></distance>
+            <distance ng-hide="workout.totalDistance.isZero()" value="workout.totalDistance"></distance>
             <pace value="workout.pace" exercise-type="workout.exerciseType"></pace>
           </span>
           <span ng-show="gaugeSettings.mode != 'numbers' && workout.paceZones">
@@ -172,7 +174,7 @@
         </td>
         <td class="elevation" colspan="2" ng-class="{'gauge-with-numbers': gaugeSettings.mode == 'both'}">
           <span ng-style="{visibility: gaugeSettings.mode != 'gauges' || gaugeSettings.selectedWorkout == workout.id ? 'visible' : 'hidden'}">
-            <elevation value="workout.totalElevation"></elevation>
+            <elevation ng-hide="workout.totalElevation.isZero()" value="workout.totalElevation"></elevation>
             <steepness value="workout.steepness"></steepness>
           </span>
           <span ng-show="gaugeSettings.mode != 'numbers' && workout.elevationZones">

@@ -153,6 +153,7 @@ class WorkoutsCtrl
 
     $scope.sportFilter = 'all'
     $scope.setSportFilter = (exerciseTypeId) -> $scope.sportFilter = exerciseTypeId
+    $scope.getFilteredSportName = -> WorkoutType[$scope.sportFilter].name
 
     $scope.$watch 'sportFilter', recomputeWorkoutsFilter
     $scope.$watch 'timeStart.valueOf()', recomputeWorkoutsFilter
