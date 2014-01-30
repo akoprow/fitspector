@@ -14,7 +14,7 @@
     }
 
     .workout-info {
-      .make-lg-column(5);
+      .make-md-column(4);
 
       .date-and-time {
         text-align: center;
@@ -43,6 +43,24 @@
           overflow: hidden;
           text-overflow: ellipsis;
         }
+      }
+    }
+    .workout-gauges {
+      .make-row();
+      .make-md-column(8);
+
+      .gauge,
+      .numbers {
+        display: block;
+      }
+      .numbers {
+        padding: 0 15px;
+      }
+
+      .time-and-hr,
+      .distance-and-pace,
+      .elevation-and-steepness {
+        .make-md-column(4);
       }
     }
   }
