@@ -18,13 +18,13 @@
         <a class="unfilter" ng-show="sportFilter != 'all'" ng-click="setSportFilter('all')">
           (Click to show all sports)
         </a>
-        <span ng-repeat="sport in sports"
+        <span ng-repeat="sport in sports track by sport.exerciseType.id"
               ng-mouseover="setActiveColumn($index)"
               ng-mouseout="setActiveColumn(-1)"
               class="sport-summary-value"
               ng-style="{ 'left': elementWidth * $index }"
-              ng-click="setSportFilter(sport.exerciseType)">
-          <sport-icon exercise-type="sport.exerciseType"></sport-icon>
+              ng-click="setSportFilter(sport.exerciseType.id)">
+          <sport-icon no-tooltip="true" exercise-type="sport.exerciseType"></sport-icon>
         </span>
       </td>
     </tr>
