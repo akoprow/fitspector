@@ -24,10 +24,10 @@
             return recompute(scope);
           });
           scope.sportFilter = 'all';
-          scope.setSportFilter = function(sport) {
-            scope.sportFilter = scope.sportFilter === sport.id ? 'all' : sport.id;
+          scope.setSportFilter = function(sportId) {
+            scope.sportFilter = scope.sportFilter === sportId ? 'all' : sportId;
             return scope.sportFilterListener({
-              sport: scope.sportFilter
+              exerciseTypeId: scope.sportFilter
             });
           };
           scope.$watch('sportFilter', function() {
@@ -54,7 +54,7 @@
     sportFilter = scope.sportFilter;
     workouts = scope.$eval('workouts | filter: queryFilter');
     return scope.sports = _.chain(workouts).filter(function(workout) {
-      return sportFilter === 'all' || workout.exerciseType === sportFilter;
+      return sportFilter === 'all' || workout.exerciseType.id === sportFilter;
     }).groupBy(function(workout) {
       return workout.exerciseType.id;
     }).map(function(workouts) {

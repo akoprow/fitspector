@@ -153,7 +153,7 @@
         sportFilter = $scope.sportFilter;
         return WorkoutsProviderService.setWorkoutsFilter(function(workout) {
           var afterStart, beforeEnd, passingSportFilter;
-          passingSportFilter = sportFilter === 'all' || workout.exerciseType === sportFilter;
+          passingSportFilter = sportFilter === 'all' || workout.exerciseType.id === sportFilter;
           if ($scope.timeMode.id === 'all') {
             return passingSportFilter;
           } else {
@@ -167,8 +167,8 @@
         return WorkoutsProviderService.getSelectedWorkouts();
       };
       $scope.sportFilter = 'all';
-      $scope.setSportFilter = function(sport) {
-        return $scope.sportFilter = sport;
+      $scope.setSportFilter = function(exerciseTypeId) {
+        return $scope.sportFilter = exerciseTypeId;
       };
       $scope.$watch('sportFilter', recomputeWorkoutsFilter);
       $scope.$watch('timeStart.valueOf()', recomputeWorkoutsFilter);
