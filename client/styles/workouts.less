@@ -6,6 +6,17 @@
     margin-bottom: 10px;
   }
 
+  .filter {
+    .make-column-offset(3);
+    .make-xs-column(6);
+    .make-md-column(4);
+    .make-md-column-offset(0);
+
+    @media (max-width: 979px) {  // phone & tablet
+      margin-top: 10px;
+    }
+  }
+
   .workout {
     .make-row();
     padding: 5px;
@@ -41,6 +52,7 @@
     }
 
     .workout-info {
+      .make-sm-column(12);
       .make-md-column(4);
 
       & > .date-and-time {
@@ -79,14 +91,21 @@
 
     .workout-gauges {
       .make-row();
+      .make-xs-column(12);
       .make-md-column(8);
+
+      @media (max-width: 979px) {  // phone & tablet
+        margin-top: 10px;
+      }
 
       .gauge,
       .numbers {
         display: block;
       }
       .numbers {
-        padding: 0 15px;
+        @media (min-width: 980px) {  // desktop
+          padding: 0 15px;
+        }
       }
       .progress {
         display: block;
@@ -95,7 +114,7 @@
       & > .time-and-hr,
       & > .distance-and-pace,
       & > .elevation-and-steepness {
-        .make-md-column(4);
+        .make-xs-column(4);
       }
     }
   }

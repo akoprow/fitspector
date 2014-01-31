@@ -5,6 +5,11 @@
   transition: all @duration @ease;
 }
 
+// TODO(koper) Unconditional column offset; should be present in Bootstrap in some form...
+.make-column-offset(@columns) {
+  margin-left: percentage((@columns / @grid-columns));
+}
+
 .progress-bar-styles(@color) {
   #gradient > .vertical(@start-color: @color; @end-color: darken(@color, 10%));
   background-color: @color;
