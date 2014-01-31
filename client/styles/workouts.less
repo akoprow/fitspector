@@ -1,3 +1,5 @@
+@workout-height: 60px;
+
 .workouts {
   .date-selection {
     margin-bottom: 10px;
@@ -15,36 +17,42 @@
 
     .workout-info {
       .make-md-column(4);
+      height: @workout-height;
 
-      .date-and-time {
+      & > .date-and-time {
+        float: left;
+        width: 80px;
         text-align: center;
         vertical-align: middle;
-        width: 80px;
-        margin-left: -5px;
-        .date {
+        margin-top: 12px;
+        & > .date {
           display: block;
         }
       }
 
-      .sport-icon {
-        padding: 2px;
+      & > .sport-icon {
+        float: left;
+	width: 45px;
         vertical-align: middle;
+        margin: 10px 8px 0;
       }
 
-      .labels-and-note {
+      & > .labels-and-note {
         vertical-align: top;
-        .label {
+	display: block;
+	overflow: hidden;
+
+        & > .label {
           margin: 1px;
           display: inline-block;
         }
-        .notes {
+        & > .notes {
           display: block;
-          white-space: nowrap;
-          overflow: hidden;
           text-overflow: ellipsis;
         }
       }
     }
+
     .workout-gauges {
       .make-row();
       .make-md-column(8);
@@ -56,10 +64,13 @@
       .numbers {
         padding: 0 15px;
       }
+      .progress {
+        display: block;
+      }
 
-      .time-and-hr,
-      .distance-and-pace,
-      .elevation-and-steepness {
+      & > .time-and-hr,
+      & > .distance-and-pace,
+      & > .elevation-and-steepness {
         .make-md-column(4);
       }
     }
