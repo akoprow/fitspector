@@ -89,48 +89,56 @@
       <tr class="text-center" ng-hide="getWorkouts()">
         <td>No workouts in the selected time period.</td>
       </tr>
-<!--
-      <tr ng-show="getWorkouts()">
-        <th class="date">
-          <span class="sortHandler" ng-click="orderBy('startTime')">Date</span>
-          <sorting-ctrl this="startTime" selected="{{order}}"></sorting-ctrl>
-        </th>
-        <th class="sport">
-          <span class="sortHandler" ng-click="orderBy('exerciseType')">Sport</span>
-          <sorting-ctrl this="exerciseType" selected="{{order}}"></sorting-ctrl>
-        </th>
-        <th class="notes-and-labels">Notes</th>
-        <th class="time-label">
-          <span class="sortHandler" ng-click="orderBy('totalDuration.asSeconds()')">Time</span>
-          <sorting-ctrl this="totalDuration.asSeconds()" selected="{{order}}"></sorting-ctrl>
-        </th>
-        <th class="hr-label">
-          <span class="sortHandler" ng-click="orderBy('avgHR')">HR (avg)</span>
-          <sorting-ctrl this="avgHR" selected="{{order}}"></sorting-ctrl>
-        </th>
-        <th class="distance-label">
-          <span class="sortHandler" ng-click="orderBy('totalDistance.asMeters()')">Distance</span>
-          <sorting-ctrl this="totalDistance.asMeters()" selected="{{order}}"></sorting-ctrl>
-        </th>
-        <th class="pace-label">
-          <span class="sortHandler" ng-click="orderBy('pace.asTimePerKm().asSeconds()')">Pace (avg)</span>
-          <sorting-ctrl this="pace.asTimePerKm().asSeconds()" selected="{{order}}"></sorting-ctrl>
-        </th>
-        <th class="elevation-label">
-          <span class="sortHandler" ng-click="orderBy('totalElevation.asMeters()')">Elevation</span>
-          <sorting-ctrl this="totalElevation.asMeters()" selected="{{order}}"></sorting-ctrl>
-        </th>
-        <th class="steepness-label">
-          <span class="sortHandler" ng-click="orderBy('steepness.asMeters()')">Steepness</span>
-          <sorting-ctrl this="steepness.asMeters()" selected="{{order}}"></sorting-ctrl>
-        </th>
-        <th class="details">
+      <tr class="workout header" ng-show="getWorkouts()">
+        <th>
+          <div class="workout-info">
+            <div class="date-and-time">
+              <!-- TODO pack those pairs of tags into a single directive -->
+              <span class="sortHandler" ng-click="orderBy('startTime')">Date</span>
+              <sorting-ctrl this="startTime" selected="{{order}}"></sorting-ctrl>
+            </div>
+            <div class="sport-icon">
+              <span class="sortHandler" ng-click="orderBy('exerciseType.id')">Sport</span>
+              <sorting-ctrl this="exerciseType.id" selected="{{order}}"></sorting-ctrl>
+            </div>
+          </div>
+          <div class="workout-gauges">
+            <div class="time-and-hr">
+              <div class="pull-left">
+                <span class="sortHandler" ng-click="orderBy('totalDuration.asSeconds()')">Time</span>
+                <sorting-ctrl this="totalDuration.asSeconds()" selected="{{order}}"></sorting-ctrl>
+              </div>
+              <div class="pull-right">
+                <span class="sortHandler" ng-click="orderBy('avgHR')">HR (avg)</span>
+                <sorting-ctrl this="avgHR" selected="{{order}}"></sorting-ctrl>
+              </div>
+            </div>
+            <div class="distance-and-pace">
+              <div class="pull-left">
+                <span class="sortHandler" ng-click="orderBy('totalDistance.asMeters()')">Distance</span>
+                <sorting-ctrl this="totalDistance.asMeters()" selected="{{order}}"></sorting-ctrl>
+              </div>
+              <div class="pull-right">
+                <span class="sortHandler" ng-click="orderBy('pace.asTimePerKm().asSeconds()')">Pace (avg)</span>
+                <sorting-ctrl this="pace.asTimePerKm().asSeconds()" selected="{{order}}"></sorting-ctrl>
+              </div>
+            </div>
+            <div class="elevation-and-steepness">
+              <div class="pull-left">
+                <span class="sortHandler" ng-click="orderBy('totalElevation.asMeters()')">Elevation</span>
+                <sorting-ctrl this="totalElevation.asMeters()" selected="{{order}}"></sorting-ctrl>
+              </div>
+              <div class="pull-right">
+                <span class="sortHandler" ng-click="orderBy('steepness.asMeters()')">Steepness</span>
+                <sorting-ctrl this="steepness.asMeters()" selected="{{order}}"></sorting-ctrl>
+              </div>
+            </div>
+          </div>
         </th>
       </tr>
--->
       <tr bindonce="workout"
           ng-repeat="workout in getWorkouts() | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
-          class="table workout sport-{{workout.exerciseType.id}}"
+          class="workout sport-{{workout.exerciseType.id}}"
           ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
           ng-mouseout="gaugeSettings.selectedWorkout = ''">
         <td>
@@ -187,6 +195,13 @@
                 </workout-gauge>
               </div>
             </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
 <!--
         <td class="details">
           <a bindonce="workout" bo-show="workout.detailsUrl()" class="btn btn-primary btn-sm" bo-href="workout.detailsUrl()" target="_blank"
@@ -195,9 +210,3 @@
           </a>
         </td>
 -->
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
-</div>
