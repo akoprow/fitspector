@@ -127,6 +127,10 @@ DATA =
 # TODO(koper) Change into Angular constant
 root.WorkoutType = 
   _.chain(DATA)
-    .map((sport, id) -> [id, _.extend sport, {id: id}])
+    .map((sport, id) ->
+      col = d3.hsl sport.color
+      bgColor = d3.hsl col.h, col.s, 0.98
+      [id, _.extend sport, { id: id, bgColor: bgColor }]
+    )
     .object()
     .value()

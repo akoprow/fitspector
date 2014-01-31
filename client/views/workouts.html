@@ -137,7 +137,8 @@
       </tr>
       <tr bindonce="workout"
           ng-repeat="workout in getWorkouts() | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
-          class="workout sport-{{workout.exerciseType.id}}"
+          class="workout"
+          ng-style="{'background-color': workout.exerciseType.bgColor}"
           ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
           ng-mouseout="gaugeSettings.selectedWorkout = ''">
         <td>
