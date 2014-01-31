@@ -51,9 +51,22 @@
       }
     }
 
+    &:hover .workout-info > .details {
+      visibility: visible;
+    }
+
     .workout-info {
-      .make-sm-column(12);
+      .make-xs-column(12);
       .make-md-column(4);
+
+      & > .details {
+        float: left;
+        width: 10px;
+        margin-top: -7px;
+        margin-left: -22px;
+        vertical-align: middle;
+        visibility: hidden;
+      }
 
       & > .date-and-time {
         float: left;
