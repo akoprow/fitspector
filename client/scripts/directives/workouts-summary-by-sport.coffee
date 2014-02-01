@@ -30,9 +30,9 @@ class WorkoutsSummaryBySportDirective
         scope.$watch 'queryFilter', -> recompute scope
 
         scope.sportFilter = 'all'
-        scope.setSportFilter = (sport) ->
-          scope.sportFilter = if scope.sportFilter == sport.id then 'all' else sport.id
-          scope.sportFilterListener {sport: scope.sportFilter}
+        scope.setSportFilter = (sportId) ->
+          scope.sportFilter = if scope.sportFilter == sportId then 'all' else sportId
+          scope.sportFilterListener {exerciseTypeId: scope.sportFilter}
         scope.$watch 'sportFilter', -> recompute scope
 
         scope.activeColumn = -1
@@ -51,7 +51,7 @@ recompute = (scope) ->
   workouts = scope.$eval 'workouts | filter: queryFilter'
 
   scope.sports = _.chain(workouts)
-    .filter((workout) -> sportFilter == 'all' || workout.exerciseType == sportFilter)
+    .filter((workout) -> sportFilter == 'all' || workout.exerciseType.id == sportFilter)
     .groupBy((workout) -> workout.exerciseType.id)
     .map((workouts) ->
       exerciseType: workouts[0].exerciseType
@@ -62,6 +62,16 @@ recompute = (scope) ->
     )
     .values()
     .value()
+
+  # Add a dummy entry for a sport we filter by, if there are no workouts for that sport.
+  if sportFilter != 'all' && scope.sports.length == 0
+    scope.sports = [
+      exerciseType: WorkoutType[sportFilter]
+      sessions: 0
+      totalDistance: Distance.zero
+      totalDuration: Time.zero
+      totalElevation: Distance.zero
+    ]
 
 
 angular.module('fitspector').directive 'workoutsSummaryBySport', [WorkoutsSummaryBySportDirective]

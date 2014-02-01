@@ -78,15 +78,19 @@
     </div>
 
     <ul class="list-group">
-      <li class="list-group-item" ng-show="getWorkouts()">
-        <workouts-summary-by-sport workouts="getWorkouts()" query-filter="q" sport-filter-listener="setSportFilter(sport)">
+      <li class="list-group-item" ng-show="sportFilter != 'all' || getWorkouts()">
+        <workouts-summary-by-sport workouts="getWorkouts()" query-filter="q" sport-filter-listener="setSportFilter(exerciseTypeId)">
         </workouts-summary-by-sport>
       </li>
     </ul>
 
     <table class="workouts table">
-      <tr class="text-center" ng-hide="getWorkouts()">
-        <td>No workouts in the selected time period.</td>
+      <tr ng-hide="getWorkouts()">
+        <td class="text-center">
+          No
+          <strong ng-if="sportFilter != 'all'" ng-bind="getFilteredSportName()"></strong>
+          workouts in the selected time period.
+        </td>
       </tr>
       <tr class="workout header" ng-show="getWorkouts()">
         <th>
