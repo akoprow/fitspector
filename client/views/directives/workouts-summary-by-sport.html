@@ -32,15 +32,14 @@
         ng-repeat="metric in ['Sessions', 'Time', 'Distance', 'Elevation']"
         class="data-row">
       <th>
-        <span class="text"><span bo-text="metric"></span> <icon type="{{metric | lowercase}}"></icon>
+        <span class="text"><span class="hidden-xs" bo-text="metric"></span> <icon type="{{metric | lowercase}}"></icon>
       </th>
       <td class="data">
         <span ng-repeat="sport in sports"
               ng-mouseover="setActiveColumn($index)"
               ng-mouseout="setActiveColumn(-1)"
               class="sport-summary-value"
-              ng-class="{ 'bg-for-{{sport.exerciseType.id}}': activeColumn == $index }"
-              ng-style="{ 'left': elementWidth * $index }">
+              ng-style="{ 'left': elementWidth * $index, 'background-color': activeColumn == $index ? sport.exerciseType.color : sport.exerciseType.bgColor }">
           <span ng-switch="metric | lowercase">
             <span ng-switch-when="sessions">
               <span ng-bind="sport.sessions"></span><span class="unit"> x</span>
