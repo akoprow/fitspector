@@ -170,6 +170,9 @@
       $scope.setSportFilter = function(exerciseTypeId) {
         return $scope.sportFilter = exerciseTypeId;
       };
+      $scope.getFilteredSportName = function() {
+        return WorkoutType[$scope.sportFilter].name;
+      };
       $scope.$watch('sportFilter', recomputeWorkoutsFilter);
       $scope.$watch('timeStart.valueOf()', recomputeWorkoutsFilter);
       $scope.$watch('timeMode', recomputeWorkoutsFilter);

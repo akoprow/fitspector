@@ -53,7 +53,7 @@
     }
     sportFilter = scope.sportFilter;
     workouts = scope.$eval('workouts | filter: queryFilter');
-    return scope.sports = _.chain(workouts).filter(function(workout) {
+    scope.sports = _.chain(workouts).filter(function(workout) {
       return sportFilter === 'all' || workout.exerciseType.id === sportFilter;
     }).groupBy(function(workout) {
       return workout.exerciseType.id;
@@ -78,6 +78,17 @@
         })
       };
     }).values().value();
+    if (sportFilter !== 'all' && scope.sports.length === 0) {
+      return scope.sports = [
+        {
+          exerciseType: WorkoutType[sportFilter],
+          sessions: 0,
+          totalDistance: Distance.zero,
+          totalDuration: Time.zero,
+          totalElevation: Distance.zero
+        }
+      ];
+    }
   };
 
   angular.module('fitspector').directive('workoutsSummaryBySport', [WorkoutsSummaryBySportDirective]);
