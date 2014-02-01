@@ -5,47 +5,37 @@
     </div>
     <div class="panel-body">
       <div class="btn-toolbar">
-<!--
-        <div class="btn-group">
-          <button class="btn btn-primary active">
-            <span class="glyphicon glyphicon-list"></span>
-            List
-          </button>
-          <button class="btn btn-primary" rel="tooltip" data-toggle="tooltip" title="Coming soon!">
-            <span class="glyphicon glyphicon-calendar"></span>
-            Calendar
-          </button>
+        <div class="btn-group time-ctrls">
+          <div class="text-center">
+            <button class="btn btn-primary"
+                    bindonce
+                    ng-repeat="mode in timeModes"
+                    ng-class="{active: timeMode.id == mode.id}"
+                    ng-click="setTimeMode(mode.id)"
+                    bo-text="mode.desc">
+            </button>
+          </div>
         </div>
--->
-        <div class="btn-group">
-          <button class="btn btn-primary"
-                  bindonce
-                  ng-repeat="mode in timeModes"
-                  ng-class="{active: timeMode.id == mode.id}"
-                  ng-click="setTimeMode(mode.id)"
-                  bo-text="mode.desc">
-          </button>
+        <div class="btn-group gauge-modes">
+          <div class="text-center">
+            <button class="btn btn-primary"
+                    bindonce
+                    ng-repeat="mode in gaugeModes"
+                    ng-class="{active: gaugeSettings.mode == mode.id}"
+                    ng-click="gaugeSettings.mode = mode.id"
+                    bo-text="mode.desc">
+            </button>
+          </div>
         </div>
-        <div class="btn-group">
-          <button class="btn btn-primary"
-                  bindonce
-                  ng-repeat="mode in gaugeModes"
-                  ng-class="{active: gaugeSettings.mode == mode.id}"
-                  ng-click="gaugeSettings.mode = mode.id"
-                  bo-text="mode.desc">
-          </button>
-        </div>
-        <div class="filter text-center">
+        <div class="filter">
           <form class="form-inline">
-            <div class="form-group">
-              <div class="input-group">
-                <input type="search" class="form-control" ng-model="q" placeholder="Filter workouts..." />
-                <span class="input-group-btn">
-                  <button class="btn btn-primary" type="button" ng-click="q = ''">
-                    <span class="glyphicon glyphicon-remove"></span>
-                  </button>
-                </span>
-              </div>
+            <div class="input-group">
+              <input type="search" class="form-control" ng-model="q" placeholder="Filter workouts..." />
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="button" ng-click="q = ''">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
+              </span>
             </div>
           </form>
         </div>
@@ -104,11 +94,14 @@
               <span class="sortHandler" ng-click="orderBy('exerciseType.id')">Sport</span>
               <sorting-ctrl this="exerciseType.id" selected="{{order}}"></sorting-ctrl>
             </div>
+            <div class="labels-and-note">
+              <span>Labels & notes</span>
+            </div>
           </div>
           <div class="workout-gauges">
             <div class="time-and-hr">
               <div class="pull-left">
-                <span class="sortHandler" ng-click="orderBy('totalDuration.asSeconds()')">Time</span>
+                <span class="sortHandler" ng-click="orderBy('totalDuration.asSeconds()')">Duration</span>
                 <sorting-ctrl this="totalDuration.asSeconds()" selected="{{order}}"></sorting-ctrl>
               </div>
               <div class="pull-right">

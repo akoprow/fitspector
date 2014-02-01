@@ -6,20 +6,58 @@
     margin-bottom: 10px;
   }
 
+  .panel-body {
+    .make-md-column(12);
+    text-align: center;
+  }
+
+  .time-ctrls {
+    @media (max-width: @screen-sm-max) {  // phone & tablet
+      .make-xs-column(12);
+      margin-bottom: 10px;
+    }
+  }
+  .gauge-modes {
+    @media (max-width: @screen-sm-max) {  // phone & tablet
+      .make-xs-column(12);
+    }
+  }
   .filter {
     .make-column-offset(3);
     .make-xs-column(6);
     .make-md-column(4);
     .make-md-column-offset(0);
-
-    @media (max-width: 979px) {  // phone & tablet
+    @media (max-width: @screen-sm-max) {  // phone & tablet
       margin-top: 10px;
+      text-align: center;
     }
   }
 
+  // Gauge-mode: phone
+  @media (max-width: @screen-xs-max) {
+    .gauge-modes {
+      display: none;
+    }
+    &.gauge-mode-numbers,
+    &.gauge-mode-gauges,
+    &.gauge-mode-both {
+      .workout {
+        .workout-gauges .gauge {
+          display: none;
+        }
+        .numbers .unit {
+          display: none;
+        }
+      }
+    }
+  }
+
+  // Gauge-mode: numbers
   &.gauge-mode-numbers .workout .workout-gauges .gauge {
     display: none;
   }
+
+  // Gauge-mode: gauges
   &.gauge-mode-gauges {
     .numbers {
       visibility: hidden;
@@ -52,13 +90,21 @@
           margin-top: 0;
         }
         & > .sport-icon {
-          float: none;
-          width: auto;
           margin-top: 0;
         }
       }
-      & > .workout-gauges .pull-left {
-        margin-left: 10px;
+      & > .workout-gauges {
+        .pull-left {
+          @media (min-width: @screen-sm-min) {
+            margin-left: 10px;
+          }
+        }
+        .pull-right span {
+          text-align: right;
+          @media (min-width: @screen-sm-min) {
+            margin-right: 10px;
+          }
+        }
       }
     }
 
@@ -118,7 +164,7 @@
       .make-xs-column(12);
       .make-md-column(8);
 
-      @media (max-width: 979px) {  // phone & tablet
+      @media (max-width: @screen-sm-max) {  // phone & tablet
         margin-top: 10px;
       }
 
@@ -127,7 +173,7 @@
         display: block;
       }
       .numbers {
-        @media (min-width: 980px) {  // desktop
+        @media (min-width: @screen-md-min)  { // desktop
           padding: 0 15px;
         }
       }
