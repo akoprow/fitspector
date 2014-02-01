@@ -129,7 +129,7 @@ root.WorkoutType =
   _.chain(DATA)
     .map((sport, id) ->
       col = d3.hsl sport.color
-      bgColor = d3.hsl col.h, col.s, 0.98
+      bgColor = d3.hsl col.h, col.s, 0.995
       [id, _.extend sport, { id: id, bgColor: bgColor }]
     )
     .object()

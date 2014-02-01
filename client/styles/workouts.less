@@ -17,6 +17,18 @@
     }
   }
 
+  &.gauge-mode-numbers .workout .workout-gauges .gauge {
+    display: none;
+  }
+  &.gauge-mode-gauges {
+    .numbers {
+      visibility: hidden;
+    }
+    td:hover .numbers {
+      visibility: visible;
+    }
+  }
+
   .workout {
     .make-row();
     padding: 5px;
@@ -28,11 +40,10 @@
       display: inline-block;
     }
 
-    tr.header {
+    &.header {
       height: @workouts-header-height;
-    }
-    tr {
-      height: @workout-height;
+      background-color: #f5f5f5;
+      color: #333;
     }
 
     th {
