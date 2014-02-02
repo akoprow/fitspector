@@ -12,7 +12,7 @@ class PaceDirective
         noIcon: '@'
       link: (scope) ->
         scope.showPaceAsMinKm =
-          switch scope.exerciseType
+          switch scope.exerciseType.id
             when 'run' then true
             when 'hik' then true
             else false
