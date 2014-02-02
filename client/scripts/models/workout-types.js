@@ -172,7 +172,7 @@
   root.WorkoutType = _.chain(DATA).map(function(sport, id) {
     var bgColor, col;
     col = d3.hsl(sport.color);
-    bgColor = d3.hsl(col.h, col.s, 0.995);
+    bgColor = d3.hsl(col.h, col.s, 0.99);
     return [
       id, _.extend(sport, {
         id: id,
