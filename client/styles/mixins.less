@@ -10,6 +10,14 @@
   margin-left: percentage((@columns / @grid-columns));
 }
 
+// TODO(koper) This should not be needed once https://github.com/twbs/bootstrap/issues/12015 is resolved.
+.visible-xs-sm {
+  display: block;
+  @media (min-width: @screen-md-min) {
+    display: none !important;
+  }
+}
+
 .progress-bar-styles(@color) {
   #gradient > .vertical(@start-color: @color; @end-color: darken(@color, 10%));
   background-color: @color;

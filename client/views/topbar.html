@@ -34,12 +34,17 @@
             Login
           </a>
         </li>
-        <li access-level="user" class="disabled">
+        <li access-level="user">
+          <a href="#" ng-click="logout()" class="visible-xs-sm">
+            <span class="glyphicon glyphicon-off"></span> Logout
+          </a>
+        </li>
+        <li access-level="user" class="disabled hidden-xs hidden-sm">
           <a href="#">
             <span class="user-name" ng-bind="getUser().name"></span>
           </a>
         </li>
-        <li access-level="user">
+        <li access-level="user" class="hidden-xs hidden-sm">
           <a href="#" class="dropdown-toggle user-toggle" data-toggle="dropdown">
             <img ng-show="getUser().smallImgUrl" class="img-rounded user-icon" ng-src="{{getUser().smallImgUrl}}" />
             <span ng-hide="getUser().smallImgUrl" class="glyphicon glyphicon-user user-icon"></span>
