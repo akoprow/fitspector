@@ -42,13 +42,14 @@
       </div>
     </div>
 
-    <div class="text-center date-selection" ng-hide="timeMode.id == 'all'">
+    <!-- TODO(koper) For some reason ng-hide here does not work and hides ALL controls; looks like AngularJS bug -->
+    <div class="text-center date-selection">
       <div class="btn-group">
         <button type="button"
                 class="btn btn-primary"
-                ng-class="{disabled: prevDisabled()}"
+                ng-class="{disabled: prevDisabled() || timeMode.id == 'all'}"
                 ng-click="prev()">
-          <span class="glyphicon glyphicon-chevron-left">
+          <span class="glyphicon glyphicon-chevron-left"></span>
         </button>
         <button type="button"
                 class="btn btn-primary"
@@ -57,9 +58,9 @@
         </button>
         <button type="button"
                 class="btn btn-primary"
-                ng-class="{disabled: nextDisabled()}"
+                ng-class="{disabled: nextDisabled()  || timeMode.id == 'all'}"
                 ng-click="next()">
-          <span class="glyphicon glyphicon-chevron-right">
+          <span class="glyphicon glyphicon-chevron-right"></span>
         </button>
       </div>
       <div>
