@@ -95,19 +95,17 @@ updateMainChart = (elt, workouts, workoutsRange) ->
     .map((workouts, month) ->
       time: Number(month)
       sports: _.chain(workouts)
-        .groupBy((workout) -> workout.exerciseType)
-        .map((workouts, exerciseType) ->
-          exerciseType: exerciseType
+        .groupBy((workout) -> workout.exerciseType.id)
+        .map((workouts, exerciseTypeId) ->
+          exerciseType: WorkoutType[exerciseTypeId]
           totalTime: d3.sum workouts, (workout) -> workout.totalDuration.asSeconds()
-        ).value()
+        )
+        .sortBy((data) -> data.exerciseType.id)
+        .value()
     )
     .map((monthlyData) -> _.extend monthlyData,
       totalTime: d3.sum monthlyData.sports, (monthlySummary) -> monthlySummary.totalTime
     ).value()
-
-  # Random coloring of exercises.
-  exerciseColor = d3.scale.category20()
-    .domain(_.map workouts, (workout) -> workout.exerciseType)
 
   # Prepare the container.
   container = d3
@@ -142,12 +140,12 @@ updateMainChart = (elt, workouts, workoutsRange) ->
       py = pos_y moment(d.time).year()
       "translate(#{px}, #{py})"
     )
-    .each(drawMonthlyChart size_x, exerciseColor)
+    .each(drawMonthlyChart size_x)
   container.exit()
     .remove()
 
 
-drawMonthlyChart = (size_x, exerciseColor) -> (data) ->
+drawMonthlyChart = (size_x) -> (data) ->
   accTime = 0
   _.each data.sports, (d) ->
     d.totalAccTime = accTime
@@ -155,13 +153,13 @@ drawMonthlyChart = (size_x, exerciseColor) -> (data) ->
 
   d3.select(this)
     .selectAll('rect')
-    .data(data.sports, (d) -> d.exerciseType)
+    .data(data.sports, (d) -> d.exerciseType.id)
   .enter()
     .append('rect')
     .attr('x', (d) -> size_x d.totalAccTime)
     .attr('width', (d) -> size_x d.totalTime)
     .attr('height', HEIGHT_PER_YEAR - SPACING.years)
-    .attr('fill', (d) -> exerciseColor d.exerciseType)
+    .attr('fill', (d) -> d.exerciseType.color)
 
 
 angular.module('fitspector').directive 'workoutsMiniCalendar', ['WorkoutsProviderService', WorkoutsMiniCalendarDirective]
