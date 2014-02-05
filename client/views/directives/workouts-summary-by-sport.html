@@ -1,4 +1,4 @@
-<div class="sport-summary" ng-show="workouts">
+<div class="sport-summary">
   <table>
     <tr class="icon">
       <th>
@@ -18,30 +18,29 @@
         <a class="unfilter" ng-show="sportFilter != 'all'" ng-click="setSportFilter('all')">
           (Click to show all sports)
         </a>
-        <span ng-repeat="(sportId, _) in sports"
+        <span ng-repeat="sport in sports track by sport.exerciseType.id"
               ng-mouseover="setActiveColumn($index)"
               ng-mouseout="setActiveColumn(-1)"
               class="sport-summary-value"
               ng-style="{ 'left': elementWidth * $index }"
-              ng-click="setSportFilter(sportId)">
-          <sport-icon sport-id="sportId"></sport-icon>
+              ng-click="setSportFilter(sport.exerciseType.id)">
+          <sport-icon no-tooltip="true" exercise-type="sport.exerciseType"></sport-icon>
         </span>
       </td>
     </tr>
     <tr bindonce
-        ng-repeat="metric in ['sessions', 'time', 'distance', 'elevation']"
+        ng-repeat="metric in ['Sessions', 'Time', 'Distance', 'Elevation']"
         class="data-row">
       <th>
-        <span class="text"><span bo-text="metric"></span> <icon type="{{metric}}"></icon>
+        <span class="text"><span class="hidden-xs" bo-text="metric"></span> <icon type="{{metric | lowercase}}"></icon>
       </th>
       <td class="data">
-        <span ng-repeat="(sportId, sport) in sports"
+        <span ng-repeat="sport in sports"
               ng-mouseover="setActiveColumn($index)"
               ng-mouseout="setActiveColumn(-1)"
               class="sport-summary-value"
-              ng-class="{ 'bg-for-{{sportId}}': activeColumn == $index }"
-              ng-style="{ 'left': elementWidth * $index }">
-          <span ng-switch="metric">
+              ng-style="{ 'left': elementWidth * $index, 'background-color': activeColumn == $index ? sport.exerciseType.color : sport.exerciseType.bgColor }">
+          <span ng-switch="metric | lowercase">
             <span ng-switch-when="sessions">
               <span ng-bind="sport.sessions"></span><span class="unit"> x</span>
             </span>

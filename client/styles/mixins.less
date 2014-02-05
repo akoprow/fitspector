@@ -4,3 +4,21 @@
   -o-transition: all @duration @ease;
   transition: all @duration @ease;
 }
+
+// TODO(koper) Unconditional column offset; should be present in Bootstrap in some form...
+.make-column-offset(@columns) {
+  margin-left: percentage((@columns / @grid-columns));
+}
+
+// TODO(koper) This should not be needed once https://github.com/twbs/bootstrap/issues/12015 is resolved.
+.visible-xs-sm {
+  display: block;
+  @media (min-width: @screen-md-min) {
+    display: none !important;
+  }
+}
+
+.progress-bar-styles(@color) {
+  #gradient > .vertical(@start-color: @color; @end-color: darken(@color, 10%));
+  background-color: @color;
+}

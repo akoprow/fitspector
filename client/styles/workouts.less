@@ -1,169 +1,191 @@
-@screen-width: 1100px;
-
-@col-date-width: 110px;
-@col-sport-icon-width: 60px;
-@col-notes-width: 200px;
-@col-details-width: 50px;
-@col-metric-width: 110px;
-
-@col-notes-width: @screen-width - (@col-date-width + @col-sport-icon-width + @col-details-width + 6*@col-metric-width);
-
-@table-rows-sport-color-hover-fadeout: 85%;
-@table-rows-sport-color-fadeout: 97%;
-
-
-.workout-list-row(@color) {
-  background-color: fadeout(@color, @table-rows-sport-color-fadeout);
-  &:hover {
-    background-color: fadeout(@color, @table-rows-sport-color-hover-fadeout);
-  }
-}
-
+@workout-height: 60px;
+@workouts-header-height: 30px;
 
 .workouts {
   .date-selection {
     margin-bottom: 10px;
   }
 
-  .workouts-list {
-    margin-top: 20px;
-    table-layout: fixed;
+  .panel-body {
+    .make-md-column(12);
+    text-align: center;
+  }
 
-    th {
+  .time-ctrls {
+    @media (max-width: @screen-sm-max) {  // phone & tablet
+      .make-xs-column(12);
+      margin-bottom: 10px;
+    }
+  }
+  .gauge-modes {
+    @media (max-width: @screen-sm-max) {  // phone & tablet
+      .make-xs-column(12);
+    }
+  }
+  .filter {
+    .make-column-offset(3);
+    .make-xs-column(6);
+    .make-md-column(4);
+    .make-md-column-offset(0);
+    @media (max-width: @screen-sm-max) {  // phone & tablet
+      margin-top: 10px;
       text-align: center;
-    }
-
-    th, td {
-      vertical-align: middle;
-      height: 70px;
-
-      &.time-and-hr,
-      &.distance-and-pace,
-      &.elevation {
-        &.gauge-with-numbers {
-          vertical-align: top;
-        }
-      }
-
-      &.date,
-      &.sport {
-        text-align: center;
-      }
-
-      &.date {
-        width: @col-date-width;
-      }
-      &.sport {
-        width: @col-sport-icon-width;
-      }
-      &.notes-and-labels {
-        width: @col-notes-width;
-      }
-      &.time-label,
-      &.distance-label,
-      &.hr-label,
-      &.pace-label,
-      &.elevation-label,
-      &.steepness-label {
-        width: @col-metric-width;
-        padding-right: 0;
-      }
-      &.details {
-        width: @col-details-width;
-      }
-    }
-
-    td.notes-and-labels {
-      font-size: 90%;
-
-      .label {
-	margin: 1px;
-	display: inline-block;
-      }
-
-      .notes {
-        display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-
-    td.time-and-hr .workout-time,
-    td.time-and-hr .workout-hr,
-    td.distance-and-pace .workout-distance,
-    td.distance-and-pace .workout-pace,
-    td.elevation .workout-elevation,
-    td.elevation .workout-steepness {
-      width: 49%;
-      display: inline-block;
-      text-align: center;
-    }
-
-    .time-gauge .progress,
-    .distance-gauge .progress,
-    .elevation-gauge .progress {
-      opacity: .75;
-    }
-
-    td.details .btn {
-      visibility: hidden;
-    }
-    tr:hover td.details .btn {
-      visibility: visible;
-    }
-
-    /* TODO(koper) This is tedious, isn't there an easier way to achieve that?
-                   If not it may be worth to eventually generate it programatically. */
-    tr.sport-run {
-      .workout-list-row(@sport-run-color);
-    }
-    tr.sport-bik {
-      .workout-list-row(@sport-bik-color);
-    }
-    tr.sport-hik {
-      .workout-list-row(@sport-hik-color);
-    }
-    tr.sport-row {
-      .workout-list-row(@sport-row-color);
-    }
-    tr.sport-sqs {
-      .workout-list-row(@sport-sqs-color);
-    }
-    tr.sport-swi {
-      .workout-list-row(@sport-swi-color);
-    }
-    tr.sport-ten {
-      .workout-list-row(@sport-ten-color);
-    }
-    tr.sport-vlb {
-      .workout-list-row(@sport-vlb-color);
-    }
-    tr.sport-xcs {
-      .workout-list-row(@sport-xcs-color);
-    }
-    tr.sport-yog {
-      .workout-list-row(@sport-yog-color);
-    }
-    tr.sport-wtr {
-      .workout-list-row(@sport-wtr-color);
     }
   }
 
-  .animate-workout-list {
-    &.ng-enter,
-    &.ng-leave {
-      .transition(@transition-time, linear)
+  // Gauge-mode: phone
+  @media (max-width: @screen-xs-max) {
+    .gauge-modes {
+      display: none;
+    }
+    &.gauge-mode-numbers,
+    &.gauge-mode-gauges,
+    &.gauge-mode-both {
+      .workout {
+        .workout-gauges .gauge {
+          display: none;
+        }
+        .numbers .unit {
+          display: none;
+        }
+      }
+    }
+  }
+
+  // Gauge-mode: numbers
+  &.gauge-mode-numbers .workout .workout-gauges .gauge {
+    display: none;
+  }
+
+  // Gauge-mode: gauges
+  &.gauge-mode-gauges {
+    .numbers {
+      visibility: hidden;
+    }
+    td:hover .numbers {
+      visibility: visible;
+    }
+  }
+
+  .workout {
+    .make-row();
+    padding: 5px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    clear: both;
+
+    div {
+      display: inline-block;
     }
 
-    &.ng-leave.ng-leave-active,
-    &.ng-enter {
-      opacity: 0;
+    &.header {
+      height: @workouts-header-height;
+      background-color: #f5f5f5;
+      color: #333;
     }
 
-    &.ng-leave,
-    &.ng-enter.ng-enter-active {
-      opacity: 1;
+    th {
+      & > .workout-info {
+        & > .date-and-time {
+          margin-top: 0;
+        }
+        & > .sport-icon {
+          margin-top: 0;
+        }
+      }
+      & > .workout-gauges {
+        .pull-left {
+          @media (min-width: @screen-sm-min) {
+            margin-left: 10px;
+          }
+        }
+        .pull-right span {
+          text-align: right;
+          @media (min-width: @screen-sm-min) {
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+
+    &:hover .workout-info > .details {
+      visibility: visible;
+    }
+
+    .workout-info {
+      .make-xs-column(12);
+      .make-md-column(4);
+
+      & > .details {
+        float: left;
+        width: 10px;
+        margin-top: -7px;
+        margin-left: -22px;
+        vertical-align: middle;
+        visibility: hidden;
+      }
+
+      & > .date-and-time {
+        float: left;
+        width: 80px;
+        text-align: center;
+        vertical-align: middle;
+        margin-top: 12px;
+        & > .date {
+          display: block;
+        }
+      }
+
+      & > .sport-icon {
+        float: left;
+	width: 45px;
+        vertical-align: middle;
+        margin: 10px 8px 0;
+      }
+
+      & > .labels-and-note {
+        vertical-align: top;
+	display: block;
+	overflow: hidden;
+
+        & > .label {
+          margin: 1px;
+          display: inline-block;
+        }
+        & > .notes {
+          display: block;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    .workout-gauges {
+      .make-row();
+      .make-xs-column(12);
+      .make-md-column(8);
+
+      @media (max-width: @screen-sm-max) {  // phone & tablet
+        margin-top: 10px;
+      }
+
+      .gauge,
+      .numbers {
+        display: block;
+      }
+      .numbers {
+        @media (min-width: @screen-md-min)  { // desktop
+          padding: 0 15px;
+        }
+      }
+      .progress {
+        display: block;
+      }
+
+      & > .time-and-hr,
+      & > .distance-and-pace,
+      & > .elevation-and-steepness {
+        .make-xs-column(4);
+      }
     }
   }
 }

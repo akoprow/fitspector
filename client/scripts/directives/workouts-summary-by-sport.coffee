@@ -30,9 +30,9 @@ class WorkoutsSummaryBySportDirective
         scope.$watch 'queryFilter', -> recompute scope
 
         scope.sportFilter = 'all'
-        scope.setSportFilter = (sport) ->
-          scope.sportFilter = if scope.sportFilter == sport then 'all' else sport
-          scope.sportFilterListener {sport: scope.sportFilter}
+        scope.setSportFilter = (sportId) ->
+          scope.sportFilter = if scope.sportFilter == sportId then 'all' else sportId
+          scope.sportFilterListener {exerciseTypeId: scope.sportFilter}
         scope.$watch 'sportFilter', -> recompute scope
 
         scope.activeColumn = -1
@@ -44,26 +44,34 @@ class WorkoutsSummaryBySportDirective
 
 
 recompute = (scope) ->
-  sports = scope.sports = {}
   if not scope.workouts?
     return
-
-  processWorkout = (workout) ->
-    sportData = sports[workout.exerciseType] || {}
-    update = (oldValue, zero, f) -> f (oldValue || zero)
-
-    sports[workout.exerciseType] =
-      sessions: update sportData.sessions, 0, (s) -> s + 1
-      totalDistance: update sportData.totalDistance, Distance.zero, (d) -> Distance.plus d, workout.totalDistance
-      totalDuration: update sportData.totalDuration, Time.zero, (t) -> Time.plus t, workout.totalDuration
-      totalElevation: update sportData.totalElevation, Distance.zero, (d) -> Distance.plus d, workout.totalElevation
 
   sportFilter = scope.sportFilter
   workouts = scope.$eval 'workouts | filter: queryFilter'
 
-  _.chain(workouts)
-    .filter((workout) -> sportFilter == 'all' || workout.exerciseType == sportFilter)
-    .each(processWorkout)
+  scope.sports = _.chain(workouts)
+    .filter((workout) -> sportFilter == 'all' || workout.exerciseType.id == sportFilter)
+    .groupBy((workout) -> workout.exerciseType.id)
+    .map((workouts) ->
+      exerciseType: workouts[0].exerciseType
+      sessions: workouts.length
+      totalDistance: new Distance { meters: d3.sum workouts, (workout) -> workout.totalDistance.asMeters() }
+      totalDuration: new Time { seconds: d3.sum workouts, (workout) -> workout.totalDuration.asSeconds() }
+      totalElevation: new Distance { meters: d3.sum workouts, (workout) -> workout.totalElevation.asMeters() }
+    )
+    .values()
+    .value()
+
+  # Add a dummy entry for a sport we filter by, if there are no workouts for that sport.
+  if sportFilter != 'all' && scope.sports.length == 0
+    scope.sports = [
+      exerciseType: WorkoutType[sportFilter]
+      sessions: 0
+      totalDistance: Distance.zero
+      totalDuration: Time.zero
+      totalElevation: Distance.zero
+    ]
 
 
 angular.module('fitspector').directive 'workoutsSummaryBySport', [WorkoutsSummaryBySportDirective]

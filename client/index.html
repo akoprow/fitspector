@@ -8,12 +8,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Fitspector: serious workout analysis for curious athletes.</title>
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
     <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap-theme.css">
     <link rel="stylesheet" href="styles/main.css">
     <!-- Auto-generated CSS for sprite files. -->
     <link rel="stylesheet" href="styles/sport-icons.css">
@@ -51,8 +49,10 @@
 
     <!-- build:js scripts/libs.js -->
     <script src="libs/jquery/jquery.js"></script>
+    <script src="libs/bootstrap/dist/js/bootstrap.js"></script>
     <script src="libs/momentjs/moment.js"></script>
     <script src="libs/underscore/underscore.js"></script>
+    <script src="libs/d3/d3.js"></script>
 
     <script src="libs/angular/angular.js"></script>
     <script src="libs/angular-animate/angular-animate.js"></script>
@@ -61,12 +61,6 @@
     <script src="libs/angular-resource/angular-resource.js"></script>
     <script src="libs/angular-bindonce/bindonce.js"></script>
     <script src="libs/ngInfiniteScroll/ng-infinite-scroll.js"></script>
-
-    <script src="libs/bootstrap/js/alert.js"></script>
-    <script src="libs/bootstrap/js/dropdown.js"></script>
-    <script src="libs/bootstrap/js/tooltip.js"></script>
-
-    <script src="libs/d3/d3.js"></script>
     <!-- endbuild -->
 
     <!-- TODO(koper) Do we prefer CDN over big chunk of JS? -->
@@ -86,6 +80,7 @@
 
     <!-- models -->
     <script src="scripts/models/workout.js"></script>
+    <script src="scripts/models/workout-types.js"></script>
 
     <!-- services -->
     <script src="scripts/services/auth.js"></script>
@@ -115,6 +110,7 @@
 
     <!-- development directives; TODO(koper) Should not be included in production. -->
     <script src="scripts/directives/number-watchers.js"></script>
+    <script src="scripts/directives/screen-size.js"></script>
 
     <!-- filters -->
     <script src="scripts/filters/date.js"></script>

@@ -121,9 +121,9 @@ class WorkoutsCtrl
       else
         timeMove 1, $scope.timeStart.clone()
 
-    $scope.timeMode = { id: 'week' }
+    $scope.timeStart = moment()
+    $scope.setTimeMode 'month'
     $scope.goNow()
-    $scope.setTimeMode 'week'
 
     # ----------------------------- List of workouts (passing filters) -----------------------------
 
@@ -140,7 +140,7 @@ class WorkoutsCtrl
 
       # TODO(koper) Consider making those into standard filters and moving them to the Data service.
       WorkoutsProviderService.setWorkoutsFilter (workout) ->
-        passingSportFilter = sportFilter == 'all' || workout.exerciseType == sportFilter
+        passingSportFilter = sportFilter == 'all' || workout.exerciseType.id == sportFilter
         if $scope.timeMode.id == 'all'
           passingSportFilter
         else
@@ -152,7 +152,8 @@ class WorkoutsCtrl
       return WorkoutsProviderService.getSelectedWorkouts()
 
     $scope.sportFilter = 'all'
-    $scope.setSportFilter = (sport) -> $scope.sportFilter = sport
+    $scope.setSportFilter = (exerciseTypeId) -> $scope.sportFilter = exerciseTypeId
+    $scope.getFilteredSportName = -> WorkoutType[$scope.sportFilter].name
 
     $scope.$watch 'sportFilter', recomputeWorkoutsFilter
     $scope.$watch 'timeStart.valueOf()', recomputeWorkoutsFilter

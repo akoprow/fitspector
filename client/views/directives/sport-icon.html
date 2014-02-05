@@ -1,3 +1,5 @@
-<div bindonce="sportId" bo-class="'sport-icon-container bg-for-' + sportId" rel="tooltip" data-toggle="tooltip" data-title="{{sportId}}" data-original-title="{{sportName}}">
-  <div bo-class="'sport-icon sport-' + sportId"></div>
+<div bindonce="exerciseType" bo-class="'sport-icon-container bg-for-' + exerciseType.id"
+     rel="tooltip" data-toggle="tooltip" data-title="{{exerciseType.name}}"
+     ng-style="{'background-color': exerciseType.color}">
+  <div bo-class="'sport-icon sport-' + exerciseType.id"></div>
 </div>

@@ -164,6 +164,8 @@ module.exports = (grunt) ->
       dist:
         files: [
           expand: true
+          # TODO(koper) As of now some whitespace is significant, like between time icon and text; but eventually we want to do the collapsing
+          collapseWhitespace: false
           cwd: '<%= yeoman.tmp %>/<%= yeoman.client %>/'
           src: ['*.html']
           dest: '<%= yeoman.dist %>/<%= yeoman.client %>/'
@@ -173,7 +175,10 @@ module.exports = (grunt) ->
       options:
         inline: true
       js:
-        src: ['<%= yeoman.tmp %>/<%= yeoman.client %>/scripts/services/data-provider-service.js']
+        src: [
+          '<%= yeoman.tmp %>/<%= yeoman.client %>/scripts/services/data-provider-service.js'
+          '<%= yeoman.tmp %>/newrelic.js'
+        ]
 
     sprite:
       sportIcons:
@@ -225,23 +230,20 @@ module.exports = (grunt) ->
           'angular-route/angular-route.js'
           'angular-resource/angular-resource.js'
           'angular-bindonce/bindonce.js'
-          'bootstrap/js/alert.js'
-          'bootstrap/js/dropdown.js'
-          'bootstrap/js/tooltip.js'
+          'bootstrap/dist/js/bootstrap.js'
+          'bootstrap/dist/fonts/*'
+          'bootstrap/less/*.less'
           'd3/d3.js'
           'momentjs/moment.js'
           'underscore/underscore.js'
           'ngInfiniteScroll/ng-infinite-scroll.js'
-
-          'bootstrap/dist/fonts/*'
-          'bootstrap/dist/css/bootstrap.css'
-          'bootstrap/dist/css/bootstrap-theme.css'
         ]
         dest: '<%= yeoman.tmp %>/<%= yeoman.client %>/libs/'
         expand: true
       toplevel:
         src: [
           'server.coffee'
+          'newrelic.coffee'
           'Procfile'
           'package.json'
         ]
@@ -253,6 +255,7 @@ module.exports = (grunt) ->
         cwd: '<%= yeoman.tmp %>'
         src: [
           'server.js'
+          'newrelic.js'
           'package.json'
           'Procfile'
           '<%= yeoman.server %>/**/*.js'
@@ -319,10 +322,10 @@ module.exports = (grunt) ->
     'copy'
     'coffee:all'
     'useminPrepare'
+    'preprocess'
     'copy:dist'
     'sprite'
     'less'
-    'preprocess'
     'imagemin'
     'svgmin'
     'htmlmin'

@@ -130,6 +130,9 @@ addWorkout = (accessToken, user, workouts, data, cb) ->
     if err
       logger.error "Import error for user: #{user.id}, error: #{err}"
       return
+    if !response
+      logger.error "Empty detailed workout response for exercise: #{data.uri}"
+      return
 
     # TODO(koper) Handle errors...
     # Split notes over lines

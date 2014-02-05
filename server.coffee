@@ -8,6 +8,7 @@
 express = require 'express'
 passport = require 'passport'
 
+newRelic = require 'newrelic'
 routes = require './server/routes'
 runKeeper = require './server/runkeeper'
 

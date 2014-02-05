@@ -1,4 +1,4 @@
-<div bindonce="type" bo-class="'gauge ' + type">
+<div ng-show="zones" bindonce="type" bo-class="'gauge ' + type">
   <div class="progress" bo-style="{'width': zones.gaugePercent(gaugeMax)}">
     <div bindonce ng-repeat="i in [0, 1, 2, 3, 4, 5, 6]"
          bo-style="{'width': zones.zonePercent(i)}"
