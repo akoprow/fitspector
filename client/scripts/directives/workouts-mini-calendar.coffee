@@ -105,13 +105,16 @@ updateMainChart = (elt, workouts, workoutsRange) ->
     )
     .map((monthlyData) -> _.extend monthlyData,
       totalTime: d3.sum monthlyData.sports, (monthlySummary) -> monthlySummary.totalTime
-    ).value()
+    )
+    # TODO(koper) Extend with empty entries for months in the range but with no workouts.
+    .value()
 
   # Prepare the container.
-  container = d3
+  outerContainer = d3
     .select(elt[0])
     .select('g.monthly-efforts')
     .attr('transform', "translate(#{MARGIN.left}, #{MARGIN.top})")
+  container = outerContainer
     .selectAll('g.month')
     .data(workoutsByMonth, (d) -> d.time)
 
@@ -140,12 +143,14 @@ updateMainChart = (elt, workouts, workoutsRange) ->
       py = pos_y moment(d.time).year()
       "translate(#{px}, #{py})"
     )
-    .each(drawMonthlyChart size_x)
+    .each(updateMonthlyChart size_x)
   container.exit()
     .remove()
 
+  updateSelection outerContainer, pos_x, pos_y, widthPerYear
 
-drawMonthlyChart = (size_x) -> (data) ->
+
+updateMonthlyChart = (size_x) -> (data) ->
   accTime = 0
   _.each data.sports, (d) ->
     d.totalAccTime = accTime
@@ -160,6 +165,22 @@ drawMonthlyChart = (size_x) -> (data) ->
     .attr('width', (d) -> size_x d.totalTime)
     .attr('height', HEIGHT_PER_YEAR - SPACING.years)
     .attr('fill', (d) -> d.exerciseType.color)
+
+
+updateSelection = (container, pos_x, pos_y, widthPerYear) ->
+  selection = container
+    .selectAll('rect.selection')
+    .data([moment()])
+
+  selection.enter()
+    .append('rect')
+    .classed('selection', true)
+    .attr('width', widthPerYear)
+    .attr('height', HEIGHT_PER_YEAR - SPACING.years)
+
+  selection.transition()
+    .attr('x', pos_x 3)
+    .attr('y', pos_y 2012)
 
 
 angular.module('fitspector').directive 'workoutsMiniCalendar', ['WorkoutsProviderService', WorkoutsMiniCalendarDirective]
