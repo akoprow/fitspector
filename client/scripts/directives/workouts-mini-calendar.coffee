@@ -21,6 +21,18 @@ WIDTH = WIDTH_TOTAL - MARGIN.left
 class WorkoutsMiniCalendarDirective
   constructor: (WorkoutsProviderService) ->
 
+    # Mapping from months to their position on the X axis.
+    months_pos_x = d3.scale.linear()
+      .domain([0, 12])
+      .range([0, WIDTH])
+
+    # Mapping from years to their position on the Y axis.
+    months_pos_y = null
+
+    # Width of a full year; will be initialized within updateMainChart function
+    widthPerYear = WIDTH / 12 - SPACING.years
+
+
     updateYearLabels = (elt, workoutsRange) ->
       container = d3
         .select(elt[0])
@@ -53,8 +65,7 @@ class WorkoutsMiniCalendarDirective
         .attr('y', 0)
         .text((d) -> moment().month(d).format('MMMM'))
 
-
-    updateMainChart = (elt, workouts, workoutsRange) ->
+    computeWorkoutsData = (workouts, workoutsRange) ->
       # Compute workouts grouped by months and then by exerciseType with the following structure:
       # [{
       #    time: 1234551273       // Data for the given month
@@ -64,7 +75,7 @@ class WorkoutsMiniCalendarDirective
       #      totalTime: 321341    // Time in seconds for all workouts of that sport
       #    }]
       # }]
-      workoutsByMonth = _.chain(workouts)
+      _.chain(workouts)
         .groupBy((workout) -> workout.startTime.clone().startOf('month').valueOf())
         .map((workouts, month) ->
           time: Number(month)
@@ -83,49 +94,46 @@ class WorkoutsMiniCalendarDirective
         # TODO(koper) Extend with empty entries for months in the range but with no workouts.
         .value()
 
+
+    updateMainChart = (elt, workoutsRange, workoutsByMonth) ->
       # Prepare the container.
-      outerContainer = d3
+      container = d3
         .select(elt[0])
         .select('g.monthly-efforts')
         .attr('transform', "translate(#{MARGIN.left}, #{MARGIN.top})")
-      container = outerContainer
         .selectAll('g.month')
         .data(workoutsByMonth, (d) -> d.time)
 
-      # Mapping from months to their position on the X axis.
-      pos_x = d3.scale.linear()
-        .domain([0, 12])
-        .range([0, WIDTH])
-
-      # Mapping from years to their position on the Y axis.
-      pos_y = d3.scale.linear()
-        .domain([workoutsRange.beg.year(), workoutsRange.beg.year() + 1])
-        .range([0, HEIGHT_PER_YEAR])
-
       # Mapping from workout times to their width on the screen.
-      widthPerYear = WIDTH / 12 - SPACING.years
       size_x = d3.scale.linear()
         .domain([0, d3.max workoutsByMonth, (m) -> m.totalTime])
         .range([0, widthPerYear])
+
+      # Mapping from years to their position on the Y axis.
+      months_pos_y = d3.scale.linear()
+        .domain([workoutsRange.beg.year(), workoutsRange.beg.year() + 1])
+        .range([0, HEIGHT_PER_YEAR])
 
       container.enter()
         .append('g')
         .classed('month', true)
       container
         .attr('transform', (d) ->
-          px = pos_x(moment(d.time).month()) + (widthPerYear - size_x d.totalTime) / 2
-          py = pos_y moment(d.time).year()
+          px = months_pos_x(moment(d.time).month()) + (widthPerYear - size_x d.totalTime) / 2
+          py = months_pos_y moment(d.time).year()
           "translate(#{px}, #{py})"
         )
         .each(updateMonthlyChart size_x)
       container.exit()
         .remove()
 
-      updateSelection outerContainer, pos_x, pos_y, widthPerYear
 
+    updateSelection = (elt, selectedTime) ->
+      selectedMoment = moment selectedTime
 
-    updateSelection = (container, pos_x, pos_y, widthPerYear) ->
-      selection = container
+      selection = d3
+        .select(elt[0])
+        .select('g.monthly-efforts')
         .selectAll('rect.selection')
         .data([moment()])
 
@@ -136,8 +144,9 @@ class WorkoutsMiniCalendarDirective
         .attr('height', HEIGHT_PER_YEAR - SPACING.years)
 
       selection.transition()
-        .attr('x', pos_x 3)
-        .attr('y', pos_y 2012)
+        .attr('x', months_pos_x selectedMoment.month())
+        .attr('y', months_pos_y selectedMoment.year())
+
 
     updateMonthlyChart = (size_x) -> (data) ->
       accTime = 0
@@ -160,6 +169,7 @@ class WorkoutsMiniCalendarDirective
       restrict: 'E'
       templateUrl: 'views/directives/workouts-mini-calendar.html'
       scope:
+        selectedTime: '='
         workouts: '='
       link: (scope, elt) ->
         scope.getWidth = -> WIDTH_TOTAL
@@ -176,9 +186,13 @@ class WorkoutsMiniCalendarDirective
 
           updateYearLabels elt, workoutsRange
           updateMonthlyLabels elt
-          updateMainChart elt, workouts, workoutsRange
+          workoutsByMonth = computeWorkoutsData workouts, workoutsRange
+          updateMainChart elt, workoutsRange, workoutsByMonth
+          updateSelection elt, scope.selectedTime
 
         scope.$watchCollection WorkoutsProviderService.getAllWorkouts, update
+        scope.$watch 'selectedTime.valueOf()', (selectedTime) ->
+          updateSelection elt, selectedTime
     }
 
 
