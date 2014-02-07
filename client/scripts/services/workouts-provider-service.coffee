@@ -3,21 +3,22 @@
 class WorkoutsProviderService
 
   constructor: ($rootScope, AuthService, DataProviderService) ->
+    # Inform rest of the app that something has changed.
+    notifyUpdate = _.debounce (-> $rootScope.$broadcast 'workouts.update'), 100
+
     # Reset user workouts data.
     reset = =>
       @firstWorkout = moment()  # Oldest workout of the user.
       @workouts = []  # All synchronized workouts.
+      notifyUpdate()
     reset()
-
-    # Inform rest of the app that something has changed.
-    updateViews = _.debounce (-> $rootScope.$digest()), 100
 
     # Called for every new workout added
     newWorkout = (dbWorkout) =>
       workout = new Workout(dbWorkout.val(), dbWorkout.name())
       @workouts.push workout
       @firstWorkout = workout.startTime if workout.startTime.isBefore @firstWorkout
-      updateViews()
+      notifyUpdate()
 
     # Loading data for a given user.
     changeUser = (user) =>

@@ -150,6 +150,8 @@ class WorkoutsCtrl
             afterStart = (workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg)
             beforeEnd && afterStart && passingSportFilter
 
+      _.defer -> $scope.$digest()
+
     $scope.sportFilter = 'all'
     $scope.setSportFilter = (exerciseTypeId) -> $scope.sportFilter = exerciseTypeId
     $scope.getFilteredSportName = -> WorkoutType[$scope.sportFilter].name
@@ -157,7 +159,7 @@ class WorkoutsCtrl
     $scope.$watch 'sportFilter', recomputeVisibleWorkouts
     $scope.$watch 'timeStart.valueOf()', recomputeVisibleWorkouts
     $scope.$watch 'timeMode', recomputeVisibleWorkouts
-    $scope.$watchCollection 'WorkoutsProviderService.getAllWorkouts()', recomputeVisibleWorkouts
+    $scope.$on 'workouts.update', recomputeVisibleWorkouts
 
     # ----- Sorting -----
     $scope.order = '-startTime'
