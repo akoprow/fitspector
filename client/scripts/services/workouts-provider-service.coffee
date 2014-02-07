@@ -3,15 +3,10 @@
 class WorkoutsProviderService
 
   constructor: ($rootScope, AuthService, DataProviderService) ->
-    @workoutsListener = ->  # Callback to invoke when workouts change.
-    @selectedWorkoutsListener = ->  # Callback to invoke when selected workouts change.
-    @workoutFilter = (workout) -> true  # Selection filter for workouts.
-
     # Reset user workouts data.
     reset = =>
       @firstWorkout = moment()  # Oldest workout of the user.
       @workouts = []  # All synchronized workouts.
-      @selectedWorkouts = []  # Workouts passing selection filter.
     reset()
 
     # Inform rest of the app that something has changed.
@@ -21,10 +16,6 @@ class WorkoutsProviderService
     newWorkout = (dbWorkout) =>
       workout = new Workout(dbWorkout.val(), dbWorkout.name())
       @workouts.push workout
-      @workoutsListener @workouts
-      if @workoutsFilter workout
-        @selectedWorkouts.push workout
-        @selectedWorkoutsListener @selectedWorkouts
       @firstWorkout = workout.startTime if workout.startTime.isBefore @firstWorkout
       updateViews()
 
@@ -39,6 +30,7 @@ class WorkoutsProviderService
         reset()
         workoutsRef.on 'child_added', newWorkout
 
+    # TODO(koper) This should be done by watchers instead...
     AuthService.registerUserChangeListener changeUser
 
     return {
@@ -51,14 +43,6 @@ class WorkoutsProviderService
 
       # Return the list of all workouts.
       getAllWorkouts: => @workouts
-
-      # Returns all selected workout (i.e. ones passing the registered filter).
-      getSelectedWorkouts: => @selectedWorkouts
-
-      # Sets a filter for selection of workouts.
-      setWorkoutsFilter: (@workoutsFilter) =>
-         @selectedWorkouts = _(@workouts).filter @workoutsFilter
-         @selectedWorkoutsListener @selectedWorkouts
     }
 
 angular.module('fitspector').service 'WorkoutsProviderService', ['$rootScope', 'AuthService', 'DataProviderService', WorkoutsProviderService]

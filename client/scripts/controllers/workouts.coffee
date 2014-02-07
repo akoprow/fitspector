@@ -128,36 +128,36 @@ class WorkoutsCtrl
     # ----------------------------- List of workouts (passing filters) -----------------------------
 
     $scope.infiniteScrollingPosition = 0
+    $scope.visibleWorkouts = []
 
     $scope.scrollWorkouts = =>
       $scope.infiniteScrollingPosition += WORKOUTS_PAGE_SIZE
 
-    recomputeWorkoutsFilter = =>
+    recomputeVisibleWorkouts = =>
       $scope.infiniteScrollingPosition = WORKOUTS_PAGE_SIZE
       timeBeg = $scope.timeStart
       timeEnd = $scope.timeEnd()
       sportFilter = $scope.sportFilter
 
       # TODO(koper) Consider making those into standard filters and moving them to the Data service.
-      WorkoutsProviderService.setWorkoutsFilter (workout) ->
-        passingSportFilter = sportFilter == 'all' || workout.exerciseType.id == sportFilter
-        if $scope.timeMode.id == 'all'
-          passingSportFilter
-        else
-          beforeEnd = workout.startTime.isBefore timeEnd
-          afterStart = (workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg)
-          beforeEnd && afterStart && passingSportFilter
-
-    $scope.getWorkouts = =>
-      return WorkoutsProviderService.getSelectedWorkouts()
+      $scope.visibleWorkouts =
+        _(WorkoutsProviderService.getAllWorkouts()).filter (workout) ->
+          passingSportFilter = sportFilter == 'all' || workout.exerciseType.id == sportFilter
+          if $scope.timeMode.id == 'all'
+            passingSportFilter
+          else
+            beforeEnd = workout.startTime.isBefore timeEnd
+            afterStart = (workout.startTime.isAfter timeBeg) || (workout.startTime.isSame timeBeg)
+            beforeEnd && afterStart && passingSportFilter
 
     $scope.sportFilter = 'all'
     $scope.setSportFilter = (exerciseTypeId) -> $scope.sportFilter = exerciseTypeId
     $scope.getFilteredSportName = -> WorkoutType[$scope.sportFilter].name
 
-    $scope.$watch 'sportFilter', recomputeWorkoutsFilter
-    $scope.$watch 'timeStart.valueOf()', recomputeWorkoutsFilter
-    $scope.$watch 'timeMode', recomputeWorkoutsFilter
+    $scope.$watch 'sportFilter', recomputeVisibleWorkouts
+    $scope.$watch 'timeStart.valueOf()', recomputeVisibleWorkouts
+    $scope.$watch 'timeMode', recomputeVisibleWorkouts
+    $scope.$watchCollection 'WorkoutsProviderService.getAllWorkouts()', recomputeVisibleWorkouts
 
     # ----- Sorting -----
     $scope.order = '-startTime'

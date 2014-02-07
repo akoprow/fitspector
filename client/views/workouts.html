@@ -69,21 +69,21 @@
     </div>
 
     <ul class="list-group">
-      <li class="list-group-item" ng-show="sportFilter != 'all' || getWorkouts()">
-        <workouts-summary-by-sport workouts="getWorkouts()" query-filter="q" sport-filter-listener="setSportFilter(exerciseTypeId)">
+      <li class="list-group-item" ng-show="sportFilter != 'all' || visibleWorkouts">
+        <workouts-summary-by-sport workouts="visibleWorkouts" query-filter="q" sport-filter-listener="setSportFilter(exerciseTypeId)">
         </workouts-summary-by-sport>
       </li>
     </ul>
 
     <table class="workouts table gauge-mode-{{gaugeSettings.mode}}">
-      <tr ng-hide="getWorkouts()">
+      <tr ng-hide="visibleWorkouts">
         <td class="text-center">
           No
           <strong ng-if="sportFilter != 'all'" ng-bind="getFilteredSportName()"></strong>
           workouts in the selected time period.
         </td>
       </tr>
-      <tr class="workout header" ng-show="getWorkouts()">
+      <tr class="workout header" ng-show="visibleWorkouts">
         <th>
           <div class="workout-info">
             <div class="date-and-time">
@@ -134,7 +134,7 @@
         </th>
       </tr>
       <tr bindonce="workout"
-          ng-repeat="workout in getWorkouts() | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
+          ng-repeat="workout in visibleWorkouts | filter: q | orderBy: order | limitTo: infiniteScrollingPosition track by workout.id"
           class="workout"
           ng-style="{'background-color': workout.exerciseType.bgColor}"
           ng-mouseover="gaugeSettings.selectedWorkout = workout.id"
