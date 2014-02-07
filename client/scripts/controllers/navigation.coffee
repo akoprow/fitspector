@@ -2,12 +2,13 @@
 
 class NavigationCtrl
   @urls:
+    analyze: '/analyze'
     login: '/login'
     compare: '/compare'
     workouts: '/workouts'
 
   constructor: ($location, $scope, AuthService) ->
-    $scope.isAt = (id) ->
+    $scope.isAt = (id) =>
       return $location.path() == NavigationCtrl.urls[id]
 
     $scope.goTo = (id) ->

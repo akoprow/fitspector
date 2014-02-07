@@ -17,10 +17,15 @@ class Routes
         controller: 'WorkoutsCtrl'
         restricted: true
 
-      .when '/compare',
-        templateUrl: 'views/compare.html'
-        controller: 'CompareCtrl'
+      .when '/analyze',
+        templateUrl: 'views/analyze.html'
+        controller: 'AnalyzeCtrl'
         restricted: true
+
+#      .when '/compare',
+#        templateUrl: 'views/compare.html'
+#        controller: 'CompareCtrl'
+#        restricted: true
 
       .when '/',
         templateUrl: 'views/home.html'
