@@ -2,7 +2,11 @@
 
 MARGIN = { left: 30 }
 
+SPACING = { verticalBetweenMonths: 3 }
+
 MONTH_HEIGHT = 30
+
+MONTH_LABEL_HEIGHT = 16
 
 TOTAL_HEIGHT = MONTH_HEIGHT * 12
 
@@ -18,6 +22,7 @@ class WorkoutBands
       link: (scope, elt) ->
         redraw = ->
           drawMonthLabels elt
+          drawBands elt
 
         recompute = ->
           allWorkouts = WorkoutsProviderService.getAllWorkouts()
@@ -27,8 +32,13 @@ class WorkoutBands
         scope.height = TOTAL_HEIGHT
         scope.margin = MARGIN
 
-        recompute()
+        # Re-compute and re-draw on data change.
         scope.$on 'workouts.update', recompute
+        recompute()
+
+        # Re-draw on screen re-sizing.
+        scope.$watch (-> elt.clientWidth), redraw
+        scope.$watch (-> elt.clientHeight), redraw
     }
 
 
@@ -61,6 +71,12 @@ recomputeData = (workouts) ->
     .value()
 
 
+yScale =
+  d3.scale.linear()
+    .domain([0, 1])
+    .range([0, MONTH_HEIGHT])
+
+
 drawMonthLabels = (elt) ->
   container = d3
     .select(elt[0])
@@ -73,7 +89,24 @@ drawMonthLabels = (elt) ->
     .attr('y', 0)
     .text((d) -> moment().month(d).format('MMM'))
   container
-    .attr('y', (d, i) -> i * MONTH_HEIGHT)
+    .attr('y', (d, i) -> (MONTH_HEIGHT - MONTH_LABEL_HEIGHT) / 2 + (yScale i))
+  container.exit()
+    .remove()
+
+
+drawBands = (elt) ->
+  viewport = elt[0]
+  container = d3
+    .select(viewport)
+    .select('g.bands')
+    .selectAll('rect')
+    .data(d3.range 0, 12)
+  container.enter()
+    .append('rect')
+    .attr('x', 0)
+    .attr('y', (d, i) -> yScale i)
+    .attr('width', viewport.clientWidth - MARGIN.left)
+    .attr('height', MONTH_HEIGHT - SPACING.verticalBetweenMonths)
   container.exit()
     .remove()
 
