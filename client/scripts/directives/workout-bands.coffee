@@ -22,7 +22,7 @@ class WorkoutBands
       link: (scope, elt) ->
         redraw = ->
           drawMonthLabels elt
-          drawBands elt
+          drawBands elt, scope.data, 2013
 
         recompute = ->
           allWorkouts = WorkoutsProviderService.getAllWorkouts()
@@ -71,10 +71,9 @@ recomputeData = (workouts) ->
     .value()
 
 
-yScale =
-  d3.scale.linear()
-    .domain([0, 1])
-    .range([0, MONTH_HEIGHT])
+yScale = d3.scale.linear()
+  .domain([0, 1])
+  .range([0, MONTH_HEIGHT])
 
 
 drawMonthLabels = (elt) ->
@@ -94,19 +93,25 @@ drawMonthLabels = (elt) ->
     .remove()
 
 
-drawBands = (elt) ->
+drawBands = (elt, data, year) ->
+  # Filter workouts summaries to the selected year
+  data = _.chain(data)
+    .filter((d) -> moment(d.time).year() == year)
+    .value()
+
   viewport = elt[0]
   container = d3
     .select(viewport)
     .select('g.bands')
     .selectAll('rect')
-    .data(d3.range 0, 12)
+    .data(data)
   container.enter()
     .append('rect')
     .attr('x', 0)
-    .attr('y', (d, i) -> yScale i)
+    .attr('y', (d) -> yScale (moment(d.time).month()))
     .attr('width', viewport.clientWidth - MARGIN.left)
     .attr('height', MONTH_HEIGHT - SPACING.verticalBetweenMonths)
+    .attr('fill', '#000')
   container.exit()
     .remove()
 
