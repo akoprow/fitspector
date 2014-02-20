@@ -5,7 +5,8 @@
     </li>
   </ul>
   <svg width="100%" ng-attr-height="{{height}}">
-    <g class="month-labels"></g>
-    <g class="bands" ng-attr-transform="translate({{margin.left}}, 0)"></g>
+    <g class="time-axis" ng-attr-transform="translate(0, {{margin.top}})"></g>
+    <g class="value-axis" ng-attr-transform="translate({{margin.left}}, 0)"></g>
+    <g class="bands" ng-attr-transform="translate({{margin.left}}, {{margin.top}})"></g>
   </svg>
 </div>

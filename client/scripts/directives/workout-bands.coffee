@@ -1,6 +1,6 @@
 'use strict'
 
-MARGIN = { left: 30 }
+MARGIN = { top: 30, left: 30 }
 
 SPACING = { verticalBetweenMonths: 3 }
 
@@ -8,7 +8,7 @@ MONTH_HEIGHT = 30
 
 MONTH_LABEL_HEIGHT = 16
 
-TOTAL_HEIGHT = MONTH_HEIGHT * 12
+TOTAL_HEIGHT = MARGIN.top + MONTH_HEIGHT * 12
 
 
 class WorkoutBands
@@ -95,7 +95,7 @@ yScale = d3.scale.linear()
 drawMonthLabels = (elt) ->
   container = d3
     .select(elt[0])
-    .select('g.month-labels')
+    .select('g.time-axis')
     .selectAll('text')
     .data(d3.range 0, 12)
   container.enter()
