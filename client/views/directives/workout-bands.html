@@ -1,4 +1,11 @@
-<svg width="100%" ng-attr-height="{{height}}" class="workout-bands">
-  <g class="month-labels"></g>
-  <g class="bands" ng-attr-transform="translate({{margin.left}}, 0)"></g>
-</svg>
+<div class="workout-bands">
+  <ul class="exercise-types-list">
+    <li ng-repeat="sport in data.allSports">
+      <sport-icon exercise-type="sport"></sport-icon>
+    </li>
+  </ul>
+  <svg width="100%" ng-attr-height="{{height}}">
+    <g class="month-labels"></g>
+    <g class="bands" ng-attr-transform="translate({{margin.left}}, 0)"></g>
+  </svg>
+</div>

@@ -33,7 +33,7 @@ class WorkoutBands
         scope.margin = MARGIN
 
         # Re-compute and re-draw on data change.
-        scope.$on 'workouts.update', recompute
+        scope.$on 'workouts.update', -> scope.$apply recompute
         recompute()
 
         # Re-draw on screen re-sizing.
@@ -72,8 +72,17 @@ recomputeData = (workouts) ->
         totalTime: d3.sum monthlyData.sports, (monthlySummary) -> monthlySummary.totalTime
       )
       .value()
+
+  allSports =
+    _.chain(workoutsData)
+      .map((w) -> _.map(w.sports, (s) -> s.exerciseType))
+      .flatten()
+      .uniq((e) -> e.id)
+      .value()
+
   return {
     workouts: workoutsData
+    allSports: allSports
     max: d3.max workoutsData, (d) -> d.totalTime
   }
 
