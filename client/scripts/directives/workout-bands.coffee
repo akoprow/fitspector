@@ -43,6 +43,7 @@ class WorkoutBands
 
 
 # Compute workouts grouped by months and then by exerciseType with the following structure:
+#
 # { workouts: [{
 #     time: 1234551273       // Data for the given month
 #     totalTime: 321341      // Total time in seconds for sports in that month
@@ -126,17 +127,20 @@ drawBands = (elt, data, year) ->
     .range([0, viewport.clientWidth - MARGIN.left])
 
   showRow = (rd) ->
-    d3.select(this)
+    row = d3.select(this)
       .selectAll('rect.col')
       .data((d) -> d.sports)
-      .enter()
-        .append('rect')
-        .classed('col', true)
-        .attr('x', (d) -> xScale d.y0)
-        .attr('y', (d) -> yScale (moment(rd.time).month()))
-        .attr('width', (d) -> xScale (d.y1 - d.y0))
-        .attr('height', MONTH_HEIGHT - SPACING.verticalBetweenMonths)
-        .attr('fill', (d) -> d.exerciseType.color)
+    row.enter()
+      .append('rect')
+      .classed('col', true)
+      .attr('x', 0)
+      .attr('y', (d) -> yScale (moment(rd.time).month()))
+      .attr('width', 0)
+      .attr('height', MONTH_HEIGHT - SPACING.verticalBetweenMonths)
+      .attr('fill', (d) -> d.exerciseType.color)
+    row.transition()
+      .attr('width', (d) -> xScale (d.y1 - d.y0))
+      .attr('x', (d) -> xScale d.y0)
 
   rows = d3
     .select(viewport)
