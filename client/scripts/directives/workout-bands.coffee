@@ -1,14 +1,14 @@
 'use strict'
 
-MARGIN = { top: 30, left: 30 }
+MARGIN = { bottom: 30, left: 30, right: 10 }
 
 SPACING = { verticalBetweenMonths: 3 }
 
 MONTH_HEIGHT = 30
 
-MONTH_LABEL_HEIGHT = 16
+MONTH_LABEL_HEIGHT = 10
 
-TOTAL_HEIGHT = MARGIN.top + MONTH_HEIGHT * 12
+TOTAL_HEIGHT = MARGIN.bottom + SPACING.verticalBetweenMonths + MONTH_HEIGHT * 12
 
 
 class WorkoutBands
@@ -23,6 +23,7 @@ class WorkoutBands
         redraw = ->
           drawMonthLabels elt
           drawBands elt, scope.data, 2013
+          drawGrid elt, scope.data
 
         recompute = ->
           allWorkouts = WorkoutsProviderService.getAllWorkouts()
@@ -100,7 +101,7 @@ drawMonthLabels = (elt) ->
     .selectAll('text')
     .data(d3.range 0, 12)
   container.enter()
-    .append('text')
+    .append('svg:text')
     .attr('x', 0)
     .attr('y', 0)
     .text((d) -> moment().month(d).format('MMM'))
@@ -124,20 +125,22 @@ drawBands = (elt, data, year) ->
   viewport = elt[0]
   xScale = d3.scale.linear()
     .domain([0, data.max])
-    .range([0, viewport.clientWidth - MARGIN.left])
+    .range([0, viewport.clientWidth - MARGIN.left - MARGIN.right])
 
   showRow = (rd) ->
     row = d3.select(this)
       .selectAll('rect.col')
       .data((d) -> d.sports)
     row.enter()
-      .append('rect')
-      .classed('col', true)
+      .append('svg:rect')
+      .attr('class', 'col')
       .attr('x', 0)
-      .attr('y', (d) -> yScale (moment(rd.time).month()))
+      .attr('y', (d) -> SPACING.verticalBetweenMonths + yScale (moment(rd.time).month()))
       .attr('width', 0)
       .attr('height', MONTH_HEIGHT - SPACING.verticalBetweenMonths)
       .attr('fill', (d) -> d.exerciseType.color)
+      .attr('stroke', (d) -> d3.rgb(d.exerciseType.color).darker())
+
     row.transition()
       .attr('width', (d) -> xScale (d.y1 - d.y0))
       .attr('x', (d) -> xScale d.y0)
@@ -148,9 +151,38 @@ drawBands = (elt, data, year) ->
     .selectAll('g.row')
       .data(workouts)
     .enter()
-      .append('g')
-      .classed('row', true)
+      .append('svg:g')
+      .attr('class', 'row')
       .each(showRow)
+
+
+drawGrid = (elt, data) ->
+  viewport = elt[0]
+  xScale = d3.scale.linear()
+    .domain([0, data.max / 3600])
+    .range([0, viewport.clientWidth - MARGIN.left - MARGIN.right])
+
+  # Group
+  rule = d3.select(elt[0])
+    .select('.value-axis')
+    .selectAll('g.rule')
+    .data(xScale.ticks(10))
+    .enter()
+      .append('svg:g')
+        .attr('class', 'rule')
+        .attr('transform', (d) -> "translate(#{xScale(d)}, 0)")
+
+  # Line
+  rule.append("svg:line")
+    .attr('y2', TOTAL_HEIGHT - MARGIN.bottom)
+    .style("stroke", (d) -> if d then '#f5f5f5' else '#000')
+    .style("stroke-opacity", (d) -> if d then .7 else null)
+
+  # Label
+  rule.append('svg:text')
+    .attr('dy', '.35em')
+    .attr('y', TOTAL_HEIGHT - MARGIN.bottom)
+    .text((d) -> d3.format(",d")(d) + 'h')
 
 
 angular.module('fitspector').directive 'workoutBands', ['WorkoutsProviderService', WorkoutBands]
