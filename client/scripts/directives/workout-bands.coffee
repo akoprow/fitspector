@@ -6,7 +6,7 @@ SPACING = { verticalBetweenMonths: 3 }
 
 MONTH_HEIGHT = 30
 
-MONTH_LABEL_HEIGHT = 10
+MONTH_LABEL_HEIGHT = 11
 
 TOTAL_HEIGHT = MARGIN.bottom + SPACING.verticalBetweenMonths + MONTH_HEIGHT * 12
 
@@ -106,7 +106,7 @@ drawMonthLabels = (elt) ->
     .attr('y', 0)
     .text((d) -> moment().month(d).format('MMM'))
   container
-    .attr('y', (d, i) -> (MONTH_HEIGHT - MONTH_LABEL_HEIGHT) / 2 + (yScale i))
+    .attr('y', (d, i) -> SPACING.verticalBetweenMonths + (MONTH_HEIGHT - MONTH_LABEL_HEIGHT) / 2 + (yScale i))
   container.exit()
     .remove()
 
