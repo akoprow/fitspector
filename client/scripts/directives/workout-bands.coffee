@@ -50,14 +50,20 @@ class WorkoutBands
 # Compute workouts grouped by months and then by exerciseType with the following structure:
 #
 # { workouts: [{
-#     time: 1234551273       // Data for the given month
-#     totalTime: 321341      // Total time in seconds for sports in that month
-#     sports: [{             // List of sports for which workouts are present in that month
-#       exerciseType: 'run'  // Type of the exercise
-#       totalTime: 321341    // Time in seconds for all workouts of that sport
+#     time: 1234551273        // Data for the given month
+#     totalDuration: 3.3      // Total duration (in hours) for sports in that month
+#     totalDistance: 10.1     // Total distance (in kilometers) for sports in that month
+#     totalElevation: 300     // Total elevation (in meters) for sports in that month
+#     sports: [{              // List of sports for which workouts are present in that month
+#       exerciseType: 'run'   // Type of the exercise
+#       totalDuration: 3.3    // Total duration (in hours) for all workouts of that sport
+#       totalDistance: 10.1   // Total distance (in kilometers) for all workouts of that sport
+#       totalElevation: 300   // Total elevation (in meters) for all workouts of that sport.
 #     }]
 #   }]
-#   max: 321341              // Max time across all months
+#   maxDuration: 3.3          // Max monthly duration (across all sports).
+#   maxDistance: 10.1         // Max monthly distance (across all sports).
+#   maxElevation: 300         // Max monthly elevation (across all sports).
 # }
 recomputeData = (workouts) ->
   workoutsData =
@@ -69,13 +75,17 @@ recomputeData = (workouts) ->
           .groupBy((workout) -> workout.exerciseType.id)
           .map((workouts, exerciseTypeId) ->
             exerciseType: WorkoutType[exerciseTypeId]
-            totalTime: d3.sum workouts, (workout) -> workout.totalDuration.asSeconds()
+            totalDuration: d3.sum workouts, (workout) -> workout.totalDuration.asHours()
+            totalDistance: d3.sum workouts, (workout) -> workout.totalDistance.asKilometers()
+            totalElevation: d3.sum workouts, (workout) -> workout.totalElevation.asMeters()
           )
           .sortBy((data) -> data.exerciseType.id)
           .value()
       )
       .map((monthlyData) -> _.extend monthlyData,
-        totalTime: d3.sum monthlyData.sports, (monthlySummary) -> monthlySummary.totalTime
+        totalDuration: d3.sum monthlyData.sports, (monthlySummary) -> monthlySummary.totalDuration
+        totalDistance: d3.sum monthlyData.sports, (monthlySummary) -> monthlySummary.totalDistance
+        totalElevation: d3.sum monthlyData.sports, (monthlySummary) -> monthlySummary.totalElevation
       )
       .value()
 
@@ -89,7 +99,9 @@ recomputeData = (workouts) ->
   return {
     workouts: workoutsData
     allSports: allSports
-    max: d3.max workoutsData, (d) -> d.totalTime
+    maxDuration: d3.max workoutsData, (d) -> d.totalDuration
+    maxDistance: d3.max workoutsData, (d) -> d.totalDistance
+    maxElevation: d3.max workoutsData, (d) -> d.totalElevation
   }
 
 
@@ -121,14 +133,14 @@ drawBands = (elt, data, year) ->
     .filter((d) -> moment(d.time).year() == year)
     .map((d) ->
       y = 0
-      d.sports = _.map(d.sports, (s) -> _.extend s, { y0: y, y1: y += s.totalTime })
+      d.sports = _.map(d.sports, (s) -> _.extend s, { y0: y, y1: y += s.totalDuration })
       return d
     )
     .value()
 
   viewport = elt[0]
   xScale = d3.scale.linear()
-    .domain([0, data.max])
+    .domain([0, data.maxDuration])
     .range([0, viewport.clientWidth - MARGIN.left - MARGIN.right])
 
   showRow = (rd) ->
@@ -163,7 +175,7 @@ drawBands = (elt, data, year) ->
 drawGrid = (elt, data) ->
   viewport = elt[0]
   xScale = d3.scale.linear()
-    .domain([0, data.max / 3600])
+    .domain([0, data.maxDuration])
     .range([0, viewport.clientWidth - MARGIN.left - MARGIN.right])
 
   # Group
