@@ -1,3 +1,20 @@
-<div>
-  <workout-bands year="2013"></workout-bands>
+<div id="analyze">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title text-center">Training volume and intensity.</h3>
+    </div>
+  </div>
+  <div class="btn-toolbar">
+    <div class="btn-group value-ctrls">
+      <button class="btn btn-primary"
+              bindonce
+              ng-repeat="mode in valueModes"
+              ng-class="{active: valueMode.id == mode.id}"
+              ng-click="setValueMode(mode)"
+              bo-text="mode.desc">
+      </button>
+    </div>
+  </div>
+
+  <workout-bands year="2013" value-mode="valueMode.id"></workout-bands>
 </div>

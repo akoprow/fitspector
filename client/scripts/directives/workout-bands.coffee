@@ -19,6 +19,7 @@ class WorkoutBands
       templateUrl: 'views/directives/workout-bands.html'
       scope:
         year: '@'
+        valueMode: '='
       link: (scope, elt) ->
         redraw = ->
           drawMonthLabels elt
@@ -40,6 +41,9 @@ class WorkoutBands
         # Re-draw on screen re-sizing.
         scope.$watch (-> elt.clientWidth), redraw
         scope.$watch (-> elt.clientHeight), redraw
+
+        # Re-draw on change of options.
+        scope.$watch scope.valueMode, redraw
     }
 
 
