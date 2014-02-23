@@ -45,6 +45,12 @@ class WorkoutBands
 
         # Re-draw on change of options.
         scope.$watch 'valueMode', redraw
+
+        scope.setBaselineSport = (sport) ->
+          sports = scope.data.allSports
+          index = _.indexOf sports, sport
+          sports.splice index, 1
+          sports.unshift sport
     }
 
 
@@ -65,6 +71,7 @@ class WorkoutBands
 #   maxDuration: 3.3          // Max monthly duration (across all sports).
 #   maxDistance: 10.1         // Max monthly distance (across all sports).
 #   maxElevation: 300         // Max monthly elevation (across all sports).
+#   allSports: [...]          // List of all sports.
 # }
 recomputeData = (workouts) ->
   workoutsData =
