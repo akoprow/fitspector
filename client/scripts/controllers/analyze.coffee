@@ -3,8 +3,8 @@
 class AnalyzeCtrl
   constructor: (WorkoutsProviderService, $scope) ->
     $scope.valueModes = [
-      id: 'time'
-      desc: 'Time'
+      id: 'duration'
+      desc: 'Duration'
     ,
       id: 'distance'
       desc: 'Distance'
@@ -13,7 +13,7 @@ class AnalyzeCtrl
       desc: 'Elevation'
     ]
 
-    $scope.valueMode = $scope.valueModes[0]
+    $scope.valueMode = $scope.valueModes[1]
     $scope.setValueMode = (mode) -> $scope.valueMode = mode
 
 

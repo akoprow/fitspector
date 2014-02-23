@@ -22,9 +22,10 @@ class WorkoutBands
         valueMode: '='
       link: (scope, elt) ->
         redraw = ->
+          if !scope.valueMode? then return
           drawMonthLabels elt
-          drawBands elt, scope.data, 2013
-          drawGrid elt, scope.data
+          drawBands elt, scope.data, scope.valueMode, 2013
+          drawGrid elt, scope.data, scope.valueMode
 
         recompute = ->
           allWorkouts = WorkoutsProviderService.getAllWorkouts()
@@ -43,7 +44,7 @@ class WorkoutBands
         scope.$watch (-> elt.clientHeight), redraw
 
         # Re-draw on change of options.
-        scope.$watch scope.valueMode, redraw
+        scope.$watch 'valueMode', redraw
     }
 
 
@@ -127,20 +128,36 @@ drawMonthLabels = (elt) ->
     .remove()
 
 
-drawBands = (elt, data, year) ->
+dataMaxForMode = (data, valueMode) ->
+  switch valueMode
+    when 'duration' then data.maxDuration
+    when 'distance' then data.maxDistance
+    when 'elevation' then data.maxElevation
+    else throw new Error("Unknown value mode: #{valueMode}")
+
+
+dataForMode = (data, valueMode) ->
+  switch valueMode
+    when 'duration' then data.totalDuration
+    when 'distance' then data.totalDistance
+    when 'elevation' then data.totalElevation
+    else throw new Error("Unknown value mode: #{valueMode}")
+
+
+drawBands = (elt, data, valueMode, year) ->
   # Filter workouts summaries to the selected year
   workouts = _.chain(data.workouts)
     .filter((d) -> moment(d.time).year() == year)
     .map((d) ->
       y = 0
-      d.sports = _.map(d.sports, (s) -> _.extend s, { y0: y, y1: y += s.totalDuration })
+      d.sports = _.map(d.sports, (s) -> _.extend s, { y0: y, y1: y += dataForMode s, valueMode })
       return d
     )
     .value()
 
   viewport = elt[0]
   xScale = d3.scale.linear()
-    .domain([0, data.maxDuration])
+    .domain([0, dataMaxForMode data, valueMode])
     .range([0, viewport.clientWidth - MARGIN.left - MARGIN.right])
 
   showRow = (rd) ->
@@ -156,7 +173,6 @@ drawBands = (elt, data, year) ->
       .attr('height', MONTH_HEIGHT - SPACING.verticalBetweenMonths)
       .attr('fill', (d) -> d.exerciseType.color)
       .attr('stroke', (d) -> d3.rgb(d.exerciseType.color).darker())
-
     row.transition()
       .attr('width', (d) -> xScale (d.y1 - d.y0))
       .attr('x', (d) -> xScale d.y0)
@@ -165,40 +181,57 @@ drawBands = (elt, data, year) ->
     .select(viewport)
     .select('g.bands')
     .selectAll('g.row')
-      .data(workouts)
-    .enter()
-      .append('svg:g')
-      .attr('class', 'row')
-      .each(showRow)
+    .data(workouts)
+  rows.enter()
+    .append('svg:g')
+    .attr('class', 'row')
+  rows.transition()
+    .each(showRow)
 
 
-drawGrid = (elt, data) ->
+drawGrid = (elt, data, valueMode) ->
   viewport = elt[0]
   xScale = d3.scale.linear()
-    .domain([0, data.maxDuration])
+    .domain([0, dataMaxForMode data, valueMode])
     .range([0, viewport.clientWidth - MARGIN.left - MARGIN.right])
 
-  # Group
+  labelUnit =
+    switch valueMode
+      when 'duration' then 'h'
+      when 'distance' then 'km'
+      when 'elevation' then 'm'
+      else throw new Error("Unknown value mode: #{valueMode}")
+
   rule = d3.select(elt[0])
     .select('.value-axis')
     .selectAll('g.rule')
     .data(xScale.ticks(10))
-    .enter()
-      .append('svg:g')
-        .attr('class', 'rule')
-        .attr('transform', (d) -> "translate(#{xScale(d)}, 0)")
 
-  # Line
-  rule.append("svg:line")
-    .attr('y2', TOTAL_HEIGHT - MARGIN.bottom)
-    .style("stroke", (d) -> if d then '#f5f5f5' else '#000')
-    .style("stroke-opacity", (d) -> if d then .7 else null)
+  rule.enter()
+    .append('svg:g')
+    .attr('class', 'rule')
+    .attr('transform', "translate(#{viewport.clientWidth}, 0)")
+    .each((d) ->
+      d3.select(this)
+        .append('svg:line')
+        .attr('y2', TOTAL_HEIGHT - MARGIN.bottom)
+        .style("stroke", (d) -> if d then '#f5f5f5' else '#000')
+        .style("stroke-opacity", (d) -> if d then .7 else null)
+      d3.select(this)
+        .append('svg:text')
+        .attr('dy', '.35em')
+        .attr('y', TOTAL_HEIGHT - MARGIN.bottom)
+    )
 
-  # Label
-  rule.append('svg:text')
-    .attr('dy', '.35em')
-    .attr('y', TOTAL_HEIGHT - MARGIN.bottom)
-    .text((d) -> d3.format(",d")(d) + 'h')
+  rule.exit()
+    .transition()
+    .attr('transform', "translate(#{viewport.clientWidth}, 0)")
+    .remove()
+
+  rule.transition()
+    .attr('transform', (d) -> "translate(#{xScale(d)}, 0)")
+    .select('text')
+    .text((d) -> d3.format(",d")(d) + labelUnit)
 
 
 angular.module('fitspector').directive 'workoutBands', ['WorkoutsProviderService', WorkoutBands]
