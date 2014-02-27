@@ -34,12 +34,11 @@ class WorkoutBands
 
         redraw = ->
           if !scope.valueMode? then return
+          compile = (html) -> $compile(html)(scope)
+
           drawMonthLabels elt
           drawBands elt, scope.data, scope.valueMode, 2013
           drawGrid elt, scope.data, scope.valueMode
-
-        redrawSportIcons = ->
-          compile = (html) -> $compile(html)(scope)
           drawSportIcons elt, compile, setBaselineSport, scope.data.allSports
 
         recompute = ->
@@ -61,8 +60,8 @@ class WorkoutBands
         # Re-draw on change of options.
         scope.$watch 'valueMode', redraw
 
-        # Re-draw the list of sport, when it changes.
-        scope.$watchCollection 'data.allSports', redrawSportIcons
+        # Re-draw when the list of sports changes (for instance its order).
+        scope.$watchCollection 'data.allSports', redraw
     }
 
 
@@ -164,12 +163,19 @@ dataForMode = (data, valueMode) ->
 
 
 drawBands = (elt, data, valueMode, year) ->
+  # Cacheable mapping from a sport to its index in array of sports (which user
+  # can change order of).
+  sportIndex = (sport) -> _.indexOf(data.allSports, sport)
+
   # Filter workouts summaries to the selected year
   workouts = _.chain(data.workouts)
     .filter((d) -> moment(d.time).year() == year)
     .map((d) ->
       y = 0
-      d.sports = _.map(d.sports, (s) -> _.extend s, { y0: y, y1: y += dataForMode s, valueMode })
+      d.sports = _.chain(d.sports)
+        .sortBy((s) -> sportIndex s.exerciseType)
+        .map((s) -> _.extend s, { y0: y, y1: y += dataForMode s, valueMode })
+        .value()
       return d
     )
     .value()
@@ -182,7 +188,7 @@ drawBands = (elt, data, valueMode, year) ->
   showRow = (rd) ->
     row = d3.select(this)
       .selectAll('rect.col')
-      .data((d) -> d.sports)
+      .data(((d) -> d.sports), ((s) -> s.exerciseType.id))
     row.enter()
       .append('svg:rect')
       .attr('class', 'col')
@@ -190,9 +196,9 @@ drawBands = (elt, data, valueMode, year) ->
       .attr('y', (d) -> SPACING.verticalBetweenMonths + yScale (moment(rd.time).month()))
       .attr('width', 0)
       .attr('height', MONTH_HEIGHT - SPACING.verticalBetweenMonths)
+    row.transition()
       .attr('fill', (d) -> d.exerciseType.color)
       .attr('stroke', (d) -> d3.rgb(d.exerciseType.color).darker())
-    row.transition()
       .attr('width', (d) -> xScale (d.y1 - d.y0))
       .attr('x', (d) -> xScale d.y0)
 
