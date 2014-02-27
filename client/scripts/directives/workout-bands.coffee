@@ -10,9 +10,11 @@ MONTH_LABEL_HEIGHT = 11
 
 TOTAL_HEIGHT = MARGIN.bottom + SPACING.verticalBetweenMonths + MONTH_HEIGHT * 12
 
+SPORT_ICON_WIDTH = 50
+
 
 class WorkoutBands
-  constructor: (WorkoutsProviderService) ->
+  constructor: (WorkoutsProviderService, $compile) ->
     return {
       replace: true
       restrict: 'E'
@@ -21,11 +23,24 @@ class WorkoutBands
         year: '@'
         valueMode: '='
       link: (scope, elt) ->
+        # Moves given sport to the front of the array of sports, hence making it
+        # a baseline for comparisons on the chart.
+        setBaselineSport = (sport) ->
+          scope.$apply () ->
+            sports = scope.data.allSports
+            index = _.indexOf sports, sport
+            sports.splice index, 1
+            sports.unshift sport
+
         redraw = ->
           if !scope.valueMode? then return
           drawMonthLabels elt
           drawBands elt, scope.data, scope.valueMode, 2013
           drawGrid elt, scope.data, scope.valueMode
+
+        redrawSportIcons = ->
+          compile = (html) -> $compile(html)(scope)
+          drawSportIcons elt, compile, setBaselineSport, scope.data.allSports
 
         recompute = ->
           allWorkouts = WorkoutsProviderService.getAllWorkouts()
@@ -46,11 +61,8 @@ class WorkoutBands
         # Re-draw on change of options.
         scope.$watch 'valueMode', redraw
 
-        scope.setBaselineSport = (sport) ->
-          sports = scope.data.allSports
-          index = _.indexOf sports, sport
-          sports.splice index, 1
-          sports.unshift sport
+        # Re-draw the list of sport, when it changes.
+        scope.$watchCollection 'data.allSports', redrawSportIcons
     }
 
 
@@ -241,4 +253,16 @@ drawGrid = (elt, data, valueMode) ->
     .text((d) -> d3.format(",d")(d) + labelUnit)
 
 
-angular.module('fitspector').directive 'workoutBands', ['WorkoutsProviderService', WorkoutBands]
+drawSportIcons = (elt, compile, setBaselineSport, sports) ->
+  sportsList = d3.select(elt[0])
+    .select('.exercise-types-list')
+    .selectAll('li')
+    .data(sports, (d) -> d.id)
+  sportsList.enter()
+    .append((d) -> compile("<li><sport-icon exercise-type-id='#{d.id}'></sport-icon></li>")[0])
+    .on('click', (d) -> setBaselineSport d)
+  sportsList.transition()
+    .style('left', (d, i) -> "#{SPORT_ICON_WIDTH * i}px")
+
+
+angular.module('fitspector').directive 'workoutBands', ['WorkoutsProviderService', '$compile', WorkoutBands]

@@ -24,7 +24,7 @@
               class="sport-summary-value"
               ng-style="{ 'left': elementWidth * $index }"
               ng-click="setSportFilter(sport.exerciseType.id)">
-          <sport-icon no-tooltip="true" exercise-type="sport.exerciseType"></sport-icon>
+          <sport-icon no-tooltip="true" exercise-type-id="{{sport.exerciseType.id}}"></sport-icon>
         </span>
       </td>
     </tr>

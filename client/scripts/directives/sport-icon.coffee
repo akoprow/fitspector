@@ -7,7 +7,11 @@ class SportIconDirective
       restrict: 'E'
       templateUrl: 'views/directives/sport-icon.html'
       scope:
-        exerciseType: '='
+        exerciseTypeId: '@'
+      link: (scope) ->
+        scope.$watch 'exerciseTypeId', (exerciseTypeId) ->
+          if exerciseTypeId?
+            scope.exerciseType = WorkoutType[exerciseTypeId]
     }
 
 angular.module('fitspector').directive 'sportIcon', ['WorkoutsProviderService', SportIconDirective]

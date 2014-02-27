@@ -148,7 +148,7 @@
               <div class="time" bo-text="workout.startTime | time"></div>
             </div>
             <div class="sport-icon">
-              <sport-icon exercise-type="workout.exerciseType"></sport-icon>
+              <sport-icon exercise-type-id="{{workout.exerciseType.id}}"></sport-icon>
             </div>
             <div class="labels-and-note">
               <div bindonce ng-repeat="label in workout.labels" class="label label-primary" bo-text="label"></div>

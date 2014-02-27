@@ -4,9 +4,5 @@
     <g class="time-axis" ng-attr-transform="translate(0, {{margin.top}})"></g>
     <g class="value-axis" ng-attr-transform="translate({{margin.left}}, 0)"></g>
   </svg>
-  <ul class="exercise-types-list">
-    <li ng-repeat="sport in data.allSports" ng-click="setBaselineSport(sport)">
-      <sport-icon exercise-type="sport"></sport-icon>
-    </li>
-  </ul>
+  <ul class="exercise-types-list"></ul>
 </div>
