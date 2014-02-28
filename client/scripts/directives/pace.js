@@ -15,7 +15,7 @@
         },
         link: function(scope) {
           return scope.showPaceAsMinKm = (function() {
-            switch (scope.exerciseType) {
+            switch (scope.exerciseType.id) {
               case 'run':
                 return true;
               case 'hik':

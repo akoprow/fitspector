@@ -6,7 +6,7 @@
 
   WorkoutsCtrl = (function() {
     function WorkoutsCtrl(WorkoutsProviderService, $scope) {
-      var adjustTime, recomputeWorkoutsFilter, timeMove, updateTimeDesc,
+      var adjustTime, recomputeVisibleWorkouts, timeMove, updateTimeDesc,
         _this = this;
       $scope.maxGaugeTime = new Time({
         hours: 2
@@ -142,16 +142,17 @@
       $scope.setTimeMode('month');
       $scope.goNow();
       $scope.infiniteScrollingPosition = 0;
+      $scope.visibleWorkouts = [];
       $scope.scrollWorkouts = function() {
         return $scope.infiniteScrollingPosition += WORKOUTS_PAGE_SIZE;
       };
-      recomputeWorkoutsFilter = function() {
+      recomputeVisibleWorkouts = function() {
         var sportFilter, timeBeg, timeEnd;
         $scope.infiniteScrollingPosition = WORKOUTS_PAGE_SIZE;
         timeBeg = $scope.timeStart;
         timeEnd = $scope.timeEnd();
         sportFilter = $scope.sportFilter;
-        return WorkoutsProviderService.setWorkoutsFilter(function(workout) {
+        $scope.visibleWorkouts = _(WorkoutsProviderService.getAllWorkouts()).filter(function(workout) {
           var afterStart, beforeEnd, passingSportFilter;
           passingSportFilter = sportFilter === 'all' || workout.exerciseType.id === sportFilter;
           if ($scope.timeMode.id === 'all') {
@@ -162,9 +163,9 @@
             return beforeEnd && afterStart && passingSportFilter;
           }
         });
-      };
-      $scope.getWorkouts = function() {
-        return WorkoutsProviderService.getSelectedWorkouts();
+        return _.defer(function() {
+          return $scope.$digest();
+        });
       };
       $scope.sportFilter = 'all';
       $scope.setSportFilter = function(exerciseTypeId) {
@@ -173,9 +174,10 @@
       $scope.getFilteredSportName = function() {
         return WorkoutType[$scope.sportFilter].name;
       };
-      $scope.$watch('sportFilter', recomputeWorkoutsFilter);
-      $scope.$watch('timeStart.valueOf()', recomputeWorkoutsFilter);
-      $scope.$watch('timeMode', recomputeWorkoutsFilter);
+      $scope.$watch('sportFilter', recomputeVisibleWorkouts);
+      $scope.$watch('timeStart.valueOf()', recomputeVisibleWorkouts);
+      $scope.$watch('timeMode', recomputeVisibleWorkouts);
+      $scope.$on('workouts.update', recomputeVisibleWorkouts);
       $scope.order = '-startTime';
       $scope.orderBy = function(newOrder) {
         var newOrderRev;

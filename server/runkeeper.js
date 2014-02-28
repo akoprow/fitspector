@@ -93,32 +93,55 @@
 
   runKeeperWorkoutType = function(type) {
     switch (type) {
-      case 'Running':
-        return 'run';
-      case 'Cycling':
-        return 'bik';
-      case 'Mountain Biking':
-        return 'bik';
-      case 'Walking':
-        return 'hik';
-      case 'Hiking':
-        return 'hik';
-      case 'Downhill Skiing':
-        return 'ski';
+      case 'Boxing / MMA':
+        return 'box';
+      case 'CrossFit':
+      case 'Strength Training':
+      case 'Circuit Training':
+      case 'Core Strengthening':
+      case 'Bootcamp':
+        return 'wtr';
       case 'Cross-Country Skiing':
         return 'xcs';
-      case 'Swimming':
-        return 'swi';
+      case 'Cycling':
+      case 'Mountain Biking':
+      case 'Spinning':
+        return 'bik';
+      case 'Downhill Skiing':
+        return 'ski';
       case 'Rowing':
         return 'row';
+      case 'Running':
+        return 'run';
+      case 'Swimming':
+        return 'swi';
+      case 'Walking':
+      case 'Hiking':
+        return 'hik';
+      case 'Yoga':
+        return 'yog';
+      case 'Dance':
+      case 'Zumba':
+      case 'Barre':
+      case 'Pilates':
+        return 'oth';
       case 'Elliptical':
       case 'Wheelchair':
       case 'Snowboarding':
       case 'Skating':
       case 'Other':
+      case 'Sports':
+      case 'Snowboarding':
+      case 'Skating':
+        return 'oth';
+      case 'Group Workout':
+      case 'Meditation':
+      case 'Arc Trainer':
+      case 'Stairmaster / Stepwell':
+      case 'Nordic Walking':
         return 'oth';
       default:
-        log.error('Unknown RunKeeper workout type', type);
+        logger.error('Unknown RunKeeper workout type', type);
         return 'oth';
     }
   };
