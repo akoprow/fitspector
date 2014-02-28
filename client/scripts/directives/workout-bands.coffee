@@ -192,6 +192,13 @@ drawBands = (elt, data, valueMode, year) ->
     row.enter()
       .append('svg:rect')
       .attr('class', 'col')
+      # Popover
+      .attr('rel', 'popover')
+      .attr('data-container', '.workout-bands')
+      .attr('data-toggle', 'popover')
+      .attr('data-title', 'Title')
+      .attr('data-content', 'Content')
+      # Other attributes
       .attr('x', 0)
       .attr('y', (d) -> SPACING.verticalBetweenMonths + yScale (moment(rd.time).month()))
       .attr('width', 0)
