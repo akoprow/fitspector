@@ -82,28 +82,21 @@ runKeeper =
 
 runKeeperWorkoutType = (type) ->
   switch type
-    when 'Running'
-      'run'
-    when 'Cycling'
-      'bik'
-    when 'Mountain Biking'
-      'bik'
-    when 'Walking'
-      'hik'
-    when 'Hiking'
-      'hik'
-    when 'Downhill Skiing'
-      'ski'
-    when 'Cross-Country Skiing'
-      'xcs'
-    when 'Swimming'
-      'swi'
-    when 'Rowing'
-      'row'
-    when 'Elliptical', 'Wheelchair', 'Snowboarding', 'Skating', 'Other'
-      'oth'
+    when 'Boxing / MMA' then 'box'
+    when 'CrossFit', 'Strength Training', 'Circuit Training', 'Core Strengthening', 'Bootcamp' then 'wtr'
+    when 'Cross-Country Skiing' then 'xcs'
+    when 'Cycling', 'Mountain Biking', 'Spinning' then 'bik'
+    when 'Downhill Skiing' then 'ski'
+    when 'Rowing' then 'row'
+    when 'Running' then 'run'
+    when 'Swimming' then 'swi'
+    when 'Walking', 'Hiking' then 'hik'
+    when 'Yoga' then 'yog'
+    when 'Dance', 'Zumba', 'Barre', 'Pilates' then 'oth'
+    when 'Elliptical', 'Wheelchair', 'Snowboarding', 'Skating', 'Other', 'Sports', 'Snowboarding', 'Skating' then 'oth'
+    when 'Group Workout', 'Meditation', 'Arc Trainer', 'Stairmaster / Stepwell', 'Nordic Walking' then 'oth'
     else
-      log.error 'Unknown RunKeeper workout type', type
+      logger.error 'Unknown RunKeeper workout type', type
       'oth'
 
 ####################################################################################################
