@@ -181,6 +181,8 @@ drawBands = (elt, data, valueMode, year) ->
     .value()
 
   viewport = elt[0]
+  monthLabel = d3.time.format '%B %Y'
+
   xScale = d3.scale.linear()
     .domain([0, dataMaxForMode data, valueMode])
     .range([0, viewport.clientWidth - MARGIN.left - MARGIN.right])
@@ -189,25 +191,26 @@ drawBands = (elt, data, valueMode, year) ->
     row = d3.select(this)
       .selectAll('rect.col')
       .data(((d) -> d.sports), ((s) -> s.exerciseType.id))
-    row.enter()
-      .append('svg:rect')
-      .attr('class', 'col')
-      # Popover
-      .attr('rel', 'popover')
-      .attr('data-container', '.workout-bands')
-      .attr('data-toggle', 'popover')
-      .attr('data-title', 'Title')
-      .attr('data-content', 'Content')
-      # Other attributes
-      .attr('x', 0)
-      .attr('y', (d) -> SPACING.verticalBetweenMonths + yScale (moment(rd.time).month()))
-      .attr('width', 0)
-      .attr('height', MONTH_HEIGHT - SPACING.verticalBetweenMonths)
     row.transition()
       .attr('fill', (d) -> d.exerciseType.color)
       .attr('stroke', (d) -> d3.rgb(d.exerciseType.color).darker())
       .attr('width', (d) -> xScale (d.y1 - d.y0))
       .attr('x', (d) -> xScale d.y0)
+    row.enter()
+      .append('svg:rect')
+      .attr('class', 'col')
+      # Other attributes
+      .attr('x', 0)
+      .attr('y', (d) -> SPACING.verticalBetweenMonths + yScale (moment(rd.time).month()))
+      .attr('width', 0)
+      .attr('height', MONTH_HEIGHT - SPACING.verticalBetweenMonths)
+      .each(() ->
+        $(this).popover
+          trigger: 'hover'
+          container: '.workout-bands'
+          title: monthLabel (new Date(rd.time))
+          content: 'Blah'
+       )
 
   rows = d3
     .select(viewport)
