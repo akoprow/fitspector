@@ -80,7 +80,7 @@ runKeeper =
 
 ####################################################################################################
 
-runKeeperWorkoutType = (type) ->
+runKeeperWorkoutType = (type, note) ->
   switch type
     when 'Boxing / MMA' then 'box'
     when 'CrossFit', 'Strength Training', 'Circuit Training', 'Core Strengthening', 'Bootcamp' then 'wtr'
@@ -93,8 +93,12 @@ runKeeperWorkoutType = (type) ->
     when 'Walking', 'Hiking' then 'hik'
     when 'Yoga' then 'yog'
     when 'Dance', 'Zumba', 'Barre', 'Pilates' then 'oth'
-    when 'Elliptical', 'Wheelchair', 'Snowboarding', 'Skating', 'Other', 'Sports', 'Snowboarding', 'Skating' then 'oth'
+    when 'Elliptical', 'Wheelchair', 'Snowboarding', 'Skating', 'Sports', 'Snowboarding', 'Skating' then 'oth'
     when 'Group Workout', 'Meditation', 'Arc Trainer', 'Stairmaster / Stepwell', 'Nordic Walking' then 'oth'
+    when 'Other'
+      switch note.trim().toLowerCase()
+        when 'volleyball' then 'vlb'
+        else 'oth'
     else
       logger.error 'Unknown RunKeeper workout type', type
       'oth'
@@ -141,7 +145,7 @@ addWorkout = (accessToken, user, workouts, data, cb) ->
     workout =
       source:
         runKeeper: response.activity
-      exerciseType: runKeeperWorkoutType(response.type)
+      exerciseType: runKeeperWorkoutType response.type, noteLines[0] || ''
       startTime: response['start_time']
       notes: noteLines.join '\n'
       avgHR: response['average_heart_rate']

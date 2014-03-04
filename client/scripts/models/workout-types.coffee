@@ -123,6 +123,10 @@ DATA =
   yog:
     name: 'Yoga'
     color: color(17)
+  oth:
+    name: 'Other'
+    color: color(5)
+
 
 # TODO(koper) Change into Angular constant
 root.WorkoutType = 
