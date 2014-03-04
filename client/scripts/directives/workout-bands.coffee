@@ -23,15 +23,6 @@ class WorkoutBands
         year: '@'
         valueMode: '='
       link: (scope, elt) ->
-        # Moves given sport to the front of the array of sports, hence making it
-        # a baseline for comparisons on the chart.
-        setBaselineSport = (sport) ->
-          scope.$apply () ->
-            sports = scope.data.allSports
-            index = _.indexOf sports, sport
-            sports.splice index, 1
-            sports.unshift sport
-
         redraw = ->
           if !scope.valueMode? then return
           compile = (html) -> $compile(html)(scope)
@@ -39,11 +30,10 @@ class WorkoutBands
           drawMonthLabels elt
           drawBands elt, scope.data, scope.valueMode, 2013
           drawGrid elt, scope.data, scope.valueMode
-          drawSportIcons elt, compile, setBaselineSport, scope.data.allSports
 
         recompute = ->
-          allWorkouts = WorkoutsProviderService.getAllWorkouts()
-          scope.data = recomputeData allWorkouts
+          scope.allWorkouts = WorkoutsProviderService.getAllWorkouts()
+          scope.data = recomputeData scope.allWorkouts
           redraw()
 
         scope.height = TOTAL_HEIGHT
@@ -59,9 +49,6 @@ class WorkoutBands
 
         # Re-draw on change of options.
         scope.$watch 'valueMode', redraw
-
-        # Re-draw when the list of sports changes (for instance its order).
-        scope.$watchCollection 'data.allSports', redraw
     }
 
 
@@ -108,16 +95,8 @@ recomputeData = (workouts) ->
       )
       .value()
 
-  allSports =
-    _.chain(workoutsData)
-      .map((w) -> _.map(w.sports, (s) -> s.exerciseType))
-      .flatten()
-      .uniq((e) -> e.id)
-      .value()
-
   return {
     workouts: workoutsData
-    allSports: allSports
     maxDuration: d3.max workoutsData, (d) -> d.totalDuration
     maxDistance: d3.max workoutsData, (d) -> d.totalDistance
     maxElevation: d3.max workoutsData, (d) -> d.totalElevation
@@ -267,18 +246,6 @@ drawGrid = (elt, data, valueMode) ->
     .attr('transform', (d) -> "translate(#{xScale(d)}, 0)")
     .select('text')
     .text((d) -> d3.format(",d")(d) + labelUnit)
-
-
-drawSportIcons = (elt, compile, setBaselineSport, sports) ->
-  sportsList = d3.select(elt[0])
-    .select('.exercise-types-list')
-    .selectAll('li')
-    .data(sports, (d) -> d.id)
-  sportsList.enter()
-    .append((d) -> compile("<li><sport-icon exercise-type-id='#{d.id}'></sport-icon></li>")[0])
-    .on('click', (d) -> setBaselineSport d)
-  sportsList.transition()
-    .style('left', (d, i) -> "#{SPORT_ICON_WIDTH * i}px")
 
 
 angular.module('fitspector').directive 'workoutBands', ['WorkoutsProviderService', '$compile', WorkoutBands]
