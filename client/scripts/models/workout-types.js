@@ -1,133 +1,186 @@
 (function() {
   'use strict';
-  var DATA, root;
+  var DATA, color, colors, root;
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
+  colors = _.range(0, 20).map(d3.scale.category20());
+
+  color = function(i) {
+    return colors[i];
+  };
+
   DATA = {
     arc: {
-      name: 'Archery'
+      name: 'Archery',
+      color: color(1)
     },
     bbl: {
-      name: 'Baseball'
+      name: 'Baseball',
+      color: color(0)
     },
     bdm: {
-      name: 'Badminton'
+      name: 'Badminton',
+      color: color(2)
     },
     bkb: {
-      name: 'Basketball'
+      name: 'Basketball',
+      color: color(3)
     },
     bth: {
-      name: 'Biathlon'
+      name: 'Biathlon',
+      color: color(4)
     },
     bik: {
-      name: 'Cycling'
+      name: 'Cycling',
+      color: color(7)
     },
     bob: {
-      name: 'Bobsled'
+      name: 'Bobsled',
+      color: color(6)
     },
     box: {
-      name: 'Boxing'
+      name: 'Boxing',
+      color: color(8)
     },
     cli: {
-      name: 'Climbing'
+      name: 'Climbing',
+      color: color(10)
     },
     cur: {
-      name: 'Curling'
+      name: 'Curling',
+      color: color(12)
     },
     div: {
-      name: 'Scuba diving'
+      name: 'Scuba diving',
+      color: color(13)
     },
     fen: {
-      name: 'Fencing'
+      name: 'Fencing',
+      color: color(14)
     },
     fbl: {
-      name: 'Football'
+      name: 'Football',
+      color: color(15)
     },
     fho: {
-      name: 'Field hockey'
+      name: 'Field hockey',
+      color: color(18)
     },
     glf: {
-      name: 'Golf'
+      name: 'Golf',
+      color: color(19)
     },
     gym: {
-      name: 'Gymnastics'
+      name: 'Gymnastics',
+      color: color(0)
     },
     hbl: {
-      name: 'Handball'
+      name: 'Handball',
+      color: color(2)
     },
     hik: {
-      name: 'Hiking'
+      name: 'Hiking',
+      color: color(11)
     },
     hoc: {
-      name: 'Hockey'
+      name: 'Hockey',
+      color: color(3)
     },
     hrd: {
-      name: 'Horseback riding'
+      name: 'Horseback riding',
+      color: color(4)
     },
     isk: {
-      name: 'Ice-skating'
+      name: 'Ice-skating',
+      color: color(6)
     },
     row: {
-      name: 'Rowing'
+      name: 'Rowing',
+      color: color(8)
     },
     rsk: {
-      name: 'Roller skating'
+      name: 'Roller skating',
+      color: color(10)
     },
     run: {
-      name: 'Running'
+      name: 'Running',
+      color: color(5)
     },
     sai: {
-      name: 'Sailing'
+      name: 'Sailing',
+      color: color(12)
     },
     sho: {
-      name: 'Shooting'
+      name: 'Shooting',
+      color: color(13)
     },
     ski: {
-      name: 'Skiing'
+      name: 'Skiing',
+      color: color(14)
     },
     sqs: {
-      name: 'Squash'
+      name: 'Squash',
+      color: color(15)
     },
     srk: {
-      name: 'Snorkeling'
+      name: 'Snorkeling',
+      color: color(18)
     },
     swi: {
-      name: 'Swimming'
+      name: 'Swimming',
+      color: color(16)
     },
     tbt: {
-      name: 'Table tennis'
+      name: 'Table tennis',
+      color: color(19)
     },
     ten: {
-      name: 'Tennis'
+      name: 'Tennis',
+      color: color(0)
     },
     tkd: {
-      name: 'Taekwondo'
+      name: 'Taekwondo',
+      color: color(2)
     },
     xcs: {
-      name: 'Cross-country skiing'
+      name: 'Cross-country skiing',
+      color: color(3)
     },
     vlb: {
-      name: 'Volleyball'
+      name: 'Volleyball',
+      color: color(9)
     },
     wsr: {
-      name: 'Wind surfing'
+      name: 'Wind surfing',
+      color: color(4)
     },
     wtr: {
-      name: 'Weight training'
+      name: 'Weight training',
+      color: color(1)
     },
     wre: {
-      name: 'Wrestling'
+      name: 'Wrestling',
+      color: color(6)
     },
     yog: {
-      name: 'Yoga'
+      name: 'Yoga',
+      color: color(17)
+    },
+    oth: {
+      name: 'Other',
+      color: color(5)
     }
   };
 
   root.WorkoutType = _.chain(DATA).map(function(sport, id) {
+    var bgColor, col;
+    col = d3.hsl(sport.color);
+    bgColor = d3.hsl(col.h, col.s, 0.99);
     return [
       id, _.extend(sport, {
-        id: id
+        id: id,
+        bgColor: bgColor
       })
     ];
   }).object().value();

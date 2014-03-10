@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  var Distance, ELEVATION_ZONE_BOUNDARIES, HR_ZONE_BOUNDARIES, RUNNING_PACE_ZONE_BOUNDARIES, SPEED_FACTOR_10K, SPEED_FACTOR_5K, SPEED_FACTOR_HALF_MARATHON, SPEED_FACTOR_MARATHON, Time, UserSettings, root, _,
+  var Distance, ELEVATION_ZONE_BOUNDARIES, HR_ZONE_BOUNDARIES, RUNNING_PACE_ZONE_BOUNDARIES, SPEED_FACTOR_10K, SPEED_FACTOR_5K, SPEED_FACTOR_HALF_MARATHON, SPEED_FACTOR_MARATHON, Time, UserSettings, moment, root, _,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   UserSettings = typeof window !== "undefined" && window !== null ? UserSettings : require('./userSettings').UserSettings;
@@ -10,6 +10,8 @@
   Time = typeof window !== "undefined" && window !== null ? Distance : require('./time').Time;
 
   _ = typeof window !== "undefined" && window !== null ? window._ : require('underscore');
+
+  moment = typeof window !== "undefined" && window !== null ? window.moment : require('moment');
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
@@ -42,16 +44,24 @@
     }
 
     User.jsonUserFromRunKeeperProfile = function(profile, userId) {
-      return {
+      var age, user;
+      user = {
         id: userId,
         name: profile.name,
         isMale: profile.gender === 'M',
-        birthday: new Date(profile.birthday),
         smallImgUrl: profile['small_picture'] || profile['medium_picture'] || profile['normal_picture'] || '',
         settings: new UserSettings(),
         token: null,
         runKeeperProfile: profile
       };
+      if (profile.birthday != null) {
+        user.birthday = new Date(profile.birthday);
+        age = moment().diff(moment(profile.birthday), 'years');
+        user.performance = {
+          maxHR: 220 - age
+        };
+      }
+      return user;
     };
 
     User.computeFunctionalThresholdPace = function(bestRace) {

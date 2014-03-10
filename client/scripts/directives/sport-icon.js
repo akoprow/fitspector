@@ -9,7 +9,14 @@
         restrict: 'E',
         templateUrl: 'views/directives/sport-icon.html',
         scope: {
-          exerciseType: '='
+          exerciseTypeId: '@'
+        },
+        link: function(scope) {
+          return scope.$watch('exerciseTypeId', function(exerciseTypeId) {
+            if (exerciseTypeId != null) {
+              return scope.exerciseType = WorkoutType[exerciseTypeId];
+            }
+          });
         }
       };
     }

@@ -5,7 +5,7 @@
   DateFilter = (function() {
     function DateFilter() {
       var format;
-      format = d3.time.format('%d %b %Y');
+      format = d3.time.format('%d/%m/%Y');
       return function(date) {
         return format(new Date(date));
       };

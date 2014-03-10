@@ -24,10 +24,10 @@
             return recompute(scope);
           });
           scope.sportFilter = 'all';
-          scope.setSportFilter = function(sport) {
-            scope.sportFilter = scope.sportFilter === sport.id ? 'all' : sport.id;
+          scope.setSportFilter = function(sportId) {
+            scope.sportFilter = scope.sportFilter === sportId ? 'all' : sportId;
             return scope.sportFilterListener({
-              sport: scope.sportFilter
+              exerciseTypeId: scope.sportFilter
             });
           };
           scope.$watch('sportFilter', function() {
@@ -53,8 +53,8 @@
     }
     sportFilter = scope.sportFilter;
     workouts = scope.$eval('workouts | filter: queryFilter');
-    return scope.sports = _.chain(workouts).filter(function(workout) {
-      return sportFilter === 'all' || workout.exerciseType === sportFilter;
+    scope.sports = _.chain(workouts).filter(function(workout) {
+      return sportFilter === 'all' || workout.exerciseType.id === sportFilter;
     }).groupBy(function(workout) {
       return workout.exerciseType.id;
     }).map(function(workouts) {
@@ -78,6 +78,17 @@
         })
       };
     }).values().value();
+    if (sportFilter !== 'all' && scope.sports.length === 0) {
+      return scope.sports = [
+        {
+          exerciseType: WorkoutType[sportFilter],
+          sessions: 0,
+          totalDistance: Distance.zero,
+          totalDuration: Time.zero,
+          totalElevation: Distance.zero
+        }
+      ];
+    }
   };
 
   angular.module('fitspector').directive('workoutsSummaryBySport', [WorkoutsSummaryBySportDirective]);

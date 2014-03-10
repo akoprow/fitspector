@@ -91,34 +91,64 @@
     }
   };
 
-  runKeeperWorkoutType = function(type) {
+  runKeeperWorkoutType = function(type, note) {
     switch (type) {
-      case 'Running':
-        return 'run';
-      case 'Cycling':
-        return 'bik';
-      case 'Mountain Biking':
-        return 'bik';
-      case 'Walking':
-        return 'hik';
-      case 'Hiking':
-        return 'hik';
-      case 'Downhill Skiing':
-        return 'ski';
+      case 'Boxing / MMA':
+        return 'box';
+      case 'CrossFit':
+      case 'Strength Training':
+      case 'Circuit Training':
+      case 'Core Strengthening':
+      case 'Bootcamp':
+        return 'wtr';
       case 'Cross-Country Skiing':
         return 'xcs';
-      case 'Swimming':
-        return 'swi';
+      case 'Cycling':
+      case 'Mountain Biking':
+      case 'Spinning':
+        return 'bik';
+      case 'Downhill Skiing':
+        return 'ski';
       case 'Rowing':
         return 'row';
+      case 'Running':
+        return 'run';
+      case 'Swimming':
+        return 'swi';
+      case 'Walking':
+      case 'Hiking':
+        return 'hik';
+      case 'Yoga':
+        return 'yog';
+      case 'Dance':
+      case 'Zumba':
+      case 'Barre':
+      case 'Pilates':
+        return 'oth';
       case 'Elliptical':
       case 'Wheelchair':
       case 'Snowboarding':
       case 'Skating':
-      case 'Other':
+      case 'Sports':
+      case 'Snowboarding':
+      case 'Skating':
         return 'oth';
+      case 'Group Workout':
+      case 'Meditation':
+      case 'Arc Trainer':
+      case 'Stairmaster / Stepwell':
+      case 'Nordic Walking':
+        return 'oth';
+      case 'Other':
+        switch (note.trim().toLowerCase()) {
+          case 'volleyball':
+            return 'vlb';
+          default:
+            return 'oth';
+        }
+        break;
       default:
-        log.error('Unknown RunKeeper workout type', type);
+        logger.error('Unknown RunKeeper workout type', type);
         return 'oth';
     }
   };
@@ -146,6 +176,10 @@
         logger.error("Import error for user: " + user.id + ", error: " + err);
         return;
       }
+      if (!response) {
+        logger.error("Empty detailed workout response for exercise: " + data.uri);
+        return;
+      }
       noteLines = (_ref = response.notes) != null ? _ref.match(/^.*((\r\n|\n|\r)|$)/gm) : void 0;
       if (noteLines == null) {
         noteLines = [];
@@ -162,7 +196,7 @@
         source: {
           runKeeper: response.activity
         },
-        exerciseType: runKeeperWorkoutType(response.type),
+        exerciseType: runKeeperWorkoutType(response.type, noteLines[0] || ''),
         startTime: response['start_time'],
         notes: noteLines.join('\n'),
         avgHR: response['average_heart_rate'],

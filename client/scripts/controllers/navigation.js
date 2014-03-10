@@ -4,12 +4,14 @@
 
   NavigationCtrl = (function() {
     NavigationCtrl.urls = {
+      analyze: '/analyze',
       login: '/login',
       compare: '/compare',
       workouts: '/workouts'
     };
 
     function NavigationCtrl($location, $scope, AuthService) {
+      var _this = this;
       $scope.isAt = function(id) {
         return $location.path() === NavigationCtrl.urls[id];
       };
